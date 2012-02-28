@@ -1,21 +1,28 @@
 package berlin.reiche.scheduler;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
+import freemarker.template.DefaultObjectWrapper;
+
+/**
+ * Tests the initialization of the servlet. 
+ * 
+ * @author Konrad Reiche
+ *
+ */
 public class AppServletTest {
 
 	AppServlet servlet;
 
-	@Before
-	public void setUp() {
-		assertNotSame(null, AppServlet.getInstance());
-	}
-
 	@Test
-	public void testProcessTemplate() {
-
+	public void setUp() {
+		servlet = AppServlet.getInstance();
+		assertNotSame(null, servlet);
+		assertNotSame(null, servlet.configuration);
+		assertTrue(servlet.configuration.getObjectWrapper() instanceof DefaultObjectWrapper);
 	}
 
 }
