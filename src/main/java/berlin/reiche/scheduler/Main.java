@@ -18,7 +18,7 @@ public class Main {
 	/**
 	 * The Jetty HTTP Servlet Server.
 	 */
-	private static Server server;
+	static Server server;
 
 	/**
 	 * Launches the web server.
@@ -31,12 +31,12 @@ public class Main {
 			    ServletContextHandler.SESSIONS);
 		    context.setContextPath("/");
 		    server.setHandler(context);
-		    context.addServlet(new ServletHolder(new ApplicationServlet()), "/*");
+		    context.addServlet(new ServletHolder(AppServlet.getInstance()), "/*");
 		    
 		    server.start();
 		    
 		} catch (Exception e) {
-		    System.err.println("Component failed to start.");
+		    System.err.println("Server failed to start.");
 		    e.printStackTrace();
 		}
 	}
