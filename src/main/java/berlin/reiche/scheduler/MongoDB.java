@@ -21,6 +21,9 @@ public class MongoDB {
 	private static Morphia morphia;
 	private static Datastore datastore;
 
+	/**
+	 * Creates a Mongo instance on localhost with port 27017 with a database.
+	 */
 	static {
 		try {
 			mongo = new Mongo();
@@ -38,5 +41,23 @@ public class MongoDB {
 
 	public static Datastore getDatastore() {
 		return datastore;
+	}
+
+	/**
+	 * By performing a dummy request the current connection is checked. A raised
+	 * exceptions means there is no connection, otherwise there is a connection.
+	 * 
+	 * @return whether there is a working connection to the MongoDB server and
+	 *         the database as defined in the {@link Datastore}.
+	 */
+	public static boolean isConnected() {
+
+		try {
+			datastore.getDB().getCollectionNames();
+		} catch (Exception e) {
+			return false;
+		}
+
+		return true;
 	}
 }

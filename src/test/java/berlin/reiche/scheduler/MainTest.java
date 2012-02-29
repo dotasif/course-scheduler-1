@@ -16,7 +16,7 @@ public class MainTest {
 	@Test
 	public void testMain() {
 		
-		assertEquals(null, Main.server);
+		assertNull(Main.server);
 		Main.main();
 		assertTrue(Main.server.isRunning());
 	}

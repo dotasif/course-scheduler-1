@@ -10,5 +10,6 @@ public class MongoDBTest {
 	@Test
 	public void setUp() {
 		assertNotSame(null, MongoDB.getDatastore());
+		assertTrue(MongoDB.isConnected());
 	}
 }

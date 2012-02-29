@@ -2,6 +2,11 @@ package berlin.reiche.scheduler.modules;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import berlin.reiche.scheduler.MongoDB;
+
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+
 /**
  * A User is someone who is using the course scheduler and represent different
  * roles.
@@ -9,6 +14,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * @author Konrad Reiche
  * 
  */
+@Entity("user")
 public class User {
 
 	/**
@@ -17,11 +23,20 @@ public class User {
 	 */
 	private static final int LOG_ROUNDS = 12;
 
+	@Id
 	String name;
 	String password;
 	String email;
 	boolean isStudent;
 	boolean isLecturer;
+
+	/**
+	 * This constructor is used by Morphia via Java reflections.
+	 */
+	@SuppressWarnings("unused")
+	private User() {
+
+	}
 
 	/**
 	 * Creates a new user by assigning the parameters directly, except the
@@ -38,7 +53,7 @@ public class User {
 	 * @param isLecturer
 	 *            whether the user is a lecturer.
 	 */
-	public User(String name, String password, String email, boolean isStudent,
+	User(String name, String password, String email, boolean isStudent,
 			boolean isLecturer) {
 		super();
 		this.name = name;
@@ -69,6 +84,34 @@ public class User {
 	 */
 	public boolean checkPassword(String candidate) {
 		return BCrypt.checkpw(candidate, password);
+	}
+
+	/**
+	 * @param name
+	 *            the login name.
+	 * @param password
+	 *            the login password.
+	 * @param email
+	 *            the email address.
+	 * @param isStudent
+	 *            whether the user is a student.
+	 * @param isLecturer
+	 *            whether the user is a lecturer.
+	 * @return the id of the saved user, the name if successful, null if not.
+	 */
+	public static String saveUser(String name, String password, String email,
+			boolean isStudent, boolean isLecturer) {
+		User newUser = new User(name, password, email, isStudent, isLecturer);
+		return MongoDB.getDatastore().save(newUser).getId().toString();
+	}
+
+	/**
+	 * Deletes a user with the given login name.
+	 * 
+	 * @param the login name.
+	 */
+	public static void deleteUser(String name) {
+		MongoDB.getDatastore().delete(User.class, name);
 	}
 
 }

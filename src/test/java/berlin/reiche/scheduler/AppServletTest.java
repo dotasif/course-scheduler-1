@@ -1,6 +1,6 @@
 package berlin.reiche.scheduler;
 
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -20,8 +20,8 @@ public class AppServletTest {
 	@Test
 	public void setUp() {
 		servlet = AppServlet.getInstance();
-		assertNotSame(null, servlet);
-		assertNotSame(null, servlet.configuration);
+		assertNotNull(servlet);
+		assertNotNull(servlet.configuration);
 		assertTrue(servlet.configuration.getObjectWrapper() instanceof DefaultObjectWrapper);
 	}
 
