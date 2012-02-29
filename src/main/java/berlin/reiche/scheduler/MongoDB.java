@@ -15,6 +15,8 @@ import com.mongodb.MongoException;
  */
 public class MongoDB {
 
+	private static final String DATABASE_NAME = "course-scheduler";
+
 	private static Mongo mongo;
 	private static Morphia morphia;
 	private static Datastore datastore;
@@ -23,12 +25,13 @@ public class MongoDB {
 		try {
 			mongo = new Mongo();
 			morphia = new Morphia();
-			datastore = morphia.createDatastore(mongo, "course-scheduler");
+			datastore = morphia.createDatastore(mongo, DATABASE_NAME);
 		} catch (UnknownHostException e) {
 			System.err.println("The host could not be determined.");
 			e.printStackTrace();
 		} catch (MongoException e) {
-			System.err.println("Something went wrong in Mongo.");
+			System.err.println("Something went wrong in Mongo during"
+					+ " construction.");
 			e.printStackTrace();
 		}
 	}
