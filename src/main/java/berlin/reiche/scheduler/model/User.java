@@ -1,4 +1,4 @@
-package berlin.reiche.scheduler.modules;
+package berlin.reiche.scheduler.model;
 
 import org.mindrot.jbcrypt.BCrypt;
 

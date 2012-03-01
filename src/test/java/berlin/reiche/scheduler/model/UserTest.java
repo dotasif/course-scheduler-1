@@ -1,4 +1,4 @@
-package berlin.reiche.scheduler.modules;
+package berlin.reiche.scheduler.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import berlin.reiche.scheduler.MongoDB;
+import berlin.reiche.scheduler.model.User;
 
 public class UserTest {
 
