@@ -116,12 +116,23 @@ public class AppServlet extends HttpServlet {
 		Map<String, ?> data = AppServlet.getDefaultData();
 		Writer writer = response.getWriter();
 
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
+		if (user == null && !path.equals("/login")) {
+			response.sendRedirect("/login");
+			return;
+		}
+		
 		switch (path) {
 		case "/":
-			processLoginStatus(request, response);
+			processTemplate(MAIN_SITE, data, writer);
 			break;
 		case "/login":
-			processLoginStatus(request, response);
+			if (user == null) {
+				processTemplate(LOGIN_SITE, data, writer);
+			} else {
+				response.sendRedirect("/");
+			}
 			break;
 		case "/modules":
 			showCourseModules(response);
@@ -197,32 +208,6 @@ public class AppServlet extends HttpServlet {
 		} else {
 			data.put("hasLoginFailed", "true");
 			processTemplate(LOGIN_SITE, data, response.getWriter());
-		}
-	}
-
-	/**
-	 * Checks whether the user is logged in or not and takes appropriate
-	 * redirections.
-	 * 
-	 * @param request
-	 *            provides request information for HTTP servlets.
-	 * @param response
-	 *            provides HTTP-specific functionality in sending a response.
-	 * @throws IOException
-	 *             if an input or output exception occurs.
-	 */
-	private void processLoginStatus(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		String path = request.getServletPath() + request.getPathInfo();
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-		if (user != null) {
-			processTemplate(MAIN_SITE, getDefaultData(), response.getWriter());
-		} else if (!path.equals("/login")) {
-			response.sendRedirect("/login");
-		} else {
-			processTemplate(LOGIN_SITE, getDefaultData(), response.getWriter());
 		}
 	}
 
