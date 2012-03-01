@@ -6,7 +6,10 @@
         </head>
         <body>
                 <ol>
-                        <li><a href="courses">Courses</a></li>
+                        <li><a href="modules">Course Modules</a></li>
+                        <ol>
+                                <li><a href="courses">Courses</a></li>
+                        </ol>
                 </ol>
         </body>
 </html>

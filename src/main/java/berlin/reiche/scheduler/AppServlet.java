@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import berlin.reiche.scheduler.model.CourseModule;
 import berlin.reiche.scheduler.model.User;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -38,10 +41,12 @@ public class AppServlet extends HttpServlet {
 	private static final String LOGIN_SITE = "ftl/login.ftl";
 	private static final String MAIN_SITE = "ftl/main.ftl";
 	private static final String ERROR_SITE = "ftl/404.ftl";
+	private static final String MODULES_SITE = "ftl/modules/modules.ftl";
 
 	private static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
 
 	private static final String DEFAULT_VALUES_PATH = "site/resources/defaultValues.properties";
+
 
 	/**
 	 * Singleton instance.
@@ -118,9 +123,38 @@ public class AppServlet extends HttpServlet {
 		case "/login":
 			processLoginStatus(request, response);
 			break;
+		case "/modules":
+			showCourseModules(response);
+			break;
 		default:
 			processTemplate(ERROR_SITE, data, writer);
 		}
+	}
+
+	/**
+	 * Retrieves all course modules and displays them by processing the
+	 * appropriate template.
+	 * 
+	 * @param response
+	 *            provides HTTP-specific functionality in sending a response.
+	 * @throws IOException
+	 *             if an input or output exception occurs.
+	 */
+	private void showCourseModules(HttpServletResponse response) throws IOException {
+
+		Map<String, Object> data = getDefaultData();
+		List<Map<String, String>> courseModuleDataList = new ArrayList<>();
+		for (CourseModule module : CourseModule.getAllCourseModules()) {
+			Map<String, String> courseModuleData = new TreeMap<>();
+			courseModuleData.put("id", String.valueOf(module.getId()));
+			courseModuleData.put("name", module.getName());
+			courseModuleData.put("assessment", module.getAssessmentType());
+			courseModuleData
+			.put("credits", String.valueOf(module.getCredits()));
+			courseModuleDataList.add(courseModuleData);
+		}
+		data.put("modules", courseModuleDataList);
+		processTemplate(MODULES_SITE, data, response.getWriter());
 	}
 
 	/**
@@ -151,7 +185,7 @@ public class AppServlet extends HttpServlet {
 	private void handleLoginRequest(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
-		Map<String, String> data = getDefaultData();
+		Map<String, Object> data = getDefaultData();
 		String login = request.getParameter("name");
 		String password = request.getParameter("password");
 
@@ -201,9 +235,9 @@ public class AppServlet extends HttpServlet {
 	 *             found or an error occurred during reading from it.
 	 * 
 	 */
-	private static Map<String, String> getDefaultData() throws IOException {
+	private static Map<String, Object> getDefaultData() throws IOException {
 
-		Map<String, String> defaultData = new TreeMap<>();
+		Map<String, Object> defaultData = new TreeMap<>();
 		Properties defaultValues = new Properties();
 		FileInputStream input = new FileInputStream(DEFAULT_VALUES_PATH);
 		defaultValues.load(input);

@@ -87,6 +87,8 @@ public class User {
 	}
 
 	/**
+	 * Stores a new user in the database.
+	 * 
 	 * @param name
 	 *            the login name.
 	 * @param password
@@ -108,12 +110,20 @@ public class User {
 	/**
 	 * Deletes a user with the given login name.
 	 * 
-	 * @param the login name.
+	 * @param name
+	 *            the login name.
 	 */
 	public static void deleteUser(String name) {
 		MongoDB.getDatastore().delete(User.class, name);
 	}
 
+	/**
+	 * Retrieves a user from the database through its login name.
+	 * 
+	 * @param id
+	 *            the login name.
+	 * @return the retrieved user.
+	 */
 	public static User getUser(String id) {
 		return MongoDB.getDatastore().get(User.class, id);
 	}
