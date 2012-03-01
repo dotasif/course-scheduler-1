@@ -114,4 +114,8 @@ public class User {
 		MongoDB.getDatastore().delete(User.class, name);
 	}
 
+	public static User getUser(String id) {
+		return MongoDB.getDatastore().get(User.class, id);
+	}
+
 }

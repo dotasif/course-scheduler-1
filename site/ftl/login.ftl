@@ -6,6 +6,11 @@
         </head>
         <body>
                 <form id="login-form" action="" method="post">
+                        <#if hasLoginFailed??>
+                        <div class="alert alert-error">
+                                Login failed.
+                        </div>
+                        </#if>
                         <fieldset>
                                 <legend>Login</legend>
                                 <ol>

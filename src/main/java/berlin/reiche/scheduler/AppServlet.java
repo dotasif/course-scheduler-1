@@ -13,7 +13,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import berlin.reiche.scheduler.modules.User;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -32,6 +34,12 @@ public class AppServlet extends HttpServlet {
 	 * File path to the web resources.
 	 */
 	private static final String WEB_PATH = "site/";
+
+	private static final String LOGIN_SITE = "ftl/login.ftl";
+	private static final String MAIN_SITE = "ftl/main.ftl";
+	private static final String ERROR_SITE = "ftl/404.ftl";
+
+	private static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
 
 	private static final String DEFAULT_VALUES_PATH = "site/resources/defaultValues.properties";
 
@@ -105,12 +113,82 @@ public class AppServlet extends HttpServlet {
 
 		switch (path) {
 		case "/":
-			response.sendRedirect("/login");
+			processLoginStatus(request, response);
 			break;
 		case "/login":
-			processTemplate("ftl/login.ftl", data, writer);
+			processLoginStatus(request, response);
 			break;
 		default:
+			processTemplate(ERROR_SITE, data, writer);
+		}
+	}
+
+	/**
+	 * Parses all user HTML form requests and handles them.
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		String path = request.getServletPath() + request.getPathInfo();
+		switch (path) {
+		case "/login":
+			handleLoginRequest(request, response);
+		default:
+		}
+	}
+
+	/**
+	 * Handles a user submitted login request.
+	 * 
+	 * @param request
+	 *            provides request information for HTTP servlets.
+	 * @param response
+	 *            provides HTTP-specific functionality in sending a response.
+	 * @throws IOException
+	 *             if an input or output exception occurs.
+	 */
+	private void handleLoginRequest(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+
+		Map<String, String> data = getDefaultData();
+		String login = request.getParameter("name");
+		String password = request.getParameter("password");
+
+		User user = User.getUser(login);
+		if (user != null && user.checkPassword(password)) {
+			HttpSession session = request.getSession();
+			session.setAttribute(LOGIN_ATTRIBUTE, user);
+			response.sendRedirect("/");
+		} else {
+			data.put("hasLoginFailed", "true");
+			processTemplate(LOGIN_SITE, data, response.getWriter());
+		}
+	}
+
+	/**
+	 * Checks whether the user is logged in or not and takes appropriate
+	 * redirections.
+	 * 
+	 * @param request
+	 *            provides request information for HTTP servlets.
+	 * @param response
+	 *            provides HTTP-specific functionality in sending a response.
+	 * @throws IOException
+	 *             if an input or output exception occurs.
+	 */
+	private void processLoginStatus(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+
+		String path = request.getServletPath() + request.getPathInfo();
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
+		if (user != null) {
+			processTemplate(MAIN_SITE, getDefaultData(), response.getWriter());
+		} else if (!path.equals("/login")) {
+			response.sendRedirect("/login");
+		} else {
+			processTemplate(LOGIN_SITE, getDefaultData(), response.getWriter());
 		}
 	}
 
@@ -123,9 +201,9 @@ public class AppServlet extends HttpServlet {
 	 *             found or an error occurred during reading from it.
 	 * 
 	 */
-	private static Map<String, ?> getDefaultData() throws IOException {
+	private static Map<String, String> getDefaultData() throws IOException {
 
-		Map<String, Object> defaultData = new TreeMap<>();
+		Map<String, String> defaultData = new TreeMap<>();
 		Properties defaultValues = new Properties();
 		FileInputStream input = new FileInputStream(DEFAULT_VALUES_PATH);
 		defaultValues.load(input);
