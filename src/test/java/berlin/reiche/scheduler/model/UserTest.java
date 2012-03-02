@@ -1,16 +1,13 @@
 package berlin.reiche.scheduler.model;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import berlin.reiche.scheduler.MongoDB;
-import berlin.reiche.scheduler.model.User;
 
 public class UserTest {
 
@@ -33,27 +30,5 @@ public class UserTest {
 		assertNotSame(USER_PASSWORD, user.password);
 		assertTrue(user.checkPassword(USER_PASSWORD));
 		assertFalse(user.checkPassword(WRONG_PASSWORD));
-	}
-
-	@Test
-	public void testSaveUser() {
-		User user = MongoDB.getDatastore().get(User.class, USER_NAME);
-		assertNull(user);
-		
-		String id = User.saveUser(USER_NAME, USER_PASSWORD, USER_EMAIL,
-				IS_STUDENT, IS_LECTURER);
-		assertEquals(USER_NAME, id);
-		
-		user = MongoDB.getDatastore().get(User.class, USER_NAME);
-		assertEquals(USER_NAME, user.name);
-		assertTrue(user.checkPassword(USER_PASSWORD));
-		assertFalse(user.checkPassword(WRONG_PASSWORD));
-		assertEquals(USER_EMAIL, user.email);
-		assertEquals(IS_STUDENT, user.isStudent);
-		assertEquals(IS_LECTURER, user.isLecturer);
-		
-		User.deleteUser(USER_NAME);
-		user = MongoDB.getDatastore().get(User.class, id);
-		assertNull(user);
 	}
 }

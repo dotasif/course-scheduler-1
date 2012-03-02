@@ -1,6 +1,7 @@
 package berlin.reiche.scheduler;
 
 import java.net.UnknownHostException;
+import java.util.List;
 
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
@@ -59,5 +60,52 @@ public class MongoDB {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Gets an entity of the database identified by its unique identifier.
+	 * 
+	 * @param cls
+	 *            the class type of the entity to retrieve.
+	 * @param id
+	 *            the unique identifier of the entity
+	 * @return the model object representing the entity.
+	 */
+	public static <T, V> T get(Class<T> cls, V id) {
+		return datastore.get(cls, id);
+	}
+
+	/**
+	 * Gets a list of all entities of a certain type.
+	 * 
+	 * @param cls
+	 *            the class type of the entity to retrieve.
+	 * @return the list of model objects representing the entities.
+	 */
+	public static <T, V> List<T> getAll(Class<T> cls) {
+		return datastore.find(cls).asList();
+	}
+
+	/**
+	 * Stores a model object as entity in the database.
+	 * 
+	 * @param entity
+	 *            the model object representing the entity.
+	 * @return the {@link String} representation of the entities key.
+	 */
+	public static <T> Object store(T entity) {
+		return datastore.save(entity).toString();
+	}
+
+	/**
+	 * Deletes a certain entity identified by its unique identifier.
+	 * 
+	 * @param cls
+	 *            the class type of the entity to retrieve.
+	 * @param id
+	 *            the unique identifier of the entity
+	 */
+	public static <T, V> void delete(Class<T> cls, V id) {
+		datastore.delete(cls, id);
 	}
 }

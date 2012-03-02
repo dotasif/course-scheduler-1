@@ -2,8 +2,6 @@ package berlin.reiche.scheduler.model;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import berlin.reiche.scheduler.MongoDB;
-
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
@@ -84,48 +82,6 @@ public class User {
 	 */
 	public boolean checkPassword(String candidate) {
 		return BCrypt.checkpw(candidate, password);
-	}
-
-	/**
-	 * Stores a new user in the database.
-	 * 
-	 * @param name
-	 *            the login name.
-	 * @param password
-	 *            the login password.
-	 * @param email
-	 *            the email address.
-	 * @param isStudent
-	 *            whether the user is a student.
-	 * @param isLecturer
-	 *            whether the user is a lecturer.
-	 * @return the id of the saved user, the name if successful, null if not.
-	 */
-	public static String saveUser(String name, String password, String email,
-			boolean isStudent, boolean isLecturer) {
-		User newUser = new User(name, password, email, isStudent, isLecturer);
-		return MongoDB.getDatastore().save(newUser).getId().toString();
-	}
-
-	/**
-	 * Deletes a user with the given login name.
-	 * 
-	 * @param name
-	 *            the login name.
-	 */
-	public static void deleteUser(String name) {
-		MongoDB.getDatastore().delete(User.class, name);
-	}
-
-	/**
-	 * Retrieves a user from the database through its login name.
-	 * 
-	 * @param id
-	 *            the login name.
-	 * @return the retrieved user.
-	 */
-	public static User getUser(String id) {
-		return MongoDB.getDatastore().get(User.class, id);
 	}
 
 }

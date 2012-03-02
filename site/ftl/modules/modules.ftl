@@ -8,7 +8,7 @@
                 <h1>Course Modules</h1>
                 <div class="navigation">
                         <ol>
-                                <li><a href="add">Add new course module</a></li>
+                                <li><a href="modules/new">Add new course module</a></li>
                         </ol>
                 </div>
                 <div class="content">

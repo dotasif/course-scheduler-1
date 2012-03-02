@@ -1,11 +1,8 @@
 package berlin.reiche.scheduler.model;
 
-import java.util.List;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
-
-import berlin.reiche.scheduler.MongoDB;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
@@ -59,32 +56,6 @@ public class CourseModule {
 		this.name = name;
 		this.credits = credits;
 		this.assessmentType = assessmentType;
-	}
-
-	/**
-	 * Stores a new course module in the database.
-	 * 
-	 * @param name
-	 *            the name.
-	 * @param credits
-	 *            the credit points.
-	 * @param assessmentType
-	 *            the assessment type.
-	 * @return the generated id.
-	 */
-	public static ObjectId saveCourseModule(String name, int credits,
-			String assessmentType) {
-		CourseModule module = new CourseModule(name, credits, assessmentType);
-		return (ObjectId) MongoDB.getDatastore().save(module).getId();
-	}
-
-	/**
-	 * Retrieves all course modules from the database.
-	 * 
-	 * @return the list of retrieved course modules.
-	 */
-	public static List<CourseModule> getAllCourseModules() {
-		return MongoDB.getDatastore().find(CourseModule.class).asList();
 	}
 
 	public ObjectId getId() {

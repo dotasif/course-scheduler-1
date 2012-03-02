@@ -155,7 +155,7 @@ public class AppServlet extends HttpServlet {
 
 		Map<String, Object> data = getDefaultData();
 		List<Map<String, String>> courseModuleDataList = new ArrayList<>();
-		for (CourseModule module : CourseModule.getAllCourseModules()) {
+		for (CourseModule module : MongoDB.getAll(CourseModule.class)) {
 			Map<String, String> courseModuleData = new TreeMap<>();
 			courseModuleData.put("id", String.valueOf(module.getId()));
 			courseModuleData.put("name", module.getName());
@@ -200,7 +200,7 @@ public class AppServlet extends HttpServlet {
 		String login = request.getParameter("name");
 		String password = request.getParameter("password");
 
-		User user = User.getUser(login);
+		User user = MongoDB.get(User.class, login);
 		if (user != null && user.checkPassword(password)) {
 			HttpSession session = request.getSession();
 			session.setAttribute(LOGIN_ATTRIBUTE, user);
