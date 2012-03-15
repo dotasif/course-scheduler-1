@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,11 +43,11 @@ public class AppServlet extends HttpServlet {
 	private static final String MAIN_SITE = "ftl/main.ftl";
 	private static final String ERROR_SITE = "ftl/404.ftl";
 	private static final String MODULES_SITE = "ftl/modules/modules.ftl";
+	private static final String MODULE_NEW_SITE = "ftl/modules/new.ftl";
 
 	private static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
 
 	private static final String DEFAULT_VALUES_PATH = "site/resources/defaultValues.properties";
-
 
 	/**
 	 * Singleton instance.
@@ -122,7 +123,7 @@ public class AppServlet extends HttpServlet {
 			response.sendRedirect("/login");
 			return;
 		}
-		
+
 		switch (path) {
 		case "/":
 			processTemplate(MAIN_SITE, data, writer);
@@ -136,6 +137,10 @@ public class AppServlet extends HttpServlet {
 			break;
 		case "/modules":
 			showCourseModules(response);
+			break;
+		case "/modules/new":
+			data.put("courses", null);
+			processTemplate(MODULE_NEW_SITE, data, writer);
 			break;
 		default:
 			processTemplate(ERROR_SITE, data, writer);
@@ -151,7 +156,8 @@ public class AppServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an input or output exception occurs.
 	 */
-	private void showCourseModules(HttpServletResponse response) throws IOException {
+	private void showCourseModules(HttpServletResponse response)
+			throws IOException {
 
 		Map<String, Object> data = getDefaultData();
 		List<Map<String, String>> courseModuleDataList = new ArrayList<>();
@@ -161,7 +167,7 @@ public class AppServlet extends HttpServlet {
 			courseModuleData.put("name", module.getName());
 			courseModuleData.put("assessment", module.getAssessmentType());
 			courseModuleData
-			.put("credits", String.valueOf(module.getCredits()));
+					.put("credits", String.valueOf(module.getCredits()));
 			courseModuleDataList.add(courseModuleData);
 		}
 		data.put("modules", courseModuleDataList);
@@ -179,7 +185,47 @@ public class AppServlet extends HttpServlet {
 		switch (path) {
 		case "/login":
 			handleLoginRequest(request, response);
+			break;
+		case "/modules/new":
+			handleModuleCreation(request, response);
+			break;
 		default:
+		}
+	}
+
+	/**
+	 * Handles a course module creation request.
+	 * 
+	 * @param request
+	 *            provides request information for HTTP servlets.
+	 * @param response
+	 *            provides HTTP-specific functionality in sending a response.
+	 * @throws IOException
+	 */
+	private void handleModuleCreation(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+
+		Map<String, Object> data = getDefaultData();
+		List<Map<String, String>> courseDataList = new ArrayList<>();
+		
+		String submitReason = request.getParameter("submit-reason");
+		if (submitReason.equals("New Course")) {
+			
+			String[] courseNames = request.getParameterValues("course-name");
+			String[] courseDurations = request.getParameterValues("course-duration");
+			String[] courseCounts = request.getParameterValues("course-count");
+			String[] courseTypes = request.getParameterValues("course-type");
+			
+			for (int i = 0; i < courseNames.length; ++i) {
+				Map<String, String> courseData = new TreeMap<>();
+				courseData.put("name", courseNames[i]);
+				courseData.put("duration", courseDurations[i]);
+				courseData.put("count", courseCounts[i]);
+				courseData.put("type", courseTypes[i]);
+				courseDataList.add(courseData);
+			}
+			data.put("courses", courseDataList);			
+			processTemplate(MODULE_NEW_SITE, data, response.getWriter());
 		}
 	}
 
