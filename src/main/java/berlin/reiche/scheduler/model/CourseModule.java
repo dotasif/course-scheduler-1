@@ -1,6 +1,7 @@
 package berlin.reiche.scheduler.model;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 
@@ -26,11 +27,10 @@ public class CourseModule {
 	String assessmentType;
 
 	/**
-	 * List of courses assigned to the module each mapped to the number how
-	 * often the same course is offered.
+	 * List of courses assigned to the module
 	 */
 	@Embedded
-	Map<Course, Integer> courses;
+	List<Course> courses;
 
 	/**
 	 * This constructor is used by Morphia via Java reflections.
@@ -56,6 +56,7 @@ public class CourseModule {
 		this.name = name;
 		this.credits = credits;
 		this.assessmentType = assessmentType;
+		this.courses = new ArrayList<>();
 	}
 
 	public ObjectId getId() {
@@ -74,7 +75,7 @@ public class CourseModule {
 		return assessmentType;
 	}
 
-	public Map<Course, Integer> getCourses() {
+	public List<Course> getCourses() {
 		return courses;
 	}
 	

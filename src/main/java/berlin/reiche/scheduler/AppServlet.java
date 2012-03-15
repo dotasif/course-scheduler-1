@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import berlin.reiche.scheduler.model.Course;
 import berlin.reiche.scheduler.model.CourseModule;
 import berlin.reiche.scheduler.model.User;
 import freemarker.template.Configuration;
@@ -139,7 +139,6 @@ public class AppServlet extends HttpServlet {
 			showCourseModules(response);
 			break;
 		case "/modules/new":
-			data.put("courses", null);
 			processTemplate(MODULE_NEW_SITE, data, writer);
 			break;
 		default:
@@ -207,25 +206,49 @@ public class AppServlet extends HttpServlet {
 
 		Map<String, Object> data = getDefaultData();
 		List<Map<String, String>> courseDataList = new ArrayList<>();
-		
+
+		String name = request.getParameter("name");
+		int credits = Integer.valueOf(request.getParameter("credits"));
+		String assessment = request.getParameter("assessment");
+
+		String[] courseTypes = request.getParameterValues("course-type");
+		String[] courseDurations = request
+				.getParameterValues("course-duration");
+		String[] courseCounts = request.getParameterValues("course-count");
+
 		String submitReason = request.getParameter("submit-reason");
 		if (submitReason.equals("New Course")) {
-			
-			String[] courseNames = request.getParameterValues("course-name");
-			String[] courseDurations = request.getParameterValues("course-duration");
-			String[] courseCounts = request.getParameterValues("course-count");
-			String[] courseTypes = request.getParameterValues("course-type");
-			
-			for (int i = 0; i < courseNames.length; ++i) {
+
+			data.put("name", name);
+			data.put("credits", credits);
+			data.put("assessment", assessment);
+
+			for (int i = 0; i < courseTypes.length; ++i) {
 				Map<String, String> courseData = new TreeMap<>();
-				courseData.put("name", courseNames[i]);
+				courseData.put("type", courseTypes[i]);
 				courseData.put("duration", courseDurations[i]);
 				courseData.put("count", courseCounts[i]);
-				courseData.put("type", courseTypes[i]);
 				courseDataList.add(courseData);
 			}
-			data.put("courses", courseDataList);			
+			data.put("courses", courseDataList);
 			processTemplate(MODULE_NEW_SITE, data, response.getWriter());
+		} else if (submitReason.equals("Create")) {
+
+			CourseModule module = new CourseModule(name, credits, assessment);
+
+			for (int i = 0; i < courseTypes.length; ++i) {
+				Course course = new Course(courseTypes[i],
+						Integer.valueOf(courseDurations[i]),
+						Integer.valueOf(courseCounts[i]));
+				module.getCourses().add(course);
+			}
+
+			MongoDB.store(module);
+			response.sendRedirect("/modules");
+
+		} else {
+			throw new IllegalStateException(
+					"An unknown submit value was received.");
 		}
 	}
 

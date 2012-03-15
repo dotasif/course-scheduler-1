@@ -11,15 +11,15 @@
                                 <ol>
                                         <li>
                                         <label for="name">Name:</label>
-                                        <input type="text" name="name" id="name" value=""/>
+                                        <input type="text" name="name" id="name" value="<#if name??>${name}</#if>"/>
                                         </li>
                                         <li>
                                         <label for="credits">Credits:</label>
-                                        <input type="text" name="credits" id="credits" value=""/>
+                                        <input type="text" name="credits" id="credits" value="<#if credits??>${credits}</#if>"/>
                                         </li>
                                         <li>
                                         <label for="assessment">Assessment:</label>
-                                        <input type="text" name="assessment" id="assessment" value=""/>
+                                        <input type="text" name="assessment" id="assessment" value="<#if assessment??>${assessment}</#if>"/>
                                         </li>
                                         <li>Courses:
                                         <ol>
@@ -28,8 +28,8 @@
                                                         <#if courses??>
                                                         <#list courses as course>
                                                         <li>
-                                                        <label for="course-name">Name:</label>
-                                                        <input type="text" name="course-name" id="course-name" value="${course.name}"/>
+                                                        <label for="course-type">Type:</label>
+                                                        <input type="text" name="course-type" id="course-type" value="${course.type}"/>
                                                         </li>
                                                         <li>
                                                         <label for="course-duration">Duration:</label>
@@ -39,15 +39,11 @@
                                                         <label for="course-count">Count:</label>
                                                         <input type="text" name="course-count" id="course-count" value="${course.count}"/>
                                                         </li>
-                                                        <li>
-                                                        <label for="course-type">Type:</label>
-                                                        <input type="text" name="course-type" id="course-type" value="${course.type}"/>
-                                                        </li>
                                                         </#list>
                                                         </#if>
                                                         <li>
-                                                        <label for="course-name">Name:</label>
-                                                        <input type="text" name="course-name" id="course-name" value=""/>
+                                                        <label for="course-type">Type:</label>
+                                                        <input type="text" name="course-type" id="course-type" value=""/>
                                                         </li>
                                                         <li>
                                                         <label for="course-duration">Duration:</label>
@@ -56,10 +52,6 @@
                                                         <li>
                                                         <label for="course-count">Count:</label>
                                                         <input type="text" name="course-count" id="course-count" value=""/>
-                                                        </li>
-                                                        <li>
-                                                        <label for="course-type">Type:</label>
-                                                        <input type="text" name="course-type" id="course-type" value=""/>
                                                         </li>
                                                 </ol>
                                                 </li>
