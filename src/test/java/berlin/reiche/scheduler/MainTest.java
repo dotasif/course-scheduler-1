@@ -1,5 +1,7 @@
 package berlin.reiche.scheduler;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -15,9 +17,13 @@ public class MainTest {
 	 */
 	@Test
 	public void testMain() {
-		
-		assertNull(Main.server);
-		Main.main();
-		assertTrue(Main.server.isRunning());
+
+		try {
+			assertNull(Main.server);
+			Main.main();
+			assertTrue(Main.server.isRunning());
+		} catch (IOException e) {
+			fail();
+		}
 	}
 }

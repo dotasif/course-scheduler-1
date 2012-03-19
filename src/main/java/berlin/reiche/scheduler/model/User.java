@@ -51,7 +51,7 @@ public class User {
 	 * @param isLecturer
 	 *            whether the user is a lecturer.
 	 */
-	User(String name, String password, String email, boolean isStudent,
+	public User(String name, String password, String email, boolean isStudent,
 			boolean isLecturer) {
 		super();
 		this.name = name;
@@ -82,6 +82,24 @@ public class User {
 	 */
 	public boolean checkPassword(String candidate) {
 		return BCrypt.checkpw(candidate, password);
+	}
+
+	/**
+	 * Replaces the old password with a new password only if the correct old
+	 * password is provided.
+	 * 
+	 * @param oldPassword
+	 *            the current password.
+	 * @param newPassword
+	 *            the new password.
+	 */
+	public void changePassword(String oldPassword, String newPassword) {
+
+		if (checkPassword(oldPassword)) {
+			password = hashPassword(newPassword);
+		} else {
+			throw new IllegalStateException("The old password is wrong");
+		}
 	}
 
 }
