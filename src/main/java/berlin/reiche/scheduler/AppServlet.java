@@ -143,6 +143,10 @@ public class AppServlet extends HttpServlet {
 			showCourses(response, moduleId);
 		} else if (path.equals("/modules/new")) {
 			processTemplate(MODULE_NEW_SITE, data, writer);
+		} else if (path.matches("/modules/delete/\\d+")) {
+			int moduleId = Integer.valueOf(path.substring(16));
+			MongoDB.delete(CourseModule.class, moduleId);
+			response.sendRedirect("/modules");
 		} else {
 			processTemplate(ERROR_SITE, data, writer);
 		}

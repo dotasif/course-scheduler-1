@@ -8,6 +8,7 @@
                 <h1>Course Modules</h1>
                 <div class="navigation">
                         <ol>
+                                <li><a href="/">Back</a></li>
                                 <li><a href="modules/new">Add new course module</a></li>
                         </ol>
                 </div>
@@ -19,6 +20,7 @@
                                                 <td>Name</td>
                                                 <td>Credits</td>
                                                 <td>Assessment</td>
+                                                <td>Delete?</td>
                                         </tr>
                                 </thead>
                                 <tbody>
@@ -28,6 +30,7 @@
                                                 <td>${module.name}</td>
                                                 <td>${module.credits}</td>
                                                 <td>${module.assessment}</td>
+                                                <td><a href="modules/delete/${module.id}">X</a></td>
                                         </a>
                                 </tr>
                                 </#list>
