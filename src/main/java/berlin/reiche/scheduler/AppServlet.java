@@ -44,10 +44,12 @@ public class AppServlet extends HttpServlet {
 	private static final String ERROR_SITE = "ftl/404.ftl";
 	private static final String MODULES_SITE = "ftl/modules/modules.ftl";
 	private static final String MODULE_NEW_SITE = "ftl/modules/new.ftl";
+	private static final String MODULE_COURSES_SITE = "ftl/modules/courses.ftl";
 
 	private static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
 
 	private static final String DEFAULT_VALUES_PATH = "site/resources/defaultValues.properties";
+
 
 	/**
 	 * Singleton instance.
@@ -124,31 +126,60 @@ public class AppServlet extends HttpServlet {
 			return;
 		}
 
-		switch (path) {
-		case "/":
+		if (path.equals("/")) {
 			processTemplate(MAIN_SITE, data, writer);
-			break;
-		case "/login":
+		} else if (path.equals("/login")) {
+
 			if (user == null) {
 				processTemplate(LOGIN_SITE, data, writer);
 			} else {
 				response.sendRedirect("/");
 			}
-			break;
-		case "/modules":
+
+		} else if (path.equals("/modules")) {
 			showCourseModules(response);
-			break;
-		case "/modules/new":
+		} else if (path.matches("/modules/\\d+")) {
+			int moduleId = Integer.valueOf(path.substring(9));
+			showCourses(response, moduleId);
+		} else if (path.equals("/modules/new")) {
 			processTemplate(MODULE_NEW_SITE, data, writer);
-			break;
-		default:
+		} else {
 			processTemplate(ERROR_SITE, data, writer);
 		}
 	}
 
 	/**
-	 * Retrieves all course modules and displays them by processing the
-	 * appropriate template.
+	 * Retrieves the courses of the given course module and displays them.
+	 * 
+	 * @param response
+	 *            provides HTTP-specific functionality in sending a response.
+	 * 
+	 * @param moduleId
+	 *            the id identifying the course module.
+	 * @throws IOException
+	 *             if an input or output exception occurs.
+	 */
+	private void showCourses(HttpServletResponse response, int moduleId)
+			throws IOException {
+
+		Map<String, Object> data = getDefaultData();
+		CourseModule module = MongoDB.get(CourseModule.class, moduleId);
+
+		data.put("name", module.getName());
+		List<Map<String, String>> courseDataList = new ArrayList<>();
+		for (Course course : module.getCourses()) {
+			Map<String, String> courseData = new TreeMap<>();
+			courseData.put("type", course.getType());
+			courseData.put("duration", String.valueOf(course.getDuration()));
+			courseData.put("count", String.valueOf(course.getCount()));
+			courseDataList.add(courseData);
+		}
+		data.put("courses", courseDataList);
+		processTemplate(MODULE_COURSES_SITE, data, response.getWriter());
+	}
+
+	/**
+	 * Retrieves all course modules and displays them.
 	 * 
 	 * @param response
 	 *            provides HTTP-specific functionality in sending a response.

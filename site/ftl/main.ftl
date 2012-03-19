@@ -7,9 +7,9 @@
         <body>
                 <ol>
                         <li><a href="modules">Course Modules</a></li>
-                        <ol>
-                                <li><a href="courses">Courses</a></li>
-                        </ol>
+                        <li>Users</li>
+                        <li>Rooms</li>
+                        <li>Scheduler</li>
                 </ol>
         </body>
 </html>

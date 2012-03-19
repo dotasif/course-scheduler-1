@@ -3,7 +3,6 @@ package berlin.reiche.scheduler.model;
 import java.util.Map;
 
 import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Reference;
 
 /**
@@ -15,8 +14,6 @@ import com.google.code.morphia.annotations.Reference;
 @Entity("course")
 public class Course {
 
-	@Id
-	long id;
 	String type;
 	int duration;
 	int count;
@@ -48,6 +45,18 @@ public class Course {
 		this.type = type;
 		this.duration = duration;
 		this.count = count;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public int getCount() {
+		return count;
 	}
 
 }

@@ -5,29 +5,27 @@
                 <title>${title}</title>
         </head>
         <body>
-                <h1>Course Modules</h1>
+                <h1>${name}</h1>
                 <div class="navigation">
                         <ol>
-                                <li><a href="modules/new">Add new course module</a></li>
+                                <li><a href="/modules">Back</a></li>
                         </ol>
                 </div>
                 <div class="content">
                         <table>
                                 <thead>
                                         <tr>
-                                                <td>ID</td>
-                                                <td>Name</td>
-                                                <td>Credits</td>
-                                                <td>Assessment</td>
+                                                <td>Type</td>
+                                                <td>Duration</td>
+                                                <td>Count</td>
                                         </tr>
                                 </thead>
                                 <tbody>
-                                        <#list modules as module>
+                                        <#list courses as course>
                                         <tr>   
-                                                <td><a href="modules/${module.id}">${module.id}</a></td>
-                                                <td>${module.name}</td>
-                                                <td>${module.credits}</td>
-                                                <td>${module.assessment}</td>
+                                                <td>${course.type}</td>
+                                                <td>${course.duration}</td>
+                                                <td>${course.count}</td>
                                         </a>
                                 </tr>
                                 </#list>
