@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.bson.types.ObjectId;
+
 import berlin.reiche.scheduler.model.Course;
 import berlin.reiche.scheduler.model.CourseModule;
 import berlin.reiche.scheduler.model.User;
@@ -50,6 +52,10 @@ public class AppServlet extends HttpServlet {
 
 	private static final String DEFAULT_VALUES_PATH = "site/resources/defaultValues.properties";
 
+	/**
+	 * Regular expression for matching a course module id.
+	 */
+	private static final String ID_REGEX = "[a-f0-9]*";
 
 	/**
 	 * Singleton instance.
@@ -138,13 +144,15 @@ public class AppServlet extends HttpServlet {
 
 		} else if (path.equals("/modules")) {
 			showCourseModules(response);
-		} else if (path.matches("/modules/\\d+")) {
-			int moduleId = Integer.valueOf(path.substring(9));
+		} else if (path.matches("/modules/" + ID_REGEX)) {
+			ObjectId moduleId = new ObjectId(path.substring("/modules/"
+					.length()));
 			showCourses(response, moduleId);
 		} else if (path.equals("/modules/new")) {
 			processTemplate(MODULE_NEW_SITE, data, writer);
-		} else if (path.matches("/modules/delete/\\d+")) {
-			int moduleId = Integer.valueOf(path.substring(16));
+		} else if (path.matches("/modules/delete/" + ID_REGEX)) {
+			ObjectId moduleId = new ObjectId(path.substring("/modules/delete/"
+					.length()));
 			MongoDB.delete(CourseModule.class, moduleId);
 			response.sendRedirect("/modules");
 		} else {
@@ -163,7 +171,7 @@ public class AppServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an input or output exception occurs.
 	 */
-	private void showCourses(HttpServletResponse response, int moduleId)
+	private void showCourses(HttpServletResponse response, ObjectId moduleId)
 			throws IOException {
 
 		Map<String, Object> data = getDefaultData();

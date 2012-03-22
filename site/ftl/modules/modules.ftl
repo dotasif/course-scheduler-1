@@ -16,7 +16,6 @@
                         <table>
                                 <thead>
                                         <tr>
-                                                <td>ID</td>
                                                 <td>Name</td>
                                                 <td>Credits</td>
                                                 <td>Assessment</td>
@@ -26,8 +25,7 @@
                                 <tbody>
                                         <#list modules as module>
                                         <tr>   
-                                                <td><a href="modules/${module.id}">${module.id}</a></td>
-                                                <td>${module.name}</td>
+                                                <td><a href="modules/${module.id}">${module.name}</a></td>
                                                 <td>${module.credits}</td>
                                                 <td>${module.assessment}</td>
                                                 <td><a href="modules/delete/${module.id}">X</a></td>

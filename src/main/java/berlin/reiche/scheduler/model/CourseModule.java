@@ -3,6 +3,8 @@ package berlin.reiche.scheduler.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -19,7 +21,7 @@ import com.google.code.morphia.annotations.Id;
 public class CourseModule {
 
 	@Id
-	int id;
+	ObjectId id;
 	String name;
 	int credits;
 	String assessmentType;
@@ -57,12 +59,8 @@ public class CourseModule {
 		this.courses = new ArrayList<>();
 	}
 
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
+	public String getId() {
+		return id.toString();
 	}
 
 	public String getName() {

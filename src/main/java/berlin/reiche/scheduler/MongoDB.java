@@ -3,8 +3,6 @@ package berlin.reiche.scheduler;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import berlin.reiche.scheduler.model.CourseModule;
-
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.mongodb.Mongo;
@@ -96,19 +94,6 @@ public class MongoDB {
 	 * @return the {@link String} representation of the entities key.
 	 */
 	public static <T> Object store(T entity) {
-
-		if (entity instanceof CourseModule) {
-
-			int largestId = 0;
-			for (CourseModule module : getAll(CourseModule.class)) {
-				if (module.getId() > largestId) {
-					largestId = module.getId();
-				}
-			}
-
-			((CourseModule) entity).setId(largestId + 1);
-		}
-
 		return datastore.save(entity).toString();
 	}
 
