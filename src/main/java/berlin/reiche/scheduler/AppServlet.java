@@ -44,13 +44,17 @@ public class AppServlet extends HttpServlet {
 	private static final String LOGIN_SITE = "ftl/login.ftl";
 	private static final String MAIN_SITE = "ftl/main.ftl";
 	private static final String ERROR_SITE = "ftl/404.ftl";
-	private static final String MODULES_SITE = "ftl/modules/modules.ftl";
-	private static final String MODULE_NEW_SITE = "ftl/modules/new.ftl";
-	private static final String MODULE_COURSES_SITE = "ftl/modules/courses.ftl";
+	private static final String MODULES_SITE = "ftl/modules/list.ftl";
+	private static final String MODULE_FORM_SITE = "ftl/modules/form.ftl";
+	private static final String MODULE_COURSES_SITE = "ftl/modules/course-list.ftl";
 
+	/**
+	 * Further constants which appear more than one in the source code.
+	 */
 	private static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
+	private static final String REQUEST_HEADLINE_VAR = "requestHeadline";
 
-	private static final String DEFAULT_VALUES_PATH = "site/resources/defaultValues.properties";
+	private static final String DEFAULT_VALUES_PATH = "site/resources/default-values.properties";
 
 	/**
 	 * Regular expression for matching a course module id.
@@ -122,7 +126,7 @@ public class AppServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String path = request.getServletPath() + request.getPathInfo();
-		Map<String, ?> data = AppServlet.getDefaultData();
+		Map<String, Object> data = AppServlet.getDefaultData();
 		Writer writer = response.getWriter();
 
 		HttpSession session = request.getSession();
@@ -149,12 +153,19 @@ public class AppServlet extends HttpServlet {
 					.length()));
 			showCourses(response, moduleId);
 		} else if (path.equals("/modules/new")) {
-			processTemplate(MODULE_NEW_SITE, data, writer);
+			data.put(REQUEST_HEADLINE_VAR, "New Course Module");
+			data.put("blankCourse", true);
+			processTemplate(MODULE_FORM_SITE, data, writer);
 		} else if (path.matches("/modules/delete/" + ID_REGEX)) {
-			ObjectId moduleId = new ObjectId(path.substring("/modules/delete/"
+			ObjectId id = new ObjectId(path.substring("/modules/delete/"
 					.length()));
-			MongoDB.delete(CourseModule.class, moduleId);
+			MongoDB.delete(CourseModule.class, id);
 			response.sendRedirect("/modules");
+		} else if (path.matches("/modules/edit/" + ID_REGEX)) {
+			ObjectId id = new ObjectId(
+					path.substring("/modules/edit/".length()));
+			CourseModule module = MongoDB.get(CourseModule.class, id);
+			handleModuleModification(request, response, module);
 		} else {
 			processTemplate(ERROR_SITE, data, writer);
 		}
@@ -224,14 +235,16 @@ public class AppServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String path = request.getServletPath() + request.getPathInfo();
-		switch (path) {
-		case "/login":
+
+		if ("/login".equals(path)) {
 			handleLoginRequest(request, response);
-			break;
-		case "/modules/new":
-			handleModuleCreation(request, response);
-			break;
-		default:
+		} else if ("/modules/new".equals(path)) {
+			handleModuleForm(request, response, null);
+		} else if (path.matches("/modules/edit/" + ID_REGEX)) {
+			ObjectId id = new ObjectId(
+					path.substring("/modules/edit/".length()));
+			CourseModule module = MongoDB.get(CourseModule.class, id);
+			handleModuleForm(request, response, module);
 		}
 	}
 
@@ -242,10 +255,16 @@ public class AppServlet extends HttpServlet {
 	 *            provides request information for HTTP servlets.
 	 * @param response
 	 *            provides HTTP-specific functionality in sending a response.
+	 * @param module
+	 *            The course module object if it is present, if it is present
+	 *            this is an entity modification request, else it is an entity
+	 *            creation request.
 	 * @throws IOException
+	 *             if an input or output exception occurs.
 	 */
-	private void handleModuleCreation(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+	private void handleModuleForm(HttpServletRequest request,
+			HttpServletResponse response, CourseModule module)
+			throws IOException {
 
 		Map<String, Object> data = getDefaultData();
 		List<Map<String, String>> courseDataList = new ArrayList<>();
@@ -273,11 +292,25 @@ public class AppServlet extends HttpServlet {
 				courseData.put("count", courseCounts[i]);
 				courseDataList.add(courseData);
 			}
+
+			String requestHeadline = (module == null) ? "New Course Module"
+					: "Edit Course Module";
+
 			data.put("courses", courseDataList);
-			processTemplate(MODULE_NEW_SITE, data, response.getWriter());
+			data.put(REQUEST_HEADLINE_VAR, requestHeadline);
+			data.put("blankCourse", true);
+
+			processTemplate(MODULE_FORM_SITE, data, response.getWriter());
 		} else if (submitReason.equals("Create")) {
 
-			CourseModule module = new CourseModule(name, credits, assessment);
+			if (module == null) {
+				module = new CourseModule(name, credits, assessment);
+			} else {
+				module.setName(name);
+				module.setCredits(credits);
+				module.setAssessmentType(assessment);
+				module.getCourses().clear();
+			}
 
 			for (int i = 0; i < courseTypes.length; ++i) {
 				Course course = new Course(courseTypes[i],
@@ -293,6 +326,42 @@ public class AppServlet extends HttpServlet {
 			throw new IllegalStateException(
 					"An unknown submit value was received.");
 		}
+	}
+
+	/**
+	 * Handles a course module modification request.
+	 * 
+	 * @param request
+	 *            provides request information for HTTP servlets.
+	 * @param response
+	 *            provides HTTP-specific functionality in sending a response.
+	 * @param module
+	 *            the course module which is requested for modification.
+	 * @throws IOException
+	 *             if an input or output exception occurs.
+	 */
+	private void handleModuleModification(HttpServletRequest request,
+			HttpServletResponse response, CourseModule module)
+			throws IOException {
+
+		Map<String, Object> data = getDefaultData();
+		List<Map<String, Object>> courseDataList = new ArrayList<>();
+
+		data.put("name", module.getName());
+		data.put("credits", module.getCredits());
+		data.put("assessment", module.getAssessmentType());
+
+		for (Course course : module.getCourses()) {
+			Map<String, Object> courseData = new TreeMap<>();
+			courseData.put("type", course.getType());
+			courseData.put("duration", course.getDuration());
+			courseData.put("count", course.getCount());
+			courseDataList.add(courseData);
+		}
+
+		data.put("courses", courseDataList);
+		data.put(REQUEST_HEADLINE_VAR, "Edit Course Module");
+		processTemplate(MODULE_FORM_SITE, data, response.getWriter());
 	}
 
 	/**

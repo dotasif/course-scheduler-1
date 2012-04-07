@@ -59,6 +59,18 @@ public class CourseModule {
 		this.courses = new ArrayList<>();
 	}
 
+	public String getAssessmentType() {
+		return assessmentType;
+	}
+
+	public List<Course> getCourses() {
+		return courses;
+	}
+
+	public int getCredits() {
+		return credits;
+	}
+
 	public String getId() {
 		return id.toString();
 	}
@@ -67,16 +79,20 @@ public class CourseModule {
 		return name;
 	}
 
-	public int getCredits() {
-		return credits;
+	public void setAssessmentType(String assessmentType) {
+		this.assessmentType = assessmentType;
 	}
 
-	public String getAssessmentType() {
-		return assessmentType;
+	public void setCredits(int credits) {
+		this.credits = credits;
 	}
 
-	public List<Course> getCourses() {
-		return courses;
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

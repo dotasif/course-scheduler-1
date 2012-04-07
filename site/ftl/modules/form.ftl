@@ -5,7 +5,7 @@
                 <title>${title}</title>
         </head>
         <body>
-                <h1>New Course Module</h1>
+                <h1>${requestHeadline}</h1>
                 <div class="content">
                         <form id="new-module-form" action="" method="post">
                                 <ol>
@@ -41,6 +41,7 @@
                                                         </li>
                                                         </#list>
                                                         </#if>
+                                                        <#if  blankCourse??>
                                                         <li>
                                                         <label for="course-type">Type:</label>
                                                         <input type="text" name="course-type" id="course-type" value=""/>
@@ -53,6 +54,7 @@
                                                         <label for="course-count">Count:</label>
                                                         <input type="text" name="course-count" id="course-count" value=""/>
                                                         </li>
+                                                        </#if>
                                                 </ol>
                                                 </li>
                                                 <li>

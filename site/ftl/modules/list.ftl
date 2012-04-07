@@ -20,6 +20,7 @@
                                                 <td>Credits</td>
                                                 <td>Assessment</td>
                                                 <td>Delete?</td>
+                                                <td>Edit?</td>
                                         </tr>
                                 </thead>
                                 <tbody>
@@ -29,6 +30,7 @@
                                                 <td>${module.credits}</td>
                                                 <td>${module.assessment}</td>
                                                 <td><a href="modules/delete/${module.id}">X</a></td>
+                                                <td><a href="modules/edit/${module.id}">O</a></td>
                                         </a>
                                 </tr>
                                 </#list>
