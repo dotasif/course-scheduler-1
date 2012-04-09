@@ -44,8 +44,13 @@ public class Main {
 					ServletContextHandler.SESSIONS);
 			context.setContextPath("/");
 			server.setHandler(context);
+			
 			context.addServlet(new ServletHolder(AppServlet.getInstance()),
 					"/*");
+			context.addServlet(new ServletHolder(ModuleServlet.getInstance()),
+					"/modules/*");
+			context.addServlet(new ServletHolder(RoomServlet.getInstance()),
+					"/rooms/*");
 
 			server.start();
 

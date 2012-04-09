@@ -21,8 +21,8 @@ public class AppServletTest {
 	public void setUp() {
 		servlet = AppServlet.getInstance();
 		assertNotNull(servlet);
-		assertNotNull(servlet.configuration);
-		assertTrue(servlet.configuration.getObjectWrapper() instanceof DefaultObjectWrapper);
+		assertNotNull(AppServlet.configuration);
+		assertTrue(AppServlet.configuration.getObjectWrapper() instanceof DefaultObjectWrapper);
 	}
 
 }
