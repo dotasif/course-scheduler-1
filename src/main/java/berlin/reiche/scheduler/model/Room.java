@@ -1,5 +1,7 @@
 package berlin.reiche.scheduler.model;
 
+import org.bson.types.ObjectId;
+
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 
@@ -13,6 +15,7 @@ import com.google.code.morphia.annotations.Id;
 public class Room {
 
 	@Id
+	ObjectId id;
 	String number;
 	String name;
 
@@ -25,7 +28,8 @@ public class Room {
 	}
 
 	/**
-	 * Creates a new room by assigning the parameters directly
+	 * Creates a new room by assigning the parameters directly, except the id
+	 * which is generated before saving the object to the database.
 	 * 
 	 * @param number
 	 *            the room number which uniquely identifies the room.
@@ -39,13 +43,26 @@ public class Room {
 		this.name = name;
 	}
 
+	public ObjectId getId() {
+		return id;
+	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public String getNumber() {
 		return number;
 	}
 
-	public String getName() {
-		return name;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
 	}
 	
+	
+
 }

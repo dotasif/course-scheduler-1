@@ -31,21 +31,9 @@ public class ModuleServlet extends HttpServlet {
 	/**
 	 * File path to the web resources.
 	 */
-	private static final String ERROR_SITE = "ftl/404.ftl";
 	private static final String MODULES_SITE = "ftl/modules/list.ftl";
 	private static final String MODULE_FORM_SITE = "ftl/modules/form.ftl";
 	private static final String MODULE_COURSES_SITE = "ftl/modules/course-list.ftl";
-
-	/**
-	 * Further constants which appear more than one in the source code.
-	 */
-	private static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
-	private static final String REQUEST_HEADLINE_VAR = "requestHeadline";
-
-	/**
-	 * Regular expression for matching a course module id.
-	 */
-	private static final String ID_REGEX = "[a-f0-9]*";
 
 	/**
 	 * Singleton instance.
@@ -73,8 +61,8 @@ public class ModuleServlet extends HttpServlet {
 		Writer writer = response.getWriter();
 
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-		if (user == null && !path.equals("/login")) {
+		User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
+		if (user == null && path != null && !path.equals("/login")) {
 			response.sendRedirect("/login");
 			return;
 		}
@@ -83,23 +71,23 @@ public class ModuleServlet extends HttpServlet {
 			showCourseModules(response);
 		} else if (path.equals("/")) {
 			response.sendRedirect("/modules");
-		} else if (path.matches("/" + ID_REGEX)) {
+		} else if (path.matches("/" + AppServlet.ID_REGEX)) {
 			ObjectId moduleId = new ObjectId(path.substring("/".length()));
 			showCourses(response, moduleId);
 		} else if (path.equals("/new")) {
-			data.put(REQUEST_HEADLINE_VAR, "New Course Module");
+			data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Course Module");
 			data.put("blankCourse", true);
 			AppServlet.processTemplate(MODULE_FORM_SITE, data, writer);
-		} else if (path.matches("/delete/" + ID_REGEX)) {
+		} else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
 			ObjectId id = new ObjectId(path.substring("/delete/".length()));
 			MongoDB.delete(CourseModule.class, id);
 			response.sendRedirect("/modules");
-		} else if (path.matches("/edit/" + ID_REGEX)) {
+		} else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
 			ObjectId id = new ObjectId(path.substring("/edit/".length()));
 			CourseModule module = MongoDB.get(CourseModule.class, id);
 			handleModuleModification(request, response, module);
 		} else {
-			AppServlet.processTemplate(ERROR_SITE, data, writer);
+			AppServlet.processTemplate(AppServlet.ERROR_SITE, data, writer);
 		}
 	}
 
@@ -114,7 +102,7 @@ public class ModuleServlet extends HttpServlet {
 
 		if ("/modules/new".equals(path)) {
 			handleModuleForm(request, response, null);
-		} else if (path.matches("/modules/edit/" + ID_REGEX)) {
+		} else if (path.matches("/modules/edit/" + AppServlet.ID_REGEX)) {
 			ObjectId id = new ObjectId(
 					path.substring("/modules/edit/".length()));
 			CourseModule module = MongoDB.get(CourseModule.class, id);
@@ -180,7 +168,7 @@ public class ModuleServlet extends HttpServlet {
 	}
 
 	/**
-	 * Handles a course module creation request.
+	 * Handles a course module creation and modification request.
 	 * 
 	 * @param request
 	 *            provides request information for HTTP servlets.
@@ -228,7 +216,7 @@ public class ModuleServlet extends HttpServlet {
 					: "Edit Course Module";
 
 			data.put("courses", courseDataList);
-			data.put(REQUEST_HEADLINE_VAR, requestHeadline);
+			data.put(AppServlet.REQUEST_HEADLINE_VAR, requestHeadline);
 			data.put("blankCourse", true);
 
 			AppServlet.processTemplate(MODULE_FORM_SITE, data,
@@ -292,7 +280,7 @@ public class ModuleServlet extends HttpServlet {
 		}
 
 		data.put("courses", courseDataList);
-		data.put(REQUEST_HEADLINE_VAR, "Edit Course Module");
+		data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Course Module");
 		AppServlet
 				.processTemplate(MODULE_FORM_SITE, data, response.getWriter());
 	}

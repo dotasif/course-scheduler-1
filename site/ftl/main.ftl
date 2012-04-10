@@ -7,8 +7,8 @@
         <body>
                 <ol>
                         <li><a href="modules">Course Modules</a></li>
+                        <li><a href="rooms">Rooms</a></li>
                         <li>Users</li>
-                        <li>Rooms</li>
                         <li>Scheduler</li>
                 </ol>
         </body>

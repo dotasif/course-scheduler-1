@@ -36,14 +36,22 @@ public class AppServlet extends HttpServlet {
 	 * Paths to the web resources.
 	 */
 	static final String WEB_PATH = "site/";
+	static final String ERROR_SITE = "ftl/404.ftl";
 
 	private static final String LOGIN_SITE = "ftl/login.ftl";
 	private static final String MAIN_SITE = "ftl/main.ftl";
 	private static final String DEFAULT_VALUES_PATH = "site/resources/default-values.properties";
+	
 	/**
 	 * Further constants which appear more than one in the source code.
 	 */
 	static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
+	static final String REQUEST_HEADLINE_VAR = "requestHeadline";
+	
+	/**
+	 * Regular expression for matching a course module id.
+	 */
+	static final String ID_REGEX = "[a-f0-9]*";
 
 	/**
 	 * Configuration used for the Freemarker template processing.
@@ -90,21 +98,22 @@ public class AppServlet extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-		if (user == null && !path.equals("/login")) {
+		if (user == null && path != null && !path.equals("/login")) {
 			response.sendRedirect("/login");
 			return;
 		}
 
 		if (path.equals("/")) {
-			AppServlet.processTemplate(MAIN_SITE, data, writer);
+			processTemplate(MAIN_SITE, data, writer);
 		} else if (path.equals("/login")) {
 
 			if (user == null) {
-				AppServlet.processTemplate(LOGIN_SITE, data, writer);
+				processTemplate(LOGIN_SITE, data, writer);
 			} else {
 				response.sendRedirect("/");
 			}
-
+		} else {
+			processTemplate(ERROR_SITE, data, writer);
 		}
 
 	}
