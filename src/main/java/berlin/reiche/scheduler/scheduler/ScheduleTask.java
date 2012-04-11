@@ -4,9 +4,9 @@ import java.util.concurrent.FutureTask;
 
 public class ScheduleTask extends FutureTask<CourseSchedule> {
 
+	
 	public ScheduleTask(Runnable runnable, CourseSchedule result) {
 		super(runnable, result);
-		// TODO Auto-generated constructor stub
 	}
 
 }
