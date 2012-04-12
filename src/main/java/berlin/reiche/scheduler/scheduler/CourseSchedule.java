@@ -1,8 +1,8 @@
 package berlin.reiche.scheduler.scheduler;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import berlin.reiche.scheduler.model.Course;
 import berlin.reiche.scheduler.model.Room;
@@ -26,12 +26,12 @@ public class CourseSchedule {
 	 * each day is a list of time slots which are empty (null) or filled with a
 	 * {@link Course}.
 	 */
-	Map<Room, List<List<Course>>> schedule;
+	Map<Room, List<List<Course>>> schedules;
 
 	public CourseSchedule(Timeframe timeframe) {
 		super();
 		this.timeframe = timeframe;
-		this.schedule = new TreeMap<>();
+		this.schedules = new HashMap<>();
 	}
 
 }

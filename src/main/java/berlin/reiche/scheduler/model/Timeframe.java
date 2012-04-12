@@ -14,15 +14,20 @@ public class Timeframe {
 	public final int days;
 
 	/**
-	 * The number of hours available on a day for course scheduling.
+	 * The number of time slots available on a day for course scheduling.
 	 */
-	public final int hours;
+	public final int timeSlots;
 
-	
-	public Timeframe(int days, int hours) {
+	public Timeframe(int days, int timeSlots) {
 		super();
+
+		if (days <= 0 || timeSlots <= 0) {
+			throw new IllegalStateException("The number of days"
+					+ " or time slots have a non-positive value.");
+		}
+
 		this.days = days;
-		this.hours = hours;
+		this.timeSlots = timeSlots;
 	}
 
 }
