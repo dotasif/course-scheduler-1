@@ -16,8 +16,9 @@ public class GreedyAlgorithm implements Algorithm {
 
 	@Override
 	public CourseSchedule schedule(Timeframe timeframe, List<CourseModule> modules, List<Room> rooms) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		CourseSchedule schedule = new CourseSchedule(timeframe);
+		return schedule;
 	}
 
 }

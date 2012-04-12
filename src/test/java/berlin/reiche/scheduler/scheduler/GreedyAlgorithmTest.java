@@ -1,7 +1,10 @@
 package berlin.reiche.scheduler.scheduler;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +41,25 @@ public class GreedyAlgorithmTest {
 	public void testSchedule() {
 
 		GreedyAlgorithm algorithm = new GreedyAlgorithm();
-		algorithm.schedule(timeframe, modules, rooms);
+		List<Course> coursesNotScheduled = new ArrayList<>();
+		for (CourseModule module : modules) {
+			coursesNotScheduled.addAll(module.getCourses());
+		}
+
+		assertEquals(2, coursesNotScheduled.size());
+		CourseSchedule schedule = algorithm.schedule(timeframe, modules, rooms);
+		assertEquals(timeframe, schedule.timeframe);
+
+		for (Entry<Room, List<List<Course>>> entry : schedule.schedule
+				.entrySet()) {
+
+			for (List<Course> courses : entry.getValue()) {
+				coursesNotScheduled.removeAll(courses);
+			}
+		}
+		
+		assertEquals(0, coursesNotScheduled);
+
 	}
 
 }
