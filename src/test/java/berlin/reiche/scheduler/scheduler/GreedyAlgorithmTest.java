@@ -53,15 +53,14 @@ public class GreedyAlgorithmTest {
 
 		for (Room room : rooms) {
 			assertNotNull(schedule.schedules.get(room));
-			assertEquals(timeframe.days, schedule.schedules.get(room).size());
+			assertEquals(timeframe.days, schedule.schedules.get(room)
+					.getDayCount());
 		}
 
-		for (Entry<Room, List<List<Course>>> entry : schedule.schedules
-				.entrySet()) {
+		for (Entry<Room, RoomSchedule> entry : schedule.schedules.entrySet()) {
 
-			for (List<Course> courses : entry.getValue()) {
-				coursesNotScheduled.removeAll(courses);
-			}
+			List<Course> courses = entry.getValue().getCourses();
+			coursesNotScheduled.removeAll(courses);
 		}
 
 		assertEquals(0, coursesNotScheduled.size());
