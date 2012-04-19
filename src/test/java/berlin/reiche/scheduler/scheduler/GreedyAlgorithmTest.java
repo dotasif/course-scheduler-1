@@ -40,7 +40,9 @@ public class GreedyAlgorithmTest {
     @Test
     public void testSchedule() {
 
-        GreedyAlgorithm algorithm = new GreedyAlgorithm();
+        GreedyAlgorithm algorithm = new GreedyAlgorithm(timeframe, modules,
+                rooms);
+        
         List<Course> coursesNotScheduled = new ArrayList<>();
         for (CourseModule module : modules) {
             for (Course course : module.getCourses()) {

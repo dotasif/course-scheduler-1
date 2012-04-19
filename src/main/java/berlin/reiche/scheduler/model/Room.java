@@ -33,9 +33,9 @@ public class Room {
      * 
      * @param number
      *            the room number which uniquely identifies the room.
-     * @param the
-     *            name of the room, for instance used to identify the type of
-     *            the room.
+     * @param name
+     *            the name of the room, for instance used to identify the type
+     *            of the room.
      */
     public Room(String number, String name) {
         super();

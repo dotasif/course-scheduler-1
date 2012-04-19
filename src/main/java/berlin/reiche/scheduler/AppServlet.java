@@ -96,6 +96,10 @@ public class AppServlet extends HttpServlet {
         Map<String, Object> data = getDefaultData();
         Writer writer = response.getWriter();
 
+        if (path == null) {
+            throw new IOException("The associated path information is null");
+        }
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
         if (user == null && path != null && !path.equals("/login")) {

@@ -15,12 +15,50 @@ import berlin.reiche.scheduler.model.Timeframe;
  */
 public class GreedyAlgorithm implements Algorithm {
 
-    @Override
-    public void run() {
-        // TODO Auto-generated method stub
+    /**
+     * the timeframe defines the structure of the schedule.
+     */
+    private final Timeframe timeframe;
+    /**
+     * The course modules which should be scheduled.
+     */
+    private final List<CourseModule> modules;
+    /**
+     * The rooms available for the course scheduling.
+     */
+    private final List<Room> rooms;
 
+    /**
+     * Default constructor.
+     * 
+     * @param timeframe
+     *            the timeframe defines the structure of the schedule.
+     * @param modules
+     *            the course modules which should be scheduled.
+     * @param rooms
+     *            the rooms available for the course scheduling.
+     */
+    public GreedyAlgorithm(Timeframe timeframe, List<CourseModule> modules,
+            List<Room> rooms) {
+
+        super();
+        this.timeframe = timeframe;
+        this.modules = modules;
+        this.rooms = rooms;
     }
 
+    /**
+     * @see java.util.concurrent.Callable#call()
+     */
+    @Override
+    public CourseSchedule call() {
+        return schedule(timeframe, modules, rooms);
+    }
+
+    /**
+     * @see berlin.reiche.scheduler.scheduler.Algorithm#schedule(berlin.reiche.scheduler.model.Timeframe,
+     *      java.util.List, java.util.List)
+     */
     @Override
     public CourseSchedule schedule(Timeframe timeframe,
             List<CourseModule> modules, List<Room> rooms) {
@@ -38,21 +76,21 @@ public class GreedyAlgorithm implements Algorithm {
                 for (int i = 0; i < course.getCount(); i++) {
 
                     if (currentTimeSlot + course.getDuration() > timeframe.timeSlots) {
-                        
+
                         currentDay++;
                         currentTimeSlot = 0;
-                        
+
                         if (currentDay == timeframe.days) {
                             currentRoom++;
                             room = rooms.get(currentRoom);
                             currentDay = 0;
                         }
-                        
+
                     }
-                    
+
                     schedule.setCourse(course, room, currentDay,
                             currentTimeSlot);
-                    
+
                     currentTimeSlot += course.getDuration();
                 }
 
