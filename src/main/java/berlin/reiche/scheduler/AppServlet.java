@@ -32,189 +32,189 @@ import freemarker.template.TemplateException;
 @SuppressWarnings("serial")
 public class AppServlet extends HttpServlet {
 
-	/**
-	 * Paths to the web resources.
-	 */
-	static final String WEB_PATH = "site/";
-	static final String ERROR_SITE = "ftl/404.ftl";
+    /**
+     * Paths to the web resources.
+     */
+    static final String WEB_PATH = "site/";
+    static final String ERROR_SITE = "ftl/404.ftl";
 
-	private static final String LOGIN_SITE = "ftl/login.ftl";
-	private static final String MAIN_SITE = "ftl/main.ftl";
-	private static final String DEFAULT_VALUES_PATH = "site/resources/default-values.properties";
-	
-	/**
-	 * Further constants which appear more than one in the source code.
-	 */
-	static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
-	static final String REQUEST_HEADLINE_VAR = "requestHeadline";
-	
-	/**
-	 * Regular expression for matching a course module id.
-	 */
-	static final String ID_REGEX = "[a-f0-9]*";
+    private static final String LOGIN_SITE = "ftl/login.ftl";
+    private static final String MAIN_SITE = "ftl/main.ftl";
+    private static final String DEFAULT_VALUES_PATH = "site/resources/default-values.properties";
 
-	/**
-	 * Configuration used for the Freemarker template processing.
-	 */
-	static Configuration configuration;
+    /**
+     * Further constants which appear more than one in the source code.
+     */
+    static final String LOGIN_ATTRIBUTE = "login.isLoggedIn";
+    static final String REQUEST_HEADLINE_VAR = "requestHeadline";
 
-	private final static AppServlet instance = new AppServlet();
+    /**
+     * Regular expression for matching a course module id.
+     */
+    static final String ID_REGEX = "[a-f0-9]*";
 
-	/**
-	 * The configuration for the template engine Freemarker is set up with
-	 * default settings.
-	 */
-	static {
+    /**
+     * Configuration used for the Freemarker template processing.
+     */
+    static Configuration configuration;
 
-		try {
-			configuration = new Configuration();
-			configuration.setDirectoryForTemplateLoading(new File(WEB_PATH));
-			configuration.setObjectWrapper(new DefaultObjectWrapper());
-		} catch (IOException e) {
-			System.err.println("The path " + WEB_PATH
-					+ " could not be retrieved.");
-			e.printStackTrace();
-		}
-	}
+    private final static AppServlet instance = new AppServlet();
 
-	/**
-	 * The constructor is private in order to enforce the singleton pattern.
-	 */
-	private AppServlet() {
+    /**
+     * The configuration for the template engine Freemarker is set up with
+     * default settings.
+     */
+    static {
 
-	}
+        try {
+            configuration = new Configuration();
+            configuration.setDirectoryForTemplateLoading(new File(WEB_PATH));
+            configuration.setObjectWrapper(new DefaultObjectWrapper());
+        } catch (IOException e) {
+            System.err.println("The path " + WEB_PATH
+                    + " could not be retrieved.");
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Parses the HTTP request and writes the response by using the template
-	 * engine.
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * The constructor is private in order to enforce the singleton pattern.
+     */
+    private AppServlet() {
 
-		String path = request.getPathInfo();
-		Map<String, Object> data = getDefaultData();
-		Writer writer = response.getWriter();
+    }
 
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-		if (user == null && path != null && !path.equals("/login")) {
-			response.sendRedirect("/login");
-			return;
-		}
+    /**
+     * Parses the HTTP request and writes the response by using the template
+     * engine.
+     */
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		if (path.equals("/")) {
-			processTemplate(MAIN_SITE, data, writer);
-		} else if (path.equals("/login")) {
+        String path = request.getPathInfo();
+        Map<String, Object> data = getDefaultData();
+        Writer writer = response.getWriter();
 
-			if (user == null) {
-				processTemplate(LOGIN_SITE, data, writer);
-			} else {
-				response.sendRedirect("/");
-			}
-		} else {
-			processTemplate(ERROR_SITE, data, writer);
-		}
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
+        if (user == null && path != null && !path.equals("/login")) {
+            response.sendRedirect("/login");
+            return;
+        }
 
-	}
-	
-	/**
-	 * Parses all user HTML form requests and handles them.
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        if (path.equals("/")) {
+            processTemplate(MAIN_SITE, data, writer);
+        } else if (path.equals("/login")) {
 
-		String path = request.getServletPath() + request.getPathInfo();
+            if (user == null) {
+                processTemplate(LOGIN_SITE, data, writer);
+            } else {
+                response.sendRedirect("/");
+            }
+        } else {
+            processTemplate(ERROR_SITE, data, writer);
+        }
 
-		if ("/login".equals(path)) {
-			handleLoginRequest(request, response);
-		}
-	}
+    }
 
-	/**
-	 * Handles a user submitted login request.
-	 * 
-	 * @param request
-	 *            provides request information for HTTP servlets.
-	 * @param response
-	 *            provides HTTP-specific functionality in sending a response.
-	 * @throws IOException
-	 *             if an input or output exception occurs.
-	 */
-	private void handleLoginRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+    /**
+     * Parses all user HTML form requests and handles them.
+     */
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		Map<String, Object> data = getDefaultData();
-		String login = request.getParameter("name");
-		String password = request.getParameter("password");
+        String path = request.getServletPath() + request.getPathInfo();
 
-		User user = MongoDB.get(User.class, login);
-		if (user != null && user.checkPassword(password)) {
-			HttpSession session = request.getSession();
-			session.setAttribute(LOGIN_ATTRIBUTE, user);
-			response.sendRedirect("/");
-		} else {
-			data.put("hasLoginFailed", "true");
-			AppServlet.processTemplate(LOGIN_SITE, data, response.getWriter());
-		}
-	}
+        if ("/login".equals(path)) {
+            handleLoginRequest(request, response);
+        }
+    }
 
-	/**
-	 * Processed the given template file with the provided data. The result is
-	 * written immediately to the given writer.
-	 * 
-	 * @param relativePath
-	 *            the relative path from the base directory pointing to the
-	 *            template file.
-	 * @param data
-	 *            the root node of the data model.
-	 * @param writer
-	 *            the writer to which the processed template is written.
-	 * @throws IOException
-	 *             if an I/O exception occurs due to writing or flushing.
-	 */
-	public static void processTemplate(String relativePath,
-			Map<String, ?> data, Writer writer) throws IOException {
+    /**
+     * Handles a user submitted login request.
+     * 
+     * @param request
+     *            provides request information for HTTP servlets.
+     * @param response
+     *            provides HTTP-specific functionality in sending a response.
+     * @throws IOException
+     *             if an input or output exception occurs.
+     */
+    private void handleLoginRequest(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
-		try {
-			Template template = AppServlet.configuration
-					.getTemplate(relativePath);
-			template.process(data, writer);
-			writer.flush();
-		} catch (TemplateException e) {
-			System.err.println("The template" + relativePath
-					+ "could not be processed properly.");
-			e.printStackTrace();
-		}
-	}
+        Map<String, Object> data = getDefaultData();
+        String login = request.getParameter("name");
+        String password = request.getParameter("password");
 
-	/**
-	 * Generates a data model out of the default value property file.
-	 * 
-	 * @return the data model.
-	 * @throws IOException
-	 *             if the file with the default value properties could not been
-	 *             found or an error occurred during reading from it.
-	 * 
-	 */
-	static Map<String, Object> getDefaultData() throws IOException {
+        User user = MongoDB.get(User.class, login);
+        if (user != null && user.checkPassword(password)) {
+            HttpSession session = request.getSession();
+            session.setAttribute(LOGIN_ATTRIBUTE, user);
+            response.sendRedirect("/");
+        } else {
+            data.put("hasLoginFailed", "true");
+            AppServlet.processTemplate(LOGIN_SITE, data, response.getWriter());
+        }
+    }
 
-		Map<String, Object> defaultData = new TreeMap<>();
-		Properties defaultValues = new Properties();
-		FileInputStream input = new FileInputStream(DEFAULT_VALUES_PATH);
-		defaultValues.load(input);
-		for (Entry<Object, Object> entry : defaultValues.entrySet()) {
-			defaultData.put((String) entry.getKey(), (String) entry.getValue());
-		}
+    /**
+     * Processed the given template file with the provided data. The result is
+     * written immediately to the given writer.
+     * 
+     * @param relativePath
+     *            the relative path from the base directory pointing to the
+     *            template file.
+     * @param data
+     *            the root node of the data model.
+     * @param writer
+     *            the writer to which the processed template is written.
+     * @throws IOException
+     *             if an I/O exception occurs due to writing or flushing.
+     */
+    public static void processTemplate(String relativePath,
+            Map<String, ?> data, Writer writer) throws IOException {
 
-		return defaultData;
-	}
+        try {
+            Template template = AppServlet.configuration
+                    .getTemplate(relativePath);
+            template.process(data, writer);
+            writer.flush();
+        } catch (TemplateException e) {
+            System.err.println("The template" + relativePath
+                    + "could not be processed properly.");
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * @return a singleton instance of {@link RoomServlet}.
-	 */
-	public static AppServlet getInstance() {
-		return instance;
-	}
+    /**
+     * Generates a data model out of the default value property file.
+     * 
+     * @return the data model.
+     * @throws IOException
+     *             if the file with the default value properties could not been
+     *             found or an error occurred during reading from it.
+     * 
+     */
+    static Map<String, Object> getDefaultData() throws IOException {
+
+        Map<String, Object> defaultData = new TreeMap<>();
+        Properties defaultValues = new Properties();
+        FileInputStream input = new FileInputStream(DEFAULT_VALUES_PATH);
+        defaultValues.load(input);
+        for (Entry<Object, Object> entry : defaultValues.entrySet()) {
+            defaultData.put((String) entry.getKey(), (String) entry.getValue());
+        }
+
+        return defaultData;
+    }
+
+    /**
+     * @return a singleton instance of {@link RoomServlet}.
+     */
+    public static AppServlet getInstance() {
+        return instance;
+    }
 }

@@ -8,21 +8,21 @@ import org.junit.Test;
 import freemarker.template.DefaultObjectWrapper;
 
 /**
- * Tests the initialization of the servlet. 
+ * Tests the initialization of the servlet.
  * 
  * @author Konrad Reiche
- *
+ * 
  */
 public class AppServletTest {
 
-	AppServlet servlet;
+    AppServlet servlet;
 
-	@Test
-	public void setUp() {
-		servlet = AppServlet.getInstance();
-		assertNotNull(servlet);
-		assertNotNull(AppServlet.configuration);
-		assertTrue(AppServlet.configuration.getObjectWrapper() instanceof DefaultObjectWrapper);
-	}
+    @Test
+    public void setUp() {
+        servlet = AppServlet.getInstance();
+        assertNotNull(servlet);
+        assertNotNull(AppServlet.configuration);
+        assertTrue(AppServlet.configuration.getObjectWrapper() instanceof DefaultObjectWrapper);
+    }
 
 }

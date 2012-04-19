@@ -12,18 +12,18 @@ import static org.junit.Assert.*;
  */
 public class MainTest {
 
-	/**
-	 * Tests whether the server is started correctly.
-	 */
-	@Test
-	public void testMain() {
+    /**
+     * Tests whether the server is started correctly.
+     */
+    @Test
+    public void testMain() {
 
-		try {
-			assertNull(Main.server);
-			Main.main();
-			assertTrue(Main.server.isRunning());
-		} catch (IOException e) {
-			fail();
-		}
-	}
+        try {
+            assertNull(Main.server);
+            Main.main();
+            assertTrue(Main.server.isRunning());
+        } catch (IOException e) {
+            fail();
+        }
+    }
 }

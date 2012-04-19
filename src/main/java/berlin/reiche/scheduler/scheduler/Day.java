@@ -8,13 +8,13 @@ package berlin.reiche.scheduler.scheduler;
  */
 public class Day {
 
-	/**
-	 * A number which identifies this day uniquely.
-	 */
-	int number;
+    /**
+     * A number which identifies this day uniquely.
+     */
+    int number;
 
-	public Day(int number) {
-		this.number = number;
-	}
+    public Day(int number) {
+        this.number = number;
+    }
 
 }

@@ -8,13 +8,13 @@ package berlin.reiche.scheduler.scheduler;
  */
 public class TimeSlot {
 
-	/**
-	 * A number which identifies this time slot uniquely.
-	 */
-	int number;
+    /**
+     * A number which identifies this time slot uniquely.
+     */
+    int number;
 
-	public TimeSlot(int number) {
-		this.number = number;
-	}
+    public TimeSlot(int number) {
+        this.number = number;
+    }
 
 }

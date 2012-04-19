@@ -8,26 +8,26 @@ package berlin.reiche.scheduler.model;
  */
 public class Timeframe {
 
-	/**
-	 * The number of days available on a week for course scheduling.
-	 */
-	public final int days;
+    /**
+     * The number of days available on a week for course scheduling.
+     */
+    public final int days;
 
-	/**
-	 * The number of time slots available on a day for course scheduling.
-	 */
-	public final int timeSlots;
+    /**
+     * The number of time slots available on a day for course scheduling.
+     */
+    public final int timeSlots;
 
-	public Timeframe(int days, int timeSlots) {
-		super();
+    public Timeframe(int days, int timeSlots) {
+        super();
 
-		if (days <= 0 || timeSlots <= 0) {
-			throw new IllegalStateException("The number of days"
-					+ " or time slots have a non-positive value.");
-		}
+        if (days <= 0 || timeSlots <= 0) {
+            throw new IllegalStateException("The number of days"
+                    + " or time slots have a non-positive value.");
+        }
 
-		this.days = days;
-		this.timeSlots = timeSlots;
-	}
+        this.days = days;
+        this.timeSlots = timeSlots;
+    }
 
 }
