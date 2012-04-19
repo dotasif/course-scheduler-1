@@ -74,8 +74,8 @@ public class CourseSchedule {
      */
     public void setCourse(Course course, Room room, int day, int timeSlot) {
 
-        Day dayObject = days.get(days);
-        TimeSlot timeSlotObject = timeSlots.get(schedules);
+        Day dayObject = days.get(day);
+        TimeSlot timeSlotObject = timeSlots.get(timeSlot);
         schedules.get(room).setCourse(course, dayObject, timeSlotObject);
     }
 

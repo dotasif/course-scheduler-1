@@ -91,7 +91,11 @@ class RoomSchedule {
         List<Course> courses = new ArrayList<>();
 
         for (Map<TimeSlot, Course> daySchedule : schedule.values()) {
-            courses.addAll(daySchedule.values());
+            for (Course course : daySchedule.values()) {
+                if (course != null) {
+                    courses.add(course);
+                }
+            }
         }
 
         return courses;

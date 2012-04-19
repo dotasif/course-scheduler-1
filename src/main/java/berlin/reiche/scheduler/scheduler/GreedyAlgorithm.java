@@ -27,17 +27,33 @@ public class GreedyAlgorithm implements Algorithm {
 
         CourseSchedule schedule = new CourseSchedule(timeframe, rooms);
 
-        Room currentRoom = rooms.get(0);
+        int currentRoom = 0;
         int currentTimeSlot = 0;
         int currentDay = 0;
+        Room room = rooms.get(currentRoom);
 
         for (CourseModule module : modules) {
             for (Course course : module.getCourses()) {
 
                 for (int i = 0; i < course.getCount(); i++) {
 
-                    schedule.setCourse(course, currentRoom, currentDay,
+                    if (currentTimeSlot + course.getDuration() > timeframe.timeSlots) {
+                        
+                        currentDay++;
+                        currentTimeSlot = 0;
+                        
+                        if (currentDay == timeframe.days) {
+                            currentRoom++;
+                            room = rooms.get(currentRoom);
+                            currentDay = 0;
+                        }
+                        
+                    }
+                    
+                    schedule.setCourse(course, room, currentDay,
                             currentTimeSlot);
+                    
+                    currentTimeSlot += course.getDuration();
                 }
 
             }

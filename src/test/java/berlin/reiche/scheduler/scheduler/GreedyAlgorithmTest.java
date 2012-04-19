@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,10 +43,14 @@ public class GreedyAlgorithmTest {
         GreedyAlgorithm algorithm = new GreedyAlgorithm();
         List<Course> coursesNotScheduled = new ArrayList<>();
         for (CourseModule module : modules) {
-            coursesNotScheduled.addAll(module.getCourses());
+            for (Course course : module.getCourses()) {
+                for (int i = 0; i < course.getCount(); i++) {
+                    coursesNotScheduled.add(course);
+                }
+            }
         }
 
-        assertEquals(2, coursesNotScheduled.size());
+        assertEquals(3, coursesNotScheduled.size());
         CourseSchedule schedule = algorithm.schedule(timeframe, modules, rooms);
         assertEquals(timeframe, schedule.timeframe);
 
@@ -57,9 +60,9 @@ public class GreedyAlgorithmTest {
                     .getDayCount());
         }
 
-        for (Entry<Room, RoomSchedule> entry : schedule.schedules.entrySet()) {
+        for (RoomSchedule roomSchedule : schedule.schedules.values()) {
 
-            List<Course> courses = entry.getValue().getCourses();
+            List<Course> courses = roomSchedule.getCourses();
             coursesNotScheduled.removeAll(courses);
         }
 
