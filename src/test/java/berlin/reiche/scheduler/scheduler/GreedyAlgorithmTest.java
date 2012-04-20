@@ -40,9 +40,13 @@ public class GreedyAlgorithmTest {
     @Test
     public void testSchedule() {
 
-        GreedyAlgorithm algorithm = new GreedyAlgorithm(timeframe, modules,
-                rooms);
-        
+        ScheduleData data = new ScheduleData();
+        data.timeframe = timeframe;
+        data.modules = modules;
+        data.rooms = rooms;
+
+        GreedyAlgorithm algorithm = new GreedyAlgorithm(data);
+
         List<Course> coursesNotScheduled = new ArrayList<>();
         for (CourseModule module : modules) {
             for (Course course : module.getCourses()) {
@@ -53,7 +57,7 @@ public class GreedyAlgorithmTest {
         }
 
         assertEquals(3, coursesNotScheduled.size());
-        CourseSchedule schedule = algorithm.schedule(timeframe, modules, rooms);
+        CourseSchedule schedule = algorithm.schedule(data);
         assertEquals(timeframe, schedule.timeframe);
 
         for (Room room : rooms) {

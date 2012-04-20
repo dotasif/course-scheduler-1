@@ -1,11 +1,6 @@
 package berlin.reiche.scheduler.scheduler;
 
-import java.util.List;
 import java.util.concurrent.FutureTask;
-
-import berlin.reiche.scheduler.model.CourseModule;
-import berlin.reiche.scheduler.model.Room;
-import berlin.reiche.scheduler.model.Timeframe;
 
 /**
  * A {@link FutureTask} specialized for the course scheduling.
@@ -17,9 +12,8 @@ import berlin.reiche.scheduler.model.Timeframe;
  */
 public class ScheduleTask extends FutureTask<CourseSchedule> {
 
-    public ScheduleTask(Timeframe timeframe, List<CourseModule> modules,
-            List<Room> rooms) {
-        super(new GreedyAlgorithm(timeframe, modules, rooms));
+    public ScheduleTask(ScheduleData data) {
+        super(new GreedyAlgorithm(data));
     }
 
 }

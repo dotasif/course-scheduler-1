@@ -1,6 +1,5 @@
 package berlin.reiche.scheduler.scheduler;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,14 +27,15 @@ public class Scheduler {
     /**
      * Schedules all available course modules on all available rooms.
      */
+     
     public void schedule() {
 
-        // TODO: Encapsulate the parameters as algorithm
-        List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
-        List<Room> rooms = MongoDB.getAll(Room.class);
-        Timeframe timeframe = MongoDB.getAll(Timeframe.class).get(0);
+        ScheduleData data = new ScheduleData();
+        data.modules = MongoDB.getAll(CourseModule.class);
+        data.rooms = MongoDB.getAll(Room.class);
+        data.timeframe = MongoDB.getAll(Timeframe.class).get(0);
 
-        ScheduleTask task = new ScheduleTask(timeframe, modules, rooms);
+        ScheduleTask task = new ScheduleTask(data);
         exec.submit(task);
 
         try {

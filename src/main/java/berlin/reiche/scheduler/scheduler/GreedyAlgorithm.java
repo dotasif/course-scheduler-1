@@ -16,6 +16,11 @@ import berlin.reiche.scheduler.model.Timeframe;
 public class GreedyAlgorithm implements Algorithm {
 
     /**
+     * The whole schedule data. 
+     */
+    private final ScheduleData data;
+    
+    /**
      * the timeframe defines the structure of the schedule.
      */
     private final Timeframe timeframe;
@@ -38,13 +43,13 @@ public class GreedyAlgorithm implements Algorithm {
      * @param rooms
      *            the rooms available for the course scheduling.
      */
-    public GreedyAlgorithm(Timeframe timeframe, List<CourseModule> modules,
-            List<Room> rooms) {
+    public GreedyAlgorithm(ScheduleData data) {
 
         super();
-        this.timeframe = timeframe;
-        this.modules = modules;
-        this.rooms = rooms;
+        this.data = data;
+        this.timeframe = data.timeframe;
+        this.modules = data.modules;
+        this.rooms = data.rooms;
     }
 
     /**
@@ -52,7 +57,7 @@ public class GreedyAlgorithm implements Algorithm {
      */
     @Override
     public CourseSchedule call() {
-        return schedule(timeframe, modules, rooms);
+        return schedule(data);
     }
 
     /**
@@ -60,8 +65,7 @@ public class GreedyAlgorithm implements Algorithm {
      *      java.util.List, java.util.List)
      */
     @Override
-    public CourseSchedule schedule(Timeframe timeframe,
-            List<CourseModule> modules, List<Room> rooms) {
+    public CourseSchedule schedule(ScheduleData data) {
 
         CourseSchedule schedule = new CourseSchedule(timeframe, rooms);
 
