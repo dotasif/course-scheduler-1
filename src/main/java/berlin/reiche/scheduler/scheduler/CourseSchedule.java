@@ -43,11 +43,11 @@ public class CourseSchedule {
         this.days = new HashMap<>();
         this.timeSlots = new HashMap<>();
 
-        for (int i = 0; i < timeframe.days; i++) {
+        for (int i = 0; i < timeframe.getDays(); i++) {
             days.put(i, new Day(i));
         }
 
-        for (int i = 0; i < timeframe.timeSlots; i++) {
+        for (int i = 0; i < timeframe.getTimeSlots(); i++) {
             timeSlots.put(i, new TimeSlot(i));
         }
 

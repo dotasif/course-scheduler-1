@@ -58,7 +58,7 @@ public class GreedyAlgorithmTest {
 
         for (Room room : rooms) {
             assertNotNull(schedule.schedules.get(room));
-            assertEquals(timeframe.days, schedule.schedules.get(room)
+            assertEquals(timeframe.getDays(), schedule.schedules.get(room)
                     .getDayCount());
         }
 

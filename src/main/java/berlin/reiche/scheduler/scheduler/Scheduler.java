@@ -20,12 +20,9 @@ import berlin.reiche.scheduler.model.Timeframe;
 public class Scheduler {
 
     private final ExecutorService exec;
-    private final Timeframe timeframe;
 
     public Scheduler() {
         exec = Executors.newSingleThreadExecutor();
-        timeframe = new Timeframe(5, 12); // TODO: Implement a servlet module
-                                          // for this
     }
 
     /**
@@ -36,6 +33,7 @@ public class Scheduler {
         // TODO: Encapsulate the parameters as algorithm
         List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
         List<Room> rooms = MongoDB.getAll(Room.class);
+        Timeframe timeframe = MongoDB.getAll(Timeframe.class).get(0);
 
         ScheduleTask task = new ScheduleTask(timeframe, modules, rooms);
         exec.submit(task);

@@ -38,7 +38,7 @@ public class ModuleServlet extends HttpServlet {
     /**
      * Singleton instance.
      */
-    private static ModuleServlet instance = new ModuleServlet();
+    private static final ModuleServlet INSTANCE = new ModuleServlet();
 
     /**
      * The constructor is private in order to enforce the singleton pattern.
@@ -62,7 +62,7 @@ public class ModuleServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-        if (user == null && path != null && !path.equals("/login")) {
+        if (user == null) {
             response.sendRedirect("/login");
             return;
         }
@@ -289,7 +289,7 @@ public class ModuleServlet extends HttpServlet {
      * @return an singleton instance of {@link ModuleServlet}.
      */
     public static ModuleServlet getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
 }

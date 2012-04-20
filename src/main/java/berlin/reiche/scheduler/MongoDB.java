@@ -30,6 +30,8 @@ public class MongoDB {
             mongo = new Mongo();
             morphia = new Morphia();
             datastore = morphia.createDatastore(mongo, DATABASE_NAME);
+            datastore.ensureIndexes();
+            datastore.ensureCaps();
         } catch (UnknownHostException e) {
             System.err.println("The host could not be determined.");
             e.printStackTrace();

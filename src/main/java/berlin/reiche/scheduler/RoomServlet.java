@@ -60,7 +60,7 @@ public class RoomServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-        if (user == null && path != null && !path.equals("/login")) {
+        if (user == null) {
             response.sendRedirect("/login");
             return;
         }

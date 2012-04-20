@@ -75,12 +75,12 @@ public class GreedyAlgorithm implements Algorithm {
 
                 for (int i = 0; i < course.getCount(); i++) {
 
-                    if (currentTimeSlot + course.getDuration() > timeframe.timeSlots) {
+                    if (currentTimeSlot + course.getDuration() > timeframe.getTimeSlots()) {
 
                         currentDay++;
                         currentTimeSlot = 0;
 
-                        if (currentDay == timeframe.days) {
+                        if (currentDay == timeframe.getDays()) {
                             currentRoom++;
                             room = rooms.get(currentRoom);
                             currentDay = 0;
