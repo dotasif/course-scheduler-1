@@ -10,6 +10,7 @@
                 <li><a href="rooms">Rooms</a></li>
                 <li>Users</li>
                 <li><a href="timeframe">Timeframe</a></li>
+                <li><a href="scheduler">Scheduler</a></li>
                 </ol>
         </body>
 </html>
