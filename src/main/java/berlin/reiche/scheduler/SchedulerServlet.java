@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import berlin.reiche.scheduler.model.User;
+import berlin.reiche.scheduler.scheduler.Scheduler;
+import berlin.reiche.scheduler.scheduler.SchedulerException;
 
 /**
  * The scheduler servlet is dedicated to to control the scheduler.
@@ -32,10 +34,15 @@ public class SchedulerServlet extends HttpServlet {
 	private static final SchedulerServlet INSTANCE = new SchedulerServlet();
 
 	/**
+	 * The scheduler object which is used to perform scheduling tasks.
+	 */
+	private final Scheduler scheduler;
+
+	/**
 	 * The constructor is private in order to enforce the singleton pattern.
 	 */
 	private SchedulerServlet() {
-
+		scheduler = new Scheduler();
 	}
 
 	/**
@@ -46,6 +53,8 @@ public class SchedulerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
+		String path = request.getPathInfo();
+
 		Map<String, Object> data = AppServlet.getDefaultData();
 		Writer writer = response.getWriter();
 
@@ -55,8 +64,23 @@ public class SchedulerServlet extends HttpServlet {
 			response.sendRedirect("/login");
 			return;
 		}
-		
-		AppServlet.processTemplate(SCHEDULER_SITE, data, writer);
+
+		if (path == null) {
+			AppServlet.processTemplate(SCHEDULER_SITE, data, writer);
+		} else if (path.equals("/")) {
+			response.sendRedirect("/scheduler");
+		} else if (path.equals("/start")) {
+
+			try {
+				scheduler.schedule();
+			} catch (SchedulerException e) {
+				data.put("reason", e.getMessage());
+				AppServlet.processTemplate(AppServlet.ERROR_SITE, data, writer);
+			}
+
+		} else {
+			AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
+		}
 	}
 
 	/**
@@ -65,7 +89,7 @@ public class SchedulerServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		
+
 	}
 
 	/**

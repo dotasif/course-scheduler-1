@@ -5,11 +5,14 @@
                 <title>${title}</title>
         </head>
         <body>
-                <h1>Scheduler</h1>
                 <div class="content">
+                        <h1>Error</h1>
                         <ol>
-                                <li><a href="scheduler/start">Schedule Course Data</a></li>
+                                <li><a href="/">Back</a></li>
                         </ol>
+                        <p>
+                        ${reason}
+                        </p>
                 </div>
-</body>
+        </body>
 </html>

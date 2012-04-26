@@ -36,7 +36,8 @@ public class AppServlet extends HttpServlet {
      * Paths to the web resources.
      */
     static final String WEB_PATH = "site/";
-    static final String ERROR_SITE = "ftl/404.ftl";
+    static final String ERROR_SITE = "ftl/error.ftl";
+    static final String NOT_FOUND_SITE = "ftl/404.ftl";
 
     private static final String LOGIN_SITE = "ftl/login.ftl";
     private static final String MAIN_SITE = "ftl/main.ftl";
@@ -117,7 +118,7 @@ public class AppServlet extends HttpServlet {
                 response.sendRedirect("/");
             }
         } else {
-            processTemplate(ERROR_SITE, data, writer);
+            processTemplate(NOT_FOUND_SITE, data, writer);
         }
 
     }

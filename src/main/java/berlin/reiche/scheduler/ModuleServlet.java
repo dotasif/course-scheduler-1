@@ -87,7 +87,7 @@ public class ModuleServlet extends HttpServlet {
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleModification(request, response, module);
         } else {
-            AppServlet.processTemplate(AppServlet.ERROR_SITE, data, writer);
+            AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }
     }
 

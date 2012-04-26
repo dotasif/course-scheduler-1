@@ -82,7 +82,7 @@ public class RoomServlet extends HttpServlet {
             MongoDB.delete(Room.class, id);
             response.sendRedirect("/rooms");
         } else {
-            AppServlet.processTemplate(AppServlet.ERROR_SITE, data, writer);
+            AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }
     }
 
