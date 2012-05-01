@@ -1,12 +1,15 @@
 package berlin.reiche.virginia.scheduler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import berlin.reiche.virginia.model.Course;
+import berlin.reiche.virginia.model.TimeSlot;
+import berlin.reiche.virginia.model.Timeframe;
+
+import com.google.code.morphia.annotations.Embedded;
 
 /**
  * The course schedule for a certain room for a whole week.
@@ -14,36 +17,44 @@ import berlin.reiche.virginia.model.Course;
  * @author Konrad Reiche
  * 
  */
+@Embedded
 class RoomSchedule {
 
     /**
-     * The schedule maps each day of the week to a list of time slots, where
-     * each time slot can represent the beginning of a scheduled course.
+     * Null course for the schedule initialization.
      */
-    Map<Day, Map<TimeSlot, Course>> schedule;
+    private static final Course NULL_COURSE = new NullCourse();
+
+    /**
+     * Maps each day of the week (number) to a list of time slots, where each
+     * time slot (number) can represent the beginning of a scheduled course.
+     */
+    @Embedded
+    Map<Integer, Map<Integer, Course>> schedule;
+
+    /**
+     * This constructor is used by Morphia via Java reflections.
+     */
+    @SuppressWarnings("unused")
+    private RoomSchedule() {
+
+    }
 
     /**
      * Initializes the room schedule based on the provided {@link Day} list and
      * {@link TimeSlot} list.
      * 
-     * @param days
-     *            the list of the days available for the room schedule.
-     * @param timeSlots
-     *            the list of time slots available for the room schedule.
      */
-    public RoomSchedule(Collection<Day> days, Collection<TimeSlot> timeSlots) {
+    public RoomSchedule(Timeframe timeframe) {
         super();
         schedule = new HashMap<>();
-
-        for (Day day : days) {
-
-            Map<TimeSlot, Course> daySchedule = new HashMap<>();
-            for (TimeSlot timeSlot : timeSlots) {
-                daySchedule.put(timeSlot, null);
+        for (int day = 0; day < timeframe.getDays(); day++) {
+            Map<Integer, Course> daySchedule = new HashMap<>();
+            for (int timeSlot = 0; timeSlot < timeframe.getTimeSlots(); timeSlot++) {
+                daySchedule.put(timeSlot, NULL_COURSE);
             }
             schedule.put(day, daySchedule);
         }
-
     }
 
     /**
@@ -57,7 +68,7 @@ class RoomSchedule {
      * @param timeSlot
      *            the time slit specifying the position in the course schedule.
      */
-    void setCourse(Course course, Day day, TimeSlot timeSlot) {
+    void setCourse(Course course, int day, int timeSlot) {
 
         schedule.get(day).put(timeSlot, course);
     }
@@ -74,9 +85,9 @@ class RoomSchedule {
      *            the day of which the number of time slots should be returned.
      * @return the number of time slots available for a certain day.
      */
-    public int getTimeSlotCount(Day day) {
+    public int getTimeSlotCount(int day) {
 
-        Map<TimeSlot, Course> daySchedule = schedule.get(day);
+        Map<Integer, Course> daySchedule = schedule.get(day);
         if (daySchedule == null) {
             return 0;
         } else {
@@ -90,7 +101,7 @@ class RoomSchedule {
     public List<Course> getCourses() {
         List<Course> courses = new ArrayList<>();
 
-        for (Map<TimeSlot, Course> daySchedule : schedule.values()) {
+        for (Map<Integer, Course> daySchedule : schedule.values()) {
             for (Course course : daySchedule.values()) {
                 if (course != null) {
                     courses.add(course);

@@ -58,7 +58,7 @@ public class TimeframeServlet extends HttpServlet {
             return;
         }
 
-        Timeframe timeframe = MongoDB.getAll(Timeframe.class).get(0);
+        Timeframe timeframe = MongoDB.get(Timeframe.class);
         data.put("days", timeframe.getDays());
         data.put("timeSlots", timeframe.getTimeSlots());
         AppServlet.processTemplate(TIMEFRAME_SITE, data, writer);
@@ -70,11 +70,11 @@ public class TimeframeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-        
+
         int days = Integer.valueOf(request.getParameter("days"));
         int timeSlots = Integer.valueOf(request.getParameter("timeSlots"));
-        
-        Timeframe timeframe = MongoDB.getAll(Timeframe.class).get(0);
+
+        Timeframe timeframe = MongoDB.get(Timeframe.class);
         timeframe.setDays(days);
         timeframe.setTimeSlots(timeSlots);
         MongoDB.store(timeframe);

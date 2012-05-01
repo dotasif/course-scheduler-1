@@ -8,53 +8,46 @@ import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.Timeframe;
 
+import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Entity;
+
 /**
  * A course schedule is a mapping of courses to a room and a time slots.
  * 
  * @author Konrad Reiche
  * 
  */
+@Entity("schedule")
 public class CourseSchedule {
-
-    /**
-     * The list of the available day objects.
-     */
-    final Map<Integer, Day> days;
-
-    /**
-     * The list of the available timeSlot objects.
-     */
-    final Map<Integer, TimeSlot> timeSlots;
 
     /**
      * The timeframe on which this course schedule is based.
      */
-    final Timeframe timeframe;
+    Timeframe timeframe;
 
     /**
      * Each room has its own schedule for a whole week.
      */
-    final Map<Room, RoomSchedule> schedules;
+    @Embedded
+    Map<Room, RoomSchedule> schedules;
 
+    
+    /**
+     * This constructor is used by Morphia via Java reflections.
+     */
+    @SuppressWarnings("unused")
+    private CourseSchedule() {
+        
+    }
+    
     public CourseSchedule(Timeframe timeframe, List<Room> rooms) {
         super();
         this.timeframe = timeframe;
         this.schedules = new HashMap<>();
-        this.days = new HashMap<>();
-        this.timeSlots = new HashMap<>();
-
-        for (int i = 0; i < timeframe.getDays(); i++) {
-            days.put(i, new Day(i));
-        }
-
-        for (int i = 0; i < timeframe.getTimeSlots(); i++) {
-            timeSlots.put(i, new TimeSlot(i));
-        }
-
+        
         for (Room room : rooms) {
-
             schedules.put(room,
-                    new RoomSchedule(days.values(), timeSlots.values()));
+                    new RoomSchedule(timeframe));
         }
     }
 
@@ -73,10 +66,9 @@ public class CourseSchedule {
      *            the time slit specifying the position in the course schedule.
      */
     public void setCourse(Course course, Room room, int day, int timeSlot) {
-
-        Day dayObject = days.get(day);
-        TimeSlot timeSlotObject = timeSlots.get(timeSlot);
-        schedules.get(room).setCourse(course, dayObject, timeSlotObject);
+        schedules.get(room).setCourse(course, day, timeSlot);
     }
+    
+    
 
 }

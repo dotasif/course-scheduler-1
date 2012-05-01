@@ -27,11 +27,13 @@ public class SchedulerServlet extends HttpServlet {
 	 * File path to the web resources.
 	 */
 	private static final String SCHEDULER_SITE = "ftl/scheduler/control.ftl";
+	private static final String RESULT_SITE = "ftl/scheduler/result.ftl";
 
 	/**
 	 * Singleton instance.
 	 */
 	private static final SchedulerServlet INSTANCE = new SchedulerServlet();
+
 
 	/**
 	 * The scheduler object which is used to perform scheduling tasks.
@@ -73,6 +75,7 @@ public class SchedulerServlet extends HttpServlet {
 
 			try {
 				scheduler.schedule();
+				AppServlet.processTemplate(RESULT_SITE, data, writer);
 			} catch (SchedulerException e) {
 				data.put("reason", e.getMessage());
 				AppServlet.processTemplate(AppServlet.ERROR_SITE, data, writer);

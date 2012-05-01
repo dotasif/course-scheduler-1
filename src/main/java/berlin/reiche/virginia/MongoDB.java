@@ -78,6 +78,26 @@ public class MongoDB {
     }
 
     /**
+     * Returns only one object of this entity type. It is expected, that there
+     * is only one instance of this entity present in the database. Otherwise an
+     * exception is raised.
+     * 
+     * @param cls
+     *            the class type of the entity to retrieve.
+     * @return the object of the entity.
+     */
+    public static <T> T get(Class<T> cls) {
+
+        List<T> collection = getAll(cls);
+        if (collection.size() > 1) {
+            throw new IllegalStateException("There is more than one object in"
+                    + " the database of type" + cls.getClass() + ".");
+        }
+
+        return collection.get(0);
+    }
+
+    /**
      * Gets a list of all entities of a certain type.
      * 
      * @param cls
@@ -109,5 +129,15 @@ public class MongoDB {
      */
     public static <T, V> void delete(Class<T> cls, V id) {
         datastore.delete(cls, id);
+    }
+
+    /**
+     * Deletes a certain type of entities.
+     * 
+     * @param cls
+     *            the class type of the entities to delete.
+     */
+    public static <T> void deleteAll(Class<T> cls) {
+        datastore.delete(datastore.createQuery(cls));
     }
 }

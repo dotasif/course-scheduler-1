@@ -63,4 +63,17 @@ public class Room {
         this.number = number;
     }
 
+    /**
+     * String representation of the room object. If number of name contain a
+     * <code>.</code> it is removed, since it is an illegal character to store
+     * into the database.
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        String representation = number + " (" + name + ")";
+        return representation.replace(".", "");
+    }
+
 }
