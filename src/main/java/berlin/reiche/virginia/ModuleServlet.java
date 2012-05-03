@@ -237,6 +237,7 @@ public class ModuleServlet extends HttpServlet {
                         Integer.valueOf(courseDurations[i]),
                         Integer.valueOf(courseCounts[i]));
                 module.getCourses().add(course);
+                MongoDB.store(course);
             }
 
             MongoDB.store(module);

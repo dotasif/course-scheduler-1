@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import berlin.reiche.virginia.model.Course;
@@ -16,7 +17,7 @@ import berlin.reiche.virginia.model.Timeframe;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 import berlin.reiche.virginia.scheduler.GreedyAlgorithm;
 import berlin.reiche.virginia.scheduler.RoomSchedule;
-import berlin.reiche.virginia.scheduler.ScheduleData;
+import berlin.reiche.virginia.scheduler.InputData;
 
 public class GreedyAlgorithmTest {
 
@@ -27,7 +28,19 @@ public class GreedyAlgorithmTest {
 
     List<CourseModule> modules = new ArrayList<>();
     List<Room> rooms = new ArrayList<>();
-    Timeframe timeframe = new Timeframe(5, 12);
+
+    static List<String> weekdays = new ArrayList<>();
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        weekdays.add("Monday");
+        weekdays.add("Tuesday");
+        weekdays.add("Wednesday");
+        weekdays.add("Thursday");
+        weekdays.add("Friday");
+    }
+
+    Timeframe timeframe = new Timeframe(5, 12, weekdays);
 
     @Before
     public void setUp() {
@@ -44,7 +57,7 @@ public class GreedyAlgorithmTest {
     @Test
     public void testSchedule() {
 
-        ScheduleData data = new ScheduleData();
+        InputData data = new InputData();
         data.timeframe = timeframe;
         data.modules = modules;
         data.rooms = rooms;
@@ -65,12 +78,12 @@ public class GreedyAlgorithmTest {
         assertEquals(timeframe, schedule.timeframe);
 
         for (Room room : rooms) {
-            assertNotNull(schedule.schedules.get(room));
-            assertEquals(timeframe.getDays(), schedule.schedules.get(room)
+            assertNotNull(schedule.getSchedules().get(room));
+            assertEquals(timeframe.getDays(), schedule.getSchedules().get(room)
                     .getDayCount());
         }
 
-        for (RoomSchedule roomSchedule : schedule.schedules.values()) {
+        for (RoomSchedule roomSchedule : schedule.getSchedules().values()) {
 
             List<Course> courses = roomSchedule.getCourses();
             coursesNotScheduled.removeAll(courses);

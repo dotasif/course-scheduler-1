@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Reference;
 
 /**
  * A course module is a self-contained, formally structured learning experience.
@@ -29,7 +29,7 @@ public class CourseModule {
     /**
      * List of courses assigned to the module
      */
-    @Embedded
+    @Reference
     List<Course> courses;
 
     /**

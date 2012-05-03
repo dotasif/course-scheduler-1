@@ -9,6 +9,7 @@ import berlin.reiche.virginia.MongoDB;
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
 import berlin.reiche.virginia.model.Room;
+import berlin.reiche.virginia.model.ScheduleEntry;
 import berlin.reiche.virginia.model.Timeframe;
 
 /**
@@ -20,7 +21,7 @@ import berlin.reiche.virginia.model.Timeframe;
  */
 public class Scheduler {
 
-    private final ExecutorService exec;
+    final ExecutorService exec;
 
     public Scheduler() {
         exec = Executors.newSingleThreadExecutor();
@@ -35,7 +36,7 @@ public class Scheduler {
 
     public void schedule() throws SchedulerException {
 
-        ScheduleData data = new ScheduleData();
+        InputData data = new InputData();
         data.modules = MongoDB.getAll(CourseModule.class);
         data.rooms = MongoDB.getAll(Room.class);
         data.timeframe = MongoDB.getAll(Timeframe.class).get(0);
@@ -48,8 +49,9 @@ public class Scheduler {
         exec.submit(task);
 
         try {
-            CourseSchedule result = task.get();        
+            CourseSchedule result = task.get();
             MongoDB.deleteAll(CourseSchedule.class);
+            MongoDB.deleteAll(ScheduleEntry.class);
             MongoDB.store(result);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

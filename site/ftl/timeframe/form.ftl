@@ -18,6 +18,11 @@
                                         <input type="text" name="timeSlots" id="timeSlots" value="${timeSlots?c}"/>
                                         </li>
                                         <li>
+                                        <label for="weekdays">Weekdays:</label>
+                                        <textarea name="weekdays"><#compress><#list weekdays as weekday>${weekday}
+                                        </#list></#compress></textarea>
+                                        </li>
+                                        <li>
                                         <input type="submit" name="submit" value="Submit"/>
                                         </li>
                                 </ol>

@@ -2,7 +2,10 @@ package berlin.reiche.virginia.model;
 
 import java.util.Map;
 
-import com.google.code.morphia.annotations.Embedded;
+import org.bson.types.ObjectId;
+
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Reference;
 
 /**
@@ -11,9 +14,12 @@ import com.google.code.morphia.annotations.Reference;
  * @author Konrad Reiche
  * 
  */
-@Embedded
+@Entity("course")
 public class Course {
 
+	@Id
+	ObjectId id;
+	
     String type;
     int duration;
     int count;

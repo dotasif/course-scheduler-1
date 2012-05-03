@@ -12,7 +12,7 @@ import berlin.reiche.virginia.model.Timeframe;
  * @author Konrad Reiche
  *
  */
-public class ScheduleData {
+public class InputData {
 
     List<CourseModule> modules;
     

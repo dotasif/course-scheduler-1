@@ -20,11 +20,7 @@ import com.google.code.morphia.annotations.Embedded;
 @Embedded
 class RoomSchedule {
 
-    /**
-     * Null course for the schedule initialization.
-     */
-    private static final Course NULL_COURSE = new NullCourse();
-
+	
     /**
      * Maps each day of the week (number) to a list of time slots, where each
      * time slot (number) can represent the beginning of a scheduled course.
@@ -51,7 +47,7 @@ class RoomSchedule {
         for (int day = 0; day < timeframe.getDays(); day++) {
             Map<Integer, Course> daySchedule = new HashMap<>();
             for (int timeSlot = 0; timeSlot < timeframe.getTimeSlots(); timeSlot++) {
-                daySchedule.put(timeSlot, NULL_COURSE);
+                daySchedule.put(timeSlot, null);
             }
             schedule.put(day, daySchedule);
         }

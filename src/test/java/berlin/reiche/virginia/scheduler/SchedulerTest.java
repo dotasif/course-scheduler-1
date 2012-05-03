@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import berlin.reiche.virginia.model.Course;
@@ -24,9 +25,20 @@ public class SchedulerTest {
 	CourseModule module;
 	Room room;
 
+	static List<String> weekdays = new ArrayList<>();
+	
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		weekdays.add("Monday");
+		weekdays.add("Tuesday");
+		weekdays.add("Wednesday");
+		weekdays.add("Thursday");
+		weekdays.add("Friday");
+	}
+	
 	@Before
 	public void setUp() {
-		timeframe = new Timeframe(5, 12);
+		timeframe = new Timeframe(5, 12, weekdays);
 		room = new Room("SR 005", "Seminar Room");
 		module = new CourseModule("Advanced Algorithms", 8, "Exam");
 		module.getCourses().add(new Course("Lecture", 2, 2));

@@ -2,6 +2,7 @@ package berlin.reiche.virginia;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.eclipse.jetty.server.Server;
@@ -93,15 +94,15 @@ public class Main {
 
 		User admin = MongoDB.get(User.class, adminUsername);
 		if (admin == null) {
-			System.out.println("Creating default admin user.");
 			admin = new User(adminUsername, adminPassword, "", false, false);
 			MongoDB.store(admin);
+			System.out.println("Created default admin user.");
 		}
 
 		if (!admin.checkPassword(adminPassword)) {
-			System.out.println("Assigning a new admin password.");
 			MongoDB.delete(User.class, adminUsername);
 			MongoDB.store(admin);
+			System.out.println("Assigned a new admin password.");
 		}
 	}
 
@@ -124,8 +125,13 @@ public class Main {
 					.getProperty("timeframe.days"));
 			int timeSlots = Integer.valueOf(schedulerProperties
 					.getProperty("timeframe.timeSlots"));
-			Timeframe timeframe = new Timeframe(days, timeSlots);
+			String[] weekdays = schedulerProperties
+					.getProperty("timeframe.weekdays").replace(" ", "")
+					.split(",");
+			
+			Timeframe timeframe = new Timeframe(days, timeSlots, Arrays.asList(weekdays));
 			MongoDB.store(timeframe);
+			System.out.println("Created default timeframe.");
 		}
 
 	}

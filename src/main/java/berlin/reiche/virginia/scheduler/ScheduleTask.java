@@ -12,7 +12,7 @@ import java.util.concurrent.FutureTask;
  */
 public class ScheduleTask extends FutureTask<CourseSchedule> {
 
-    public ScheduleTask(ScheduleData data) {
+    public ScheduleTask(InputData data) {
         super(new GreedyAlgorithm(data));
     }
 

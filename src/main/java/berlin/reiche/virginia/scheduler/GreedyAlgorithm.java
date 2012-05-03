@@ -18,7 +18,7 @@ public class GreedyAlgorithm implements Algorithm {
 	/**
 	 * The whole schedule data.
 	 */
-	private final ScheduleData data;
+	private final InputData data;
 
 	/**
 	 * the timeframe defines the structure of the schedule.
@@ -39,7 +39,7 @@ public class GreedyAlgorithm implements Algorithm {
 	 * @param data
 	 *            the data which contains the scheduling information.
 	 */
-	public GreedyAlgorithm(ScheduleData data) {
+	public GreedyAlgorithm(InputData data) {
 
 		super();
 		this.data = data;
@@ -57,10 +57,10 @@ public class GreedyAlgorithm implements Algorithm {
 	}
 
 	/**
-	 * @see berlin.reiche.virginia.scheduler.Algorithm#schedule(berlin.reiche.virginia.scheduler.ScheduleData)
+	 * @see berlin.reiche.virginia.scheduler.Algorithm#schedule(berlin.reiche.virginia.scheduler.InputData)
 	 */
 	@Override
-	public CourseSchedule schedule(ScheduleData data) {
+	public CourseSchedule schedule(InputData data) {
 
 		CourseSchedule schedule = new CourseSchedule(timeframe, rooms);
 

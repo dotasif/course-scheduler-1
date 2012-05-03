@@ -1,5 +1,7 @@
 package berlin.reiche.virginia.model;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
@@ -14,53 +16,70 @@ import com.google.code.morphia.annotations.Id;
 @Entity("timeframe")
 public class Timeframe {
 
-    @Id
-    ObjectId id;
-    
-    /**
-     * The number of days available on a week for course scheduling.
-     */
-    int days;
+	@Id
+	ObjectId id;
 
-    /**
-     * The number of time slots available on a day for course scheduling.
-     */
-    int timeSlots;
+	/**
+	 * The number of days available on a week for course scheduling.
+	 */
+	int days;
 
-    /**
-     * This constructor is used by Morphia via Java reflections.
-     */
-    @SuppressWarnings("unused")
-    private Timeframe() {
+	/**
+	 * The number of time slots available on a day for course scheduling.
+	 */
+	int timeSlots;
 
-    }
+	/**
+	 * The names of the weekdays.
+	 */
+	List<String> weekdays;
 
-    public Timeframe(int days, int timeSlots) {
-        super();
+	/**
+	 * This constructor is used by Morphia via Java reflections.
+	 */
+	@SuppressWarnings("unused")
+	private Timeframe() {
 
-        if (days <= 0 || timeSlots <= 0) {
-            throw new IllegalStateException("The number of days"
-                    + " or time slots have a non-positive value.");
-        }
+	}
 
-        this.days = days;
-        this.timeSlots = timeSlots;
-    }
+	public Timeframe(int days, int timeSlots, List<String> weekdays) {
+		super();
 
-    public int getDays() {
-        return days;
-    }
+		if (days <= 0 || timeSlots <= 0) {
+			throw new IllegalStateException("The number of days"
+					+ " or time slots have a non-positive value.");
+		} else if (days != weekdays.size()) {
+			throw new IllegalStateException("The number of days "
+					+ "and the number of weekday names does not match.");
+		}
 
-    public int getTimeSlots() {
-        return timeSlots;
-    }
+		this.days = days;
+		this.timeSlots = timeSlots;
+		this.weekdays = weekdays;
+	}
 
-    public void setDays(int days) {
-        this.days = days;
-    }
+	public int getDays() {
+		return days;
+	}
 
-    public void setTimeSlots(int timeSlots) {
-        this.timeSlots = timeSlots;
-    }
+	public int getTimeSlots() {
+		return timeSlots;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	public List<String> getWeekdays() {
+		return weekdays;
+	}
+
+	public void setTimeSlots(int timeSlots) {
+		this.timeSlots = timeSlots;
+	}
+
+	public void setWeekdays(List<String> weekdays) {
+		this.weekdays = weekdays;
+	}
 
 }

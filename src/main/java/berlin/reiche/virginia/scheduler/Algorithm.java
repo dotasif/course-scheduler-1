@@ -18,5 +18,5 @@ public interface Algorithm extends Callable<CourseSchedule> {
      *            the scheduling data defines the algorithm input.
      * @return a course schedule.
      */
-    CourseSchedule schedule(ScheduleData data);
+    CourseSchedule schedule(InputData data);
 }

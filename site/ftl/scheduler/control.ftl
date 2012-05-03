@@ -6,10 +6,28 @@
         </head>
         <body>
                 <h1>Scheduler</h1>
-                <div class="content">
+                <div class="menu">
                         <ol>
                                 <li><a href="scheduler/start">Schedule Course Data</a></li>
                         </ol>
+                </div>
+                <div class="content">
+                        <#if hasSchedule>
+                        <table>
+                                <caption>Room: ${room}</caption>
+                                <thead>
+                                        <tr>
+                                                <#list weekdays as weekday>
+                                                <td>${weekday}</td>
+                                                </#list>
+                                        </tr>
+                                </thead>
+                        </table>
+                        <#else>
+                        <p>
+                        There is no course schedule yet.
+                        </p>
+                        </#if>
                 </div>
 </body>
 </html>

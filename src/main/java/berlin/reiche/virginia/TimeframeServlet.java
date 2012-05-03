@@ -2,6 +2,7 @@ package berlin.reiche.virginia;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -61,6 +62,7 @@ public class TimeframeServlet extends HttpServlet {
         Timeframe timeframe = MongoDB.get(Timeframe.class);
         data.put("days", timeframe.getDays());
         data.put("timeSlots", timeframe.getTimeSlots());
+        data.put("weekdays", timeframe.getWeekdays());
         AppServlet.processTemplate(TIMEFRAME_SITE, data, writer);
     }
 
@@ -73,10 +75,12 @@ public class TimeframeServlet extends HttpServlet {
 
         int days = Integer.valueOf(request.getParameter("days"));
         int timeSlots = Integer.valueOf(request.getParameter("timeSlots"));
-
+        String[] weekdays = request.getParameter("weekdays").split("\n");
+        
         Timeframe timeframe = MongoDB.get(Timeframe.class);
         timeframe.setDays(days);
         timeframe.setTimeSlots(timeSlots);
+        timeframe.setWeekdays(Arrays.asList(weekdays));
         MongoDB.store(timeframe);
         response.sendRedirect("/");
     }
