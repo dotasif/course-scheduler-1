@@ -97,10 +97,6 @@ public class MongoDB {
         }
         
         T result = (collection.size() == 1) ? collection.get(0) : null;
-        
-        if (cls == CourseSchedule.class) {
-            ((CourseSchedule) result).initialize();
-        }
 
         return result;
     }

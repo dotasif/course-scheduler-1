@@ -12,6 +12,7 @@ import berlin.reiche.virginia.model.Timeframe;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.annotations.Reference;
 import com.google.code.morphia.annotations.Transient;
 
@@ -108,6 +109,7 @@ public class CourseSchedule {
      * Initializes the present data structures of this class: the content of
      * <code>entries</code> is reflected to <code>schedules</code>.
      */
+    @PostLoad
     public void initialize() {
         
         if (!isInitialized) {
