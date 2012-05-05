@@ -40,7 +40,7 @@ public class GreedyAlgorithmTest {
         weekdays.add("Friday");
     }
 
-    Timeframe timeframe = new Timeframe(5, 12, weekdays);
+    Timeframe timeframe = new Timeframe(5, 12, 8, weekdays);
 
     @Before
     public void setUp() {

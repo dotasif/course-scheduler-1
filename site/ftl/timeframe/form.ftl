@@ -18,6 +18,10 @@
                                         <input type="text" name="timeSlots" id="timeSlots" value="${timeSlots?c}"/>
                                         </li>
                                         <li>
+                                        <label for="startHours">Start Hour:</label>
+                                        <input type="text" name="startHour" value="${startHour?c}"/>
+                                        </li>
+                                        <li>
                                         <label for="weekdays">Weekdays:</label>
                                         <textarea name="weekdays"><#compress><#list weekdays as weekday>${weekday}
                                         </#list></#compress></textarea>

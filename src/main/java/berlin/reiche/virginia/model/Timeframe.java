@@ -30,6 +30,11 @@ public class Timeframe {
 	int timeSlots;
 
 	/**
+	 * The hour on which the course day is starting.
+	 */
+	int startHour;
+	
+	/**
 	 * The names of the weekdays.
 	 */
 	List<String> weekdays;
@@ -42,12 +47,12 @@ public class Timeframe {
 
 	}
 
-	public Timeframe(int days, int timeSlots, List<String> weekdays) {
+	public Timeframe(int days, int timeSlots, int startHour, List<String> weekdays) {
 		super();
 
-		if (days <= 0 || timeSlots <= 0) {
+		if (days <= 0 || timeSlots <= 0 || startHour <= 0) {
 			throw new IllegalStateException("The number of days"
-					+ " or time slots have a non-positive value.");
+					+ ", time slots or start hour have a non-positive value.");
 		} else if (days != weekdays.size()) {
 			throw new IllegalStateException("The number of days "
 					+ "and the number of weekday names does not match.");
@@ -55,6 +60,7 @@ public class Timeframe {
 
 		this.days = days;
 		this.timeSlots = timeSlots;
+		this.startHour = startHour;
 		this.weekdays = weekdays;
 	}
 
@@ -62,24 +68,34 @@ public class Timeframe {
 		return days;
 	}
 
+	public int getStartHour() {
+        return startHour;
+    }
+
 	public int getTimeSlots() {
 		return timeSlots;
-	}
-
-	public void setDays(int days) {
-		this.days = days;
 	}
 
 	public List<String> getWeekdays() {
 		return weekdays;
 	}
 
-	public void setTimeSlots(int timeSlots) {
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	public void setStartHour(int startHour) {
+        this.startHour = startHour;
+    }
+
+    public void setTimeSlots(int timeSlots) {
 		this.timeSlots = timeSlots;
 	}
 
-	public void setWeekdays(List<String> weekdays) {
+    public void setWeekdays(List<String> weekdays) {
 		this.weekdays = weekdays;
 	}
+	
+	
 
 }

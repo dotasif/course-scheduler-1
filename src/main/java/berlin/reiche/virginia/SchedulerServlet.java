@@ -115,23 +115,18 @@ public class SchedulerServlet extends HttpServlet {
             data.put("room", room.toString());
             List<String> weekdays = timeframe.getWeekdays();
             data.put("weekdays", weekdays);
+            data.put("startHour", timeframe.getStartHour());
             
-            List<List<String>> weekdayRows = new ArrayList<>();
+            List<List<String>> timeRows = new ArrayList<>();
             for (int i = 0; i < timeframe.getTimeSlots(); i++) {
-                List<String> weekdayRow = new ArrayList<>();
+                List<String> cells = new ArrayList<>();
                 for (int j = 0; j < timeframe.getDays(); j++) {
-                    
                     Course course = schedule.getCourse(room, j, i);
-                    if (course != null) {
-                        weekdayRow.add(course.toString());                        
-                    } else {
-                        weekdayRow.add(null);
-                    }
+                    cells.add((course == null) ? null : course.toString());
                 }
-                weekdayRows.add(weekdayRow);
+                timeRows.add(cells);
             }
-            data.put("weekdayRows", weekdayRows);
-            
+            data.put("timeRows", timeRows);   
         }
 
         AppServlet.processTemplate(SCHEDULER_SITE, data, response.getWriter());

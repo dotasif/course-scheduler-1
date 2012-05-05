@@ -8,6 +8,7 @@
                 <h1>Scheduler</h1>
                 <div class="menu">
                         <ol>
+                                <li><a href="/">Back</a></li>
                                 <li><a href="scheduler/start">Schedule Course Data</a></li>
                         </ol>
                 </div>
@@ -17,14 +18,18 @@
                                 <caption>Room: ${room}</caption>
                                 <thead>
                                         <tr>
+                                                <td/>
                                                 <#list weekdays as weekday>
                                                 <td>${weekday}</td>
                                                 </#list>
                                         </tr>
-                                        <#list weekdayRows as weekdayRow>
+                                        <#assign hour="${startHour}"?number/>
+                                        <#list timeRows as row>
                                         <tr>
-                                                <#list weekdayRow as slot>
-                                                <td><#if slot??>${slot}</#if></td>
+                                                <td>${hour?string("00")}:00</td>
+                                                <#assign hour=hour+1/>
+                                                <#list row as cell>
+                                                <td><#if cell??>${cell}</#if></td>
                                                 </#list>
                                         </tr>
                                         </#list>
@@ -36,5 +41,5 @@
                         </p>
                         </#if>
                 </div>
-</body>
+        </body>
 </html>

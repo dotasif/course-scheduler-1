@@ -18,121 +18,123 @@ import berlin.reiche.virginia.model.User;
  */
 public class Main {
 
-	/**
-	 * The port for the web server.
-	 */
-	private static int port = 80;
+    /**
+     * The port for the web server.
+     */
+    private static int port = 80;
 
-	/**
-	 * Path to the server property file.
-	 */
-	private static final String SERVER_PROPERTIES_PATH = "site/resources/server.properties";
+    /**
+     * Path to the server property file.
+     */
+    private static final String SERVER_PROPERTIES_PATH = "site/resources/server.properties";
 
-	/**
-	 * Path to the scheduler property file.
-	 */
-	private static final String SCHEDULER_PROPERTIES_PATH = "site/resources/scheduler.properties";
+    /**
+     * Path to the scheduler property file.
+     */
+    private static final String SCHEDULER_PROPERTIES_PATH = "site/resources/scheduler.properties";
 
-	/**
-	 * The Jetty HTTP Servlet Server.
-	 */
-	static Server server;
+    /**
+     * The Jetty HTTP Servlet Server.
+     */
+    static Server server;
 
-	/**
-	 * Launches the web server.
-	 * 
-	 * @throws IOException
-	 *             if there is a problem with the server properties file.
-	 */
-	public static void main(String... args) throws IOException {
+    /**
+     * Launches the web server.
+     * 
+     * @throws IOException
+     *             if there is a problem with the server properties file.
+     */
+    public static void main(String... args) throws IOException {
 
-		checkServerProperties();
-		checkSchedulerProperties();
-		server = new Server(port);
+        checkServerProperties();
+        checkSchedulerProperties();
+        server = new Server(port);
 
-		try {
-			ServletContextHandler context = new ServletContextHandler(
-					ServletContextHandler.SESSIONS);
-			context.setContextPath("/");
-			server.setHandler(context);
+        try {
+            ServletContextHandler context = new ServletContextHandler(
+                    ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
 
-			context.addServlet(new ServletHolder(AppServlet.getInstance()),
-					"/*");
-			context.addServlet(new ServletHolder(ModuleServlet.getInstance()),
-					"/modules/*");
-			context.addServlet(new ServletHolder(RoomServlet.getInstance()),
-					"/rooms/*");
-			context.addServlet(
-					new ServletHolder(TimeframeServlet.getInstance()),
-					"/timeframe/*");
-			context.addServlet(
-					new ServletHolder(SchedulerServlet.getInstance()),
-					"/scheduler/*");
+            context.addServlet(new ServletHolder(AppServlet.getInstance()),
+                    "/*");
+            context.addServlet(new ServletHolder(ModuleServlet.getInstance()),
+                    "/modules/*");
+            context.addServlet(new ServletHolder(RoomServlet.getInstance()),
+                    "/rooms/*");
+            context.addServlet(
+                    new ServletHolder(TimeframeServlet.getInstance()),
+                    "/timeframe/*");
+            context.addServlet(
+                    new ServletHolder(SchedulerServlet.getInstance()),
+                    "/scheduler/*");
 
-			server.start();
+            server.start();
 
-		} catch (Exception e) {
-			System.err.println("Server failed to start.");
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            System.err.println("Server failed to start.");
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Applies the server configuration as defined in a file.
-	 * 
-	 * @throws IOException
-	 *             if an error occurred with the server property file.
-	 */
-	private static void checkServerProperties() throws IOException {
+    /**
+     * Applies the server configuration as defined in a file.
+     * 
+     * @throws IOException
+     *             if an error occurred with the server property file.
+     */
+    private static void checkServerProperties() throws IOException {
 
-		Properties serverProperties = new Properties();
-		FileInputStream input = new FileInputStream(SERVER_PROPERTIES_PATH);
-		serverProperties.load(input);
-		port = Integer.valueOf(serverProperties.getProperty("server.port"));
-		String adminUsername = serverProperties.getProperty("admin.username");
-		String adminPassword = serverProperties.getProperty("admin.password");
+        Properties serverProperties = new Properties();
+        FileInputStream input = new FileInputStream(SERVER_PROPERTIES_PATH);
+        serverProperties.load(input);
+        port = Integer.valueOf(serverProperties.getProperty("server.port"));
+        String adminUsername = serverProperties.getProperty("admin.username");
+        String adminPassword = serverProperties.getProperty("admin.password");
 
-		User admin = MongoDB.get(User.class, adminUsername);
-		if (admin == null) {
-			admin = new User(adminUsername, adminPassword, "", false, false);
-			MongoDB.store(admin);
-			System.out.println("Created default admin user.");
-		}
+        User admin = MongoDB.get(User.class, adminUsername);
+        if (admin == null) {
+            admin = new User(adminUsername, adminPassword, "", false, false);
+            MongoDB.store(admin);
+            System.out.println("Created default admin user.");
+        }
 
-		if (!admin.checkPassword(adminPassword)) {
-			MongoDB.delete(User.class, adminUsername);
-			MongoDB.store(admin);
-			System.out.println("Assigned a new admin password.");
-		}
-	}
+        if (!admin.checkPassword(adminPassword)) {
+            MongoDB.delete(User.class, adminUsername);
+            MongoDB.store(admin);
+            System.out.println("Assigned a new admin password.");
+        }
+    }
 
-	/**
-	 * Applies the scheduler configuration as defined in a file.
-	 * 
-	 * @throws IOException
-	 *             if an error occurred with the scheduler property file.
-	 */
-	private static void checkSchedulerProperties() throws IOException {
+    /**
+     * Applies the scheduler configuration as defined in a file.
+     * 
+     * @throws IOException
+     *             if an error occurred with the scheduler property file.
+     */
+    private static void checkSchedulerProperties() throws IOException {
 
-		if (MongoDB.getAll(Timeframe.class).isEmpty()) {
+        if (MongoDB.getAll(Timeframe.class).isEmpty()) {
 
-			Properties schedulerProperties = new Properties();
-			FileInputStream input = new FileInputStream(
-					SCHEDULER_PROPERTIES_PATH);
-			schedulerProperties.load(input);
+            Properties properties = new Properties();
+            FileInputStream input = new FileInputStream(
+                    SCHEDULER_PROPERTIES_PATH);
+            properties.load(input);
 
-			int days = Integer.valueOf(schedulerProperties
-					.getProperty("timeframe.days"));
-			int timeSlots = Integer.valueOf(schedulerProperties
-					.getProperty("timeframe.timeSlots"));
-			String[] weekdays = schedulerProperties
-					.getProperty("timeframe.weekdays").replace(" ", "")
-					.split(",");
-			
-			Timeframe timeframe = new Timeframe(days, timeSlots, Arrays.asList(weekdays));
-			MongoDB.store(timeframe);
-			System.out.println("Created default timeframe.");
-		}
+            int days = Integer
+                    .valueOf(properties.getProperty("timeframe.days"));
+            int timeSlots = Integer.valueOf(properties
+                    .getProperty("timeframe.timeSlots"));
+            int startHour = Integer.valueOf(properties
+                    .getProperty("timeframe.startHour"));
+            String[] weekdays = properties.getProperty("timeframe.weekdays")
+                    .replace(" ", "").split(",");
 
-	}
+            Timeframe timeframe = new Timeframe(days, timeSlots, startHour,
+                    Arrays.asList(weekdays));
+            MongoDB.store(timeframe);
+            System.out.println("Created default timeframe.");
+        }
+
+    }
 }

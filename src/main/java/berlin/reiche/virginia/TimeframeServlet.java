@@ -62,6 +62,7 @@ public class TimeframeServlet extends HttpServlet {
         Timeframe timeframe = MongoDB.get(Timeframe.class);
         data.put("days", timeframe.getDays());
         data.put("timeSlots", timeframe.getTimeSlots());
+        data.put("startHour", timeframe.getStartHour());
         data.put("weekdays", timeframe.getWeekdays());
         AppServlet.processTemplate(TIMEFRAME_SITE, data, writer);
     }
@@ -75,11 +76,13 @@ public class TimeframeServlet extends HttpServlet {
 
         int days = Integer.valueOf(request.getParameter("days"));
         int timeSlots = Integer.valueOf(request.getParameter("timeSlots"));
+        int startHour = Integer.valueOf(request.getParameter("startHour"));
         String[] weekdays = request.getParameter("weekdays").split("\n");
         
         Timeframe timeframe = MongoDB.get(Timeframe.class);
         timeframe.setDays(days);
         timeframe.setTimeSlots(timeSlots);
+        timeframe.setStartHour(startHour);
         timeframe.setWeekdays(Arrays.asList(weekdays));
         MongoDB.store(timeframe);
         response.sendRedirect("/");

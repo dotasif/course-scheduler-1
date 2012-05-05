@@ -38,7 +38,7 @@ public class SchedulerTest {
 	
 	@Before
 	public void setUp() {
-		timeframe = new Timeframe(5, 12, weekdays);
+		timeframe = new Timeframe(5, 12, 8, weekdays);
 		room = new Room("SR 005", "Seminar Room");
 		module = new CourseModule("Advanced Algorithms", 8, "Exam");
 		module.getCourses().add(new Course("Lecture", 2, 2));

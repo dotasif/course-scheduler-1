@@ -92,9 +92,12 @@ public class CourseSchedule {
      *            the time slit specifying the position in the course schedule.
      */
     public void setCourse(Course course, Room room, int day, int timeSlot) {
-        schedules.get(room).setCourse(course, day, timeSlot);
         ScheduleEntry entry = new ScheduleEntry(course, room, day, timeSlot);
         entries.add(entry);
+        RoomSchedule schedule = schedules.get(room);
+        for (int i = 0; i < course.getDuration(); i++) {
+            schedule.setCourse(course, day, timeSlot + i);
+        }
     }
 
     public Timeframe getTimeframe() {
@@ -122,7 +125,10 @@ public class CourseSchedule {
                 Course course = entry.getCourse();
                 int day = entry.getDay();
                 int timeSlot = entry.getTimeSlot();
-                schedules.get(room).setCourse(course, day, timeSlot);
+                RoomSchedule schedule = schedules.get(room);
+                for (int i = 0; i < course.getDuration(); i++) {
+                    schedule.setCourse(course, day, timeSlot + i);
+                }
             }
 
             isInitialized = true;
@@ -142,7 +148,7 @@ public class CourseSchedule {
      *         scheduled.
      */
     public Course getCourse(Room room, int day, int timeSlot) {
-        return schedules.get(room).schedule.get(day).get(timeSlot);
+        return schedules.get(room).getCourse(day, timeSlot);
     }
 
 }

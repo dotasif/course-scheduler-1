@@ -18,6 +18,7 @@ import org.bson.types.ObjectId;
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
 import berlin.reiche.virginia.model.User;
+import berlin.reiche.virginia.scheduler.CourseSchedule;
 
 /**
  * The main servlet of the application which handles all incoming HTTP requests.
@@ -81,6 +82,7 @@ public class ModuleServlet extends HttpServlet {
         } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/delete/".length()));
             MongoDB.delete(CourseModule.class, id);
+            MongoDB.delete(CourseSchedule.class);
             response.sendRedirect("/modules");
         } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/edit/".length()));
@@ -237,6 +239,7 @@ public class ModuleServlet extends HttpServlet {
                 Course course = new Course(courseTypes[i],
                         Integer.valueOf(courseDurations[i]),
                         Integer.valueOf(courseCounts[i]));
+                course.setModule(module);
                 MongoDB.store(course);
                 module.getCourses().add(course);
             }

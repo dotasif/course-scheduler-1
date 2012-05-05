@@ -20,7 +20,6 @@ import com.google.code.morphia.annotations.Embedded;
 @Embedded
 class RoomSchedule {
 
-	
     /**
      * Maps each day of the week (number) to a list of time slots, where each
      * time slot (number) can represent the beginning of a scheduled course.
@@ -65,8 +64,20 @@ class RoomSchedule {
      *            the time slit specifying the position in the course schedule.
      */
     void setCourse(Course course, int day, int timeSlot) {
-
         schedule.get(day).put(timeSlot, course);
+    }
+
+    /**
+     * Retrieves a certain course from the specific position in the room
+     * schedule.
+     * 
+     * @param day
+     *            the day specifying the position in the course schedule.
+     * @param timeSlot
+     *            the time slit specifying the position in the course schedule.
+     */
+    Course getCourse(int day, int timeSlot) {
+        return schedule.get(day).get(timeSlot);
     }
 
     /**

@@ -131,6 +131,23 @@ public class MongoDB {
         datastore.delete(cls, id);
     }
 
+    
+    /**
+     * Deletes a certain entity from which only one should exist.
+     * 
+     * @param cls the class type of the entity to delete.
+     */
+    public static <T> void delete(Class<T> cls) {
+        
+        List<T> collection = getAll(cls);
+        if (collection.size() > 1) {
+            throw new IllegalStateException("There is more than one object in"
+                    + " the database of type" + cls.getClass() + ".");
+        }
+        
+       deleteAll(cls);
+    }
+    
     /**
      * Deletes a certain type of entities.
      * 
@@ -140,4 +157,5 @@ public class MongoDB {
     public static <T> void deleteAll(Class<T> cls) {
         datastore.delete(datastore.createQuery(cls));
     }
+
 }
