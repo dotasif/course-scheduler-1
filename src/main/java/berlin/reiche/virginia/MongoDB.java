@@ -3,8 +3,6 @@ package berlin.reiche.virginia;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import berlin.reiche.virginia.scheduler.CourseSchedule;
-
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.mongodb.Mongo;
@@ -95,10 +93,8 @@ public class MongoDB {
             throw new IllegalStateException("There is more than one object in"
                     + " the database of type" + cls.getClass() + ".");
         }
-        
-        T result = (collection.size() == 1) ? collection.get(0) : null;
 
-        return result;
+        return (collection.size() == 1) ? collection.get(0) : null;
     }
 
     /**

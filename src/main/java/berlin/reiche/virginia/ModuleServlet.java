@@ -232,15 +232,16 @@ public class ModuleServlet extends HttpServlet {
                 module.getCourses().clear();
             }
 
+            MongoDB.store(module);
             for (int i = 0; i < courseTypes.length; ++i) {
                 Course course = new Course(courseTypes[i],
                         Integer.valueOf(courseDurations[i]),
                         Integer.valueOf(courseCounts[i]));
-                module.getCourses().add(course);
                 MongoDB.store(course);
+                module.getCourses().add(course);
             }
-
             MongoDB.store(module);
+            
             response.sendRedirect("/modules");
 
         } else {

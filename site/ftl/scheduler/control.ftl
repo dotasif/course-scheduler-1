@@ -21,6 +21,13 @@
                                                 <td>${weekday}</td>
                                                 </#list>
                                         </tr>
+                                        <#list weekdayRows as weekdayRow>
+                                        <tr>
+                                                <#list weekdayRow as slot>
+                                                <td><#if slot??>${slot}</#if></td>
+                                                </#list>
+                                        </tr>
+                                        </#list>
                                 </thead>
                         </table>
                         <#else>

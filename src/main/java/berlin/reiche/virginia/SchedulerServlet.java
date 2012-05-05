@@ -2,6 +2,7 @@ package berlin.reiche.virginia;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
+import berlin.reiche.virginia.model.Timeframe;
 import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 import berlin.reiche.virginia.scheduler.Scheduler;
@@ -106,12 +109,29 @@ public class SchedulerServlet extends HttpServlet {
 
         CourseSchedule schedule = MongoDB.get(CourseSchedule.class);
         if (schedule != null) {
-
             Room room = schedule.getSchedules().keySet().iterator().next();
+            Timeframe timeframe = schedule.getTimeframe();
             data.put("hasSchedule", true);
             data.put("room", room.toString());
-            List<String> weekdays = schedule.getTimeframe().getWeekdays();
+            List<String> weekdays = timeframe.getWeekdays();
             data.put("weekdays", weekdays);
+            
+            List<List<String>> weekdayRows = new ArrayList<>();
+            for (int i = 0; i < timeframe.getTimeSlots(); i++) {
+                List<String> weekdayRow = new ArrayList<>();
+                for (int j = 0; j < timeframe.getDays(); j++) {
+                    
+                    Course course = schedule.getCourse(room, j, i);
+                    if (course != null) {
+                        weekdayRow.add(course.toString());                        
+                    } else {
+                        weekdayRow.add(null);
+                    }
+                }
+                weekdayRows.add(weekdayRow);
+            }
+            data.put("weekdayRows", weekdayRows);
+            
         }
 
         AppServlet.processTemplate(SCHEDULER_SITE, data, response.getWriter());

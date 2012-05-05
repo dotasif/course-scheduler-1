@@ -111,12 +111,12 @@ public class CourseSchedule {
      */
     @PostLoad
     public void initialize() {
-        
+
         if (!isInitialized) {
             for (Room room : rooms) {
                 schedules.put(room, new RoomSchedule(timeframe));
             }
-            
+
             for (ScheduleEntry entry : entries) {
                 Room room = entry.getRoom();
                 Course course = entry.getCourse();
@@ -127,6 +127,22 @@ public class CourseSchedule {
 
             isInitialized = true;
         }
+    }
+
+    /**
+     * Retrieves a certain course from the schedule.
+     * 
+     * @param room
+     *            the room in which the course is scheduled.
+     * @param day
+     *            the day on which the course is scheduled.
+     * @param timeSlot
+     *            the time slot on which the course is scheduled.
+     * @return the scheduled course or <code>null</code> if there is no course
+     *         scheduled.
+     */
+    public Course getCourse(Room room, int day, int timeSlot) {
+        return schedules.get(room).schedule.get(day).get(timeSlot);
     }
 
 }
