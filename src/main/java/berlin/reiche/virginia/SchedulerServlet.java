@@ -3,6 +3,7 @@ package berlin.reiche.virginia;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,24 +110,31 @@ public class SchedulerServlet extends HttpServlet {
 
         CourseSchedule schedule = MongoDB.get(CourseSchedule.class);
         if (schedule != null) {
-            Room room = schedule.getSchedules().keySet().iterator().next();
-            Timeframe timeframe = schedule.getTimeframe();
             data.put("hasSchedule", true);
-            data.put("room", room.toString());
-            List<String> weekdays = timeframe.getWeekdays();
-            data.put("weekdays", weekdays);
-            data.put("startHour", timeframe.getStartHour());
+            List<Map<String, Object>> schedules = new ArrayList<>();
             
-            List<List<String>> timeRows = new ArrayList<>();
-            for (int i = 0; i < timeframe.getTimeSlots(); i++) {
-                List<String> cells = new ArrayList<>();
-                for (int j = 0; j < timeframe.getDays(); j++) {
-                    Course course = schedule.getCourse(room, j, i);
-                    cells.add((course == null) ? null : course.toString());
+            Timeframe timeframe = schedule.getTimeframe();
+            List<String> weekdays = timeframe.getWeekdays();
+            data.put("startHour", timeframe.getStartHour());
+            data.put("weekdays", weekdays);
+            for (Room room : schedule.getRooms()) {
+                Map<String, Object> scheduleData = new HashMap<>();
+                scheduleData.put("room", room.toString());
+                
+                List<List<String>> timeRows = new ArrayList<>();
+                for (int i = 0; i < timeframe.getTimeSlots(); i++) {
+                    List<String> cells = new ArrayList<>();
+                    for (int j = 0; j < timeframe.getDays(); j++) {
+                        Course course = schedule.getCourse(room, j, i);
+                        cells.add((course == null) ? null : course.toString());
+                    }
+                    timeRows.add(cells);
                 }
-                timeRows.add(cells);
+                scheduleData.put("timeRows", timeRows);
+                schedules.add(scheduleData);
             }
-            data.put("timeRows", timeRows);   
+            
+            data.put("schedules", schedules);
         }
 
         AppServlet.processTemplate(SCHEDULER_SITE, data, response.getWriter());

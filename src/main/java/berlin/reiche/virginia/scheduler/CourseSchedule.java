@@ -151,4 +151,11 @@ public class CourseSchedule {
         return schedules.get(room).getCourse(day, timeSlot);
     }
 
+    /**
+     * @return the list of rooms which have course schedules.
+     */
+    public List<Room> getRooms() {
+        return new ArrayList<>(schedules.keySet());
+    }
+
 }

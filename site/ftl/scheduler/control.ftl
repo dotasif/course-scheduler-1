@@ -14,8 +14,9 @@
                 </div>
                 <div class="content">
                         <#if hasSchedule>
+                        <#list schedules as schedule>
                         <table>
-                                <caption>Room: ${room}</caption>
+                                <caption>Room: ${schedule.room}</caption>
                                 <thead>
                                         <tr>
                                                 <td/>
@@ -24,7 +25,7 @@
                                                 </#list>
                                         </tr>
                                         <#assign hour="${startHour}"?number/>
-                                        <#list timeRows as row>
+                                        <#list schedule.timeRows as row>
                                         <tr>
                                                 <td>${hour?string("00")}:00</td>
                                                 <#assign hour=hour+1/>
@@ -35,6 +36,7 @@
                                         </#list>
                                 </thead>
                         </table>
+                        </#list>
                         <#else>
                         <p>
                         There is no course schedule yet.
