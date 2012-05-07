@@ -11,6 +11,7 @@
                 <li>Users</li>
                 <li><a href="timeframe">Timeframe</a></li>
                 <li><a href="scheduler">Scheduler</a></li>
+                <li><a href="logout">Logout</a></li>
                 </ol>
         </body>
 </html>

@@ -19,9 +19,9 @@ import berlin.reiche.virginia.model.User;
 public class Main {
 
     /**
-     * The port for the web server.
+     * The default port for the web server.
      */
-    private static int port = 80;
+    private static int port = 8080;
 
     /**
      * Path to the server property file.
@@ -101,6 +101,7 @@ public class Main {
 
         if (!admin.checkPassword(adminPassword)) {
             MongoDB.delete(User.class, adminUsername);
+            admin = new User(adminUsername, adminPassword, "", false, false);
             MongoDB.store(admin);
             System.out.println("Assigned a new admin password.");
         }

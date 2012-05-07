@@ -117,6 +117,9 @@ public class AppServlet extends HttpServlet {
             } else {
                 response.sendRedirect("/");
             }
+        } else if (path.equals("/logout")) {
+            session.removeAttribute(LOGIN_ATTRIBUTE);
+            response.sendRedirect("/login");
         } else {
             processTemplate(NOT_FOUND_SITE, data, writer);
         }
