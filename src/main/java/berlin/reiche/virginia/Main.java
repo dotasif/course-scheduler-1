@@ -58,6 +58,8 @@ public class Main {
 
             context.addServlet(new ServletHolder(AppServlet.getInstance()),
                     "/*");
+            context.addServlet(new ServletHolder(UserServlet.getInstance()),
+                    "/users/*");
             context.addServlet(new ServletHolder(ModuleServlet.getInstance()),
                     "/modules/*");
             context.addServlet(new ServletHolder(RoomServlet.getInstance()),
@@ -98,7 +100,7 @@ public class Main {
             MongoDB.store(admin);
             System.out.println("Created default admin user.");
         }
-
+        
         if (!admin.checkPassword(adminPassword)) {
             MongoDB.delete(User.class, adminUsername);
             admin = new User(adminUsername, adminPassword, "", false, false);

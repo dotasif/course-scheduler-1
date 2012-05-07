@@ -71,7 +71,6 @@ public class RoomServlet extends HttpServlet {
 			response.sendRedirect("/rooms");
 		} else if (path.equals("/new")) {
 			data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Room");
-			data.put("blankCourse", true);
 			AppServlet.processTemplate(ROOM_FORM_SITE, data, writer);
 		} else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
 			ObjectId id = new ObjectId(path.substring("/edit/".length()));

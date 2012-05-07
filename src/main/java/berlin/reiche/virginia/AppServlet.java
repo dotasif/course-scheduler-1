@@ -52,7 +52,7 @@ public class AppServlet extends HttpServlet {
     /**
      * Regular expression for matching a course module id.
      */
-    static final String ID_REGEX = "[a-f0-9]*";
+    static final String ID_REGEX = "[a-z0-9]*";
 
     /**
      * Configuration used for the Freemarker template processing.
