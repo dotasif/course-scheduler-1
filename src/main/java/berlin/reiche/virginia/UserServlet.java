@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import berlin.reiche.virginia.model.User;
 
@@ -32,6 +31,13 @@ public class UserServlet extends HttpServlet {
      */
     private static UserServlet instance = new UserServlet();
 
+	/**
+	 * Regular expression for matching a user name.
+	 */
+	static final String ID_REGEX = "[a-z0-9]*";
+    
+    public final static String root = "/users";
+    
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -51,13 +57,7 @@ public class UserServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-        if (user == null) {
-            response.sendRedirect("/login");
-            return;
-        }
+        AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
 
         if (path == null) {
             data.put("users", MongoDB.getAll(User.class));
@@ -68,14 +68,14 @@ public class UserServlet extends HttpServlet {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, "New User");
             data.put("isNewEntity", true);
             AppServlet.processTemplate(USER_FORM_SITE, data, writer);
-        } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
+        } else if (path.matches("/edit/" + ID_REGEX)) {
             String name = path.substring("/edit/".length());
             data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit User");
             data.put("isNewEntity", false);
             data.put("user", MongoDB.get(User.class, name));
             AppServlet.processTemplate(USER_FORM_SITE, data,
                     response.getWriter());
-        } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
+        } else if (path.matches("/delete/" + ID_REGEX)) {
             String name = path.substring("/delete/".length());
             MongoDB.delete(User.class, name);
             response.sendRedirect("/users");

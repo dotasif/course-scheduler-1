@@ -11,12 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.Timeframe;
-import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 import berlin.reiche.virginia.scheduler.Scheduler;
 import berlin.reiche.virginia.scheduler.SchedulerException;
@@ -46,6 +44,8 @@ public class SchedulerServlet extends HttpServlet {
      */
     private final Scheduler scheduler;
 
+    public final static String root = "/scheduler";
+    
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -62,16 +62,9 @@ public class SchedulerServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         String path = request.getPathInfo();
-
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-        if (user == null) {
-            response.sendRedirect("/login");
-            return;
-        }
+        AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
 
         if (path == null) {
             showSchedule(request, response);

@@ -11,13 +11,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.bson.types.ObjectId;
 
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
-import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 
 /**
@@ -41,6 +39,8 @@ public class ModuleServlet extends HttpServlet {
      */
     private static final ModuleServlet INSTANCE = new ModuleServlet();
 
+    public final static String root = "/modules";
+    
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -60,13 +60,7 @@ public class ModuleServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-        if (user == null) {
-            response.sendRedirect("/login");
-            return;
-        }
+        AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
 
         if (path == null) {
             showCourseModules(response);

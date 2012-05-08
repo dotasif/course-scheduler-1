@@ -9,10 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import berlin.reiche.virginia.model.Timeframe;
-import berlin.reiche.virginia.model.User;
 
 /**
  * The timeframe servlet is dedicated to access the settings for configurating
@@ -34,6 +32,8 @@ public class TimeframeServlet extends HttpServlet {
      */
     private static final TimeframeServlet INSTANCE = new TimeframeServlet();
 
+    public final static String root = "/timeframe";
+    
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -51,13 +51,7 @@ public class TimeframeServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-        if (user == null) {
-            response.sendRedirect("/login");
-            return;
-        }
+        AppServlet.checkAccessRights(request, response, root);
 
         Timeframe timeframe = MongoDB.get(Timeframe.class);
         data.put("days", timeframe.getDays());

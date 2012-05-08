@@ -11,12 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.bson.types.ObjectId;
 
 import berlin.reiche.virginia.model.Room;
-import berlin.reiche.virginia.model.User;
 
 /**
  * The room servlet which is dedicated for all requests regarding rooms.
@@ -37,7 +35,9 @@ public class RoomServlet extends HttpServlet {
 	 * Singleton instance.
 	 */
 	private static RoomServlet instance = new RoomServlet();
-
+	
+	public final static String root = "/rooms"; 
+	
 	/**
 	 * The constructor is private in order to enforce the singleton pattern.
 	 */
@@ -54,16 +54,9 @@ public class RoomServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String path = request.getPathInfo();
-
 		Map<String, Object> data = AppServlet.getDefaultData();
 		Writer writer = response.getWriter();
-
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute(AppServlet.LOGIN_ATTRIBUTE);
-		if (user == null) {
-			response.sendRedirect("/login");
-			return;
-		}
+		AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
 
 		if (path == null) {
 			showRooms(request, response);
@@ -93,7 +86,6 @@ public class RoomServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String path = request.getPathInfo();
-
 		if ("/new".equals(path)) {
 			handleRoomForm(request, response, null);
 		} else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
@@ -106,7 +98,8 @@ public class RoomServlet extends HttpServlet {
 	/**
 	 * Retrieves all rooms and displays them.
 	 * 
-	 * @param request provides request information for HTTP servlets.
+	 * @param request
+	 *            provides request information for HTTP servlets.
 	 * 
 	 * @param response
 	 *            provides HTTP-specific functionality in sending a response.
