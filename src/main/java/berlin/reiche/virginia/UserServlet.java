@@ -92,10 +92,9 @@ public class UserServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         String path = request.getPathInfo();
-
         if ("/new".equals(path)) {
             handleUserForm(request, response, null);
-        } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
+        } else if (path.matches("/edit/" + ID_REGEX)) {
             String name = path.substring("/edit/".length());
             User user = MongoDB.get(User.class, name);
             handleUserForm(request, response, user);
@@ -130,13 +129,14 @@ public class UserServlet extends HttpServlet {
             user.setEmail(email);
             String oldPassword = request.getParameter("oldPassword");
             String newPassword = request.getParameter("newPassword");
-            user.changePassword(oldPassword, newPassword);
+            if (!newPassword.equals("")) {
+            	user.changePassword(oldPassword, newPassword);
+            }
             user.setStudent(isStudent);
             user.setLecturer(isLecturer);
         }
         MongoDB.store(user);
         response.sendRedirect("/users");
-
     }
 
     /**

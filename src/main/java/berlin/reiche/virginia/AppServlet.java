@@ -165,6 +165,7 @@ public class AppServlet extends HttpServlet {
 					.getAttribute(DESTINATION_ATTRIBUTE);
 			session.setAttribute(LOGIN_ATTRIBUTE, user);
 			session.removeAttribute(DESTINATION_ATTRIBUTE);
+			destination = (destination == null) ? "/" : destination;
 			response.sendRedirect(destination);
 			return;
 		} else {
