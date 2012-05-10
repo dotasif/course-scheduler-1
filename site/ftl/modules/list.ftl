@@ -10,17 +10,18 @@
                         <ol>
                                 <li><a href="/">Back</a></li>
                                 <li><a href="modules/new">Add new course module</a></li>
+                                <li><a href="modules/responsibilities">Assign Lecture Responsibilities</a></li>
                         </ol>
                 </div>
                 <div class="content">
                         <table>
                                 <thead>
                                         <tr>
-                                                <td>Name</td>
-                                                <td>Credits</td>
-                                                <td>Assessment</td>
-                                                <td>Delete?</td>
-                                                <td>Edit?</td>
+                                                <td><strong>Name</strong></td>
+                                                <td><strong>Credits</strong></td>
+                                                <td><strong>Assessment</strong></td>
+                                                <td><strong>Delete</strong></td>
+                                                <td><strong>Edit</strong></td>
                                         </tr>
                                 </thead>
                                 <tbody>
@@ -31,8 +32,7 @@
                                                 <td>${module.assessment}</td>
                                                 <td><a href="modules/delete/${module.id}">X</a></td>
                                                 <td><a href="modules/edit/${module.id}">O</a></td>
-                                        </a>
-                                </tr>
+                                        </tr>
                                 </#list>
                         </tbody>
                 </table>

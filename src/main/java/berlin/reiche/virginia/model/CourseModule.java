@@ -24,7 +24,7 @@ public class CourseModule {
     ObjectId id;
     String name;
     int credits;
-    String assessmentType;
+    String assessment;
 
     /**
      * List of courses assigned to the module
@@ -55,12 +55,12 @@ public class CourseModule {
         super();
         this.name = name;
         this.credits = credits;
-        this.assessmentType = assessmentType;
+        this.assessment = assessmentType;
         this.courses = new ArrayList<>();
     }
 
-    public String getAssessmentType() {
-        return assessmentType;
+    public String getAssessment() {
+        return assessment;
     }
 
     public List<Course> getCourses() {
@@ -79,8 +79,8 @@ public class CourseModule {
         return name;
     }
 
-    public void setAssessmentType(String assessmentType) {
-        this.assessmentType = assessmentType;
+    public void setAssessment(String assessmentType) {
+        this.assessment = assessmentType;
     }
 
     public void setCredits(int credits) {

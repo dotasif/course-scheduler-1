@@ -16,6 +16,7 @@ import org.bson.types.ObjectId;
 
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
+import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 
 /**
@@ -30,9 +31,10 @@ public class ModuleServlet extends HttpServlet {
     /**
      * File path to the web resources.
      */
-    private static final String MODULES_SITE = "ftl/modules/list.ftl";
-    private static final String MODULE_FORM_SITE = "ftl/modules/form.ftl";
-    private static final String MODULE_COURSES_SITE = "ftl/modules/course-list.ftl";
+    private static final String LIST_SITE = "ftl/modules/list.ftl";
+    private static final String FORM_SITE = "ftl/modules/form.ftl";
+    private static final String COURSES_SITE = "ftl/modules/course-list.ftl";
+    private static final String RESPONSIBLITIES_SITE = "ftl/modules/responsibilities.ftl";
 
     /**
      * Singleton instance.
@@ -72,7 +74,7 @@ public class ModuleServlet extends HttpServlet {
         } else if (path.equals("/new")) {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Course Module");
             data.put("blankCourse", true);
-            AppServlet.processTemplate(MODULE_FORM_SITE, data, writer);
+            AppServlet.processTemplate(FORM_SITE, data, writer);
         } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/delete/".length()));
             MongoDB.delete(CourseModule.class, id);
@@ -82,6 +84,10 @@ public class ModuleServlet extends HttpServlet {
             ObjectId id = new ObjectId(path.substring("/edit/".length()));
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleModification(request, response, module);
+        } else if (path.equals("/responsibilities")) {
+        	List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
+        	data.put("modules", modules);
+        	AppServlet.processTemplate(RESPONSIBLITIES_SITE, data, writer);
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }
@@ -103,6 +109,15 @@ public class ModuleServlet extends HttpServlet {
                     path.substring("/modules/edit/".length()));
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleForm(request, response, module);
+        } else if (path.equals("/modules/responsibilities")) {
+        	String[] ids = request.getParameterValues("responsibility");
+			User user = (User) request.getSession().getAttribute(
+					AppServlet.LOGIN_ATTRIBUTE); 
+        	for (String id : ids) {
+        		Course course = MongoDB.get(Course.class, id);
+        		user.addCourse(course);
+        	}
+        	MongoDB.store(user);
         }
     }
 
@@ -123,13 +138,13 @@ public class ModuleServlet extends HttpServlet {
             Map<String, String> courseModuleData = new TreeMap<>();
             courseModuleData.put("id", String.valueOf(module.getId()));
             courseModuleData.put("name", module.getName());
-            courseModuleData.put("assessment", module.getAssessmentType());
+            courseModuleData.put("assessment", module.getAssessment());
             courseModuleData
                     .put("credits", String.valueOf(module.getCredits()));
             courseModuleDataList.add(courseModuleData);
         }
         data.put("modules", courseModuleDataList);
-        AppServlet.processTemplate(MODULES_SITE, data, response.getWriter());
+        AppServlet.processTemplate(LIST_SITE, data, response.getWriter());
     }
 
     /**
@@ -159,7 +174,7 @@ public class ModuleServlet extends HttpServlet {
             courseDataList.add(courseData);
         }
         data.put("courses", courseDataList);
-        AppServlet.processTemplate(MODULE_COURSES_SITE, data,
+        AppServlet.processTemplate(COURSES_SITE, data,
                 response.getWriter());
     }
 
@@ -215,7 +230,7 @@ public class ModuleServlet extends HttpServlet {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, requestHeadline);
             data.put("blankCourse", true);
 
-            AppServlet.processTemplate(MODULE_FORM_SITE, data,
+            AppServlet.processTemplate(FORM_SITE, data,
                     response.getWriter());
         } else if (submitReason.equals("Create")) {
 
@@ -224,7 +239,7 @@ public class ModuleServlet extends HttpServlet {
             } else {
                 module.setName(name);
                 module.setCredits(credits);
-                module.setAssessmentType(assessment);
+                module.setAssessment(assessment);
                 module.getCourses().clear();
             }
 
@@ -268,7 +283,7 @@ public class ModuleServlet extends HttpServlet {
 
         data.put("name", module.getName());
         data.put("credits", module.getCredits());
-        data.put("assessment", module.getAssessmentType());
+        data.put("assessment", module.getAssessment());
 
         for (Course course : module.getCourses()) {
             Map<String, Object> courseData = new TreeMap<>();
@@ -281,7 +296,7 @@ public class ModuleServlet extends HttpServlet {
         data.put("courses", courseDataList);
         data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Course Module");
         AppServlet
-                .processTemplate(MODULE_FORM_SITE, data, response.getWriter());
+                .processTemplate(FORM_SITE, data, response.getWriter());
     }
 
     /**

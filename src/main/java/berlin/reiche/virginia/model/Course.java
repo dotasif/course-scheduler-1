@@ -69,6 +69,10 @@ public class Course {
         return duration;
     }
 
+    public ObjectId getId() {
+    	return id;
+    }
+
     public CourseModule getModule() {
         return module;
     }
@@ -76,7 +80,7 @@ public class Course {
     public String getType() {
         return type;
     }
-
+    
     public void setModule(CourseModule module) {
         this.module = module;
     }
