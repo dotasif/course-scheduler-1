@@ -42,7 +42,7 @@ public class ModuleServlet extends HttpServlet {
     private static final ModuleServlet INSTANCE = new ModuleServlet();
 
     public final static String root = "/modules";
-    
+
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -62,7 +62,8 @@ public class ModuleServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
+        AppServlet.checkAccessRights(request, response, root
+                + ((path == null) ? "" : path));
 
         if (path == null) {
             showCourseModules(response);
@@ -85,10 +86,10 @@ public class ModuleServlet extends HttpServlet {
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleModification(request, response, module);
         } else if (path.equals("/responsibilities")) {
-        	List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
-        	data.put("modules", modules);
-        	data.put("user", AppServlet.getUser(request));
-        	AppServlet.processTemplate(RESPONSIBLITIES_SITE, data, writer);
+            List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
+            data.put("modules", modules);
+            data.put("user", AppServlet.getUser(request));
+            AppServlet.processTemplate(RESPONSIBLITIES_SITE, data, writer);
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }
@@ -111,14 +112,18 @@ public class ModuleServlet extends HttpServlet {
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleForm(request, response, module);
         } else if (path.equals("/modules/responsibilities")) {
-        	String[] ids = request.getParameterValues("responsibility");
-			User user = (User) request.getSession().getAttribute(
-					AppServlet.LOGIN_ATTRIBUTE); 
-        	for (String id : ids) {
-        		Course course = MongoDB.get(Course.class, new ObjectId(id));
-        		user.addCourse(course);
-        	}
-        	MongoDB.store(user);
+            String[] ids = request.getParameterValues("responsibility");
+            User user = AppServlet.getUser(request);
+            user.getResponsibleCourses().clear();
+            
+            if (ids != null) {
+                for (String id : ids) {
+                    Course course = MongoDB.get(Course.class, new ObjectId(id));
+                    user.addCourse(course);
+                }
+            }
+            MongoDB.store(user);
+            response.sendRedirect("/modules/responsibilities");
         }
     }
 
@@ -175,8 +180,7 @@ public class ModuleServlet extends HttpServlet {
             courseDataList.add(courseData);
         }
         data.put("courses", courseDataList);
-        AppServlet.processTemplate(COURSES_SITE, data,
-                response.getWriter());
+        AppServlet.processTemplate(COURSES_SITE, data, response.getWriter());
     }
 
     /**
@@ -231,8 +235,7 @@ public class ModuleServlet extends HttpServlet {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, requestHeadline);
             data.put("blankCourse", true);
 
-            AppServlet.processTemplate(FORM_SITE, data,
-                    response.getWriter());
+            AppServlet.processTemplate(FORM_SITE, data, response.getWriter());
         } else if (submitReason.equals("Create")) {
 
             if (module == null) {
@@ -254,7 +257,7 @@ public class ModuleServlet extends HttpServlet {
                 module.getCourses().add(course);
             }
             MongoDB.store(module);
-            
+
             response.sendRedirect("/modules");
 
         } else {
@@ -296,8 +299,7 @@ public class ModuleServlet extends HttpServlet {
 
         data.put("courses", courseDataList);
         data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Course Module");
-        AppServlet
-                .processTemplate(FORM_SITE, data, response.getWriter());
+        AppServlet.processTemplate(FORM_SITE, data, response.getWriter());
     }
 
     /**
