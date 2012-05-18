@@ -87,6 +87,7 @@ public class ModuleServlet extends HttpServlet {
         } else if (path.equals("/responsibilities")) {
         	List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
         	data.put("modules", modules);
+        	data.put("user", AppServlet.getUser(request));
         	AppServlet.processTemplate(RESPONSIBLITIES_SITE, data, writer);
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
@@ -114,7 +115,7 @@ public class ModuleServlet extends HttpServlet {
 			User user = (User) request.getSession().getAttribute(
 					AppServlet.LOGIN_ATTRIBUTE); 
         	for (String id : ids) {
-        		Course course = MongoDB.get(Course.class, id);
+        		Course course = MongoDB.get(Course.class, new ObjectId(id));
         		user.addCourse(course);
         	}
         	MongoDB.store(user);

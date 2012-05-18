@@ -134,7 +134,11 @@ public class User {
 	private String hashPassword(String password) {
 		return BCrypt.hashpw(password, BCrypt.gensalt(LOG_ROUNDS));
 	}
-
+	
+	public boolean hasCourse(Course course) {
+	    return true;
+	}
+	
 	public boolean isLecturer() {
 		return lecturer;
 	}
@@ -158,5 +162,9 @@ public class User {
 	public void setStudent(boolean student) {
 		this.student = student;
 	}
+
+    public List<Course> getResponsibleCourses() {
+        return responsibleCourses;
+    }
 
 }

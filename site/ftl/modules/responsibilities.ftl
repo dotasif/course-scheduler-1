@@ -32,7 +32,11 @@
                                                 </tr>
                                                 <#list module.courses as course>
                                                 <tr>
-                                                        <td><input name="responsibility" value="${course.id}" type="checkbox"/></td>
+                                                        <#assign isResponsible = ""/>
+                                                        <#if user.responsibleCourses?seq_contains(course)>
+                                                        <#assign isResponsible = "checked"/>
+                                                        </#if>
+                                                        <td><input name="responsibility" value="${course.id}" type="checkbox" ${isResponsible}/></td>
                                                         <td>${course.type}</td>
                                                 </tr>
                                                 </#list>
