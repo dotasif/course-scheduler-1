@@ -35,6 +35,11 @@ public class ModuleServlet extends HttpServlet {
     private static final String FORM_SITE = "ftl/modules/form.ftl";
     private static final String COURSES_SITE = "ftl/modules/course-list.ftl";
     private static final String RESPONSIBLITIES_SITE = "ftl/modules/responsibilities.ftl";
+    
+    /**
+     * Further constants.
+     */
+    private static final String SELECTED_USER = "modules.selectedUser";
 
     /**
      * Singleton instance.
@@ -87,8 +92,17 @@ public class ModuleServlet extends HttpServlet {
             handleModuleModification(request, response, module);
         } else if (path.equals("/responsibilities")) {
             List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
+            List<User> lecturers = MongoDB.createQuery(User.class)
+                    .filter("lecturer =", true).asList();
+            
+            User user = (User) request.getSession().getAttribute(SELECTED_USER);
+            if (user == null) {
+                user = AppServlet.getCurrentUser(request);
+            }
+            
+            data.put("user", user);
             data.put("modules", modules);
-            data.put("user", AppServlet.getUser(request));
+            data.put("lecturers", lecturers);
             AppServlet.processTemplate(RESPONSIBLITIES_SITE, data, writer);
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
@@ -112,17 +126,33 @@ public class ModuleServlet extends HttpServlet {
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleForm(request, response, module);
         } else if (path.equals("/modules/responsibilities")) {
-            String[] ids = request.getParameterValues("responsibility");
-            User user = AppServlet.getUser(request);
-            user.getResponsibleCourses().clear();
-            
-            if (ids != null) {
-                for (String id : ids) {
-                    Course course = MongoDB.get(Course.class, new ObjectId(id));
-                    user.addCourse(course);
+
+            String submitReason = request.getParameter("submit-reason");
+            if ("Change User".equals(submitReason)) {
+                String selectedLecturer = request.getParameter("selectedUser");
+                request.getSession().setAttribute(SELECTED_USER, MongoDB.get(User.class, selectedLecturer));
+            } else if ("Save".equals(submitReason)) {
+                String[] ids = request.getParameterValues("responsibility");
+                
+                User user = (User) request.getSession().getAttribute(SELECTED_USER);
+                if (user == null) {
+                    user = AppServlet.getCurrentUser(request);
                 }
+                
+                user.getResponsibleCourses().clear();
+
+                if (ids != null) {
+                    for (String id : ids) {
+                        Course course = MongoDB.get(Course.class, new ObjectId(
+                                id));
+                        user.addCourse(course);
+                    }
+                }
+                MongoDB.store(user);
+            } else {
+                throw new IllegalStateException();
             }
-            MongoDB.store(user);
+
             response.sendRedirect("/modules/responsibilities");
         }
     }

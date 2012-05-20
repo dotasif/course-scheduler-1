@@ -12,6 +12,14 @@
                         </ol>
                 </div>
                 <div class="content">
+                        <form action="" method="post">
+                                <select name="selectedUser">
+                                        <#list lecturers as lecturer>
+                                        <option value="${lecturer.name}" <#if lecturer.name == user.name>selected</#if>>${lecturer.name}</option>
+                                        </#list>
+                                </select>
+                                <input type="submit" name="submit-reason" value="Change User"/>
+                        </form>
                         <form action="" method="post"> 
                                 <table>
                                         <thead>
@@ -43,7 +51,7 @@
                                                 </#list>
                                         </tbody>
                                 </table>
-                                <input type="submit" value="Save"/>
+                                <input type="submit" name="submit-reason" value="Save"/>
                         </form>
                 </div>
         </body>

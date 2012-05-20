@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
+import com.google.code.morphia.query.Query;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
@@ -131,23 +132,23 @@ public class MongoDB {
         datastore.delete(cls, id);
     }
 
-    
     /**
      * Deletes a certain entity from which only one should exist.
      * 
-     * @param cls the class type of the entity to delete.
+     * @param cls
+     *            the class type of the entity to delete.
      */
     public static <T> void delete(Class<T> cls) {
-        
+
         List<T> collection = getAll(cls);
         if (collection.size() > 1) {
             throw new IllegalStateException("There is more than one object in"
                     + " the database of type" + cls.getClass() + ".");
         }
-        
-       deleteAll(cls);
+
+        deleteAll(cls);
     }
-    
+
     /**
      * Deletes a certain type of entities.
      * 
@@ -156,6 +157,15 @@ public class MongoDB {
      */
     public static <T> void deleteAll(Class<T> cls) {
         datastore.delete(datastore.createQuery(cls));
+    }
+
+    /**
+     * @param cls
+     *            the class specifying the would-be queried entities.
+     * @return a new query bound to the given class.
+     */
+    public static <T> Query<T> createQuery(Class<T> cls) {
+        return datastore.createQuery(cls);
     }
 
 }

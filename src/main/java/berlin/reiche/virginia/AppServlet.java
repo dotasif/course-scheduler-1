@@ -263,7 +263,7 @@ public class AppServlet extends HttpServlet {
      * 
      * @return the current user logged in, null if no user is logged in.
      */
-    static User getUser(HttpServletRequest request) {
+    static User getCurrentUser(HttpServletRequest request) {
         return (User) request.getSession().getAttribute(LOGIN_ATTRIBUTE);
     }
 }
