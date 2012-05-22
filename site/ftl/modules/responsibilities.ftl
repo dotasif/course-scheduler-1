@@ -5,20 +5,20 @@
                 <title>${title}</title>
         </head>
         <body>
-                <h1>Course Responsiblities</h1>
+                <h1>Course Responsibilities</h1>
                 <div class="navigation">
                         <ol>
                                 <li><a href="/modules">Back</a></li>
                         </ol>
                 </div>
                 <div class="content">
-                        <form action="" method="post">
-                                <select name="selectedUser">
+                        <form action="" method="GET">
+                                <select name="user">
                                         <#list lecturers as lecturer>
                                         <option value="${lecturer.name}" <#if lecturer.name == user.name>selected</#if>>${lecturer.name}</option>
                                         </#list>
                                 </select>
-                                <input type="submit" name="submit-reason" value="Change User"/>
+                                <input type="submit" value="Change User"/>
                         </form>
                         <form action="" method="post"> 
                                 <table>
@@ -51,7 +51,7 @@
                                                 </#list>
                                         </tbody>
                                 </table>
-                                <input type="submit" name="submit-reason" value="Save"/>
+                                <input type="submit" value="Save"/>
                         </form>
                 </div>
         </body>

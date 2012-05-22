@@ -39,7 +39,7 @@ public class ModuleServlet extends HttpServlet {
     /**
      * Further constants.
      */
-    private static final String SELECTED_USER = "modules.selectedUser";
+    private static final String SELECTED_USER = "user";
 
     /**
      * Singleton instance.
@@ -95,11 +95,11 @@ public class ModuleServlet extends HttpServlet {
             List<User> lecturers = MongoDB.createQuery(User.class)
                     .filter("lecturer =", true).asList();
             
-            User user = (User) request.getSession().getAttribute(SELECTED_USER);
-            if (user == null) {
-                user = AppServlet.getCurrentUser(request);
+            String selectedUser = request.getParameter(SELECTED_USER);
+            if (selectedUser == null) {
+                selectedUser = AppServlet.getCurrentUser(request).getName();
             }
-            
+            User user = MongoDB.get(User.class, selectedUser);
             data.put("user", user);
             data.put("modules", modules);
             data.put("lecturers", lecturers);
@@ -126,19 +126,13 @@ public class ModuleServlet extends HttpServlet {
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleForm(request, response, module);
         } else if (path.equals("/modules/responsibilities")) {
-
-            String submitReason = request.getParameter("submit-reason");
-            if ("Change User".equals(submitReason)) {
-                String selectedLecturer = request.getParameter("selectedUser");
-                request.getSession().setAttribute(SELECTED_USER, MongoDB.get(User.class, selectedLecturer));
-            } else if ("Save".equals(submitReason)) {
-                String[] ids = request.getParameterValues("responsibility");
-                
-                User user = (User) request.getSession().getAttribute(SELECTED_USER);
-                if (user == null) {
-                    user = AppServlet.getCurrentUser(request);
+            
+                String[] ids = request.getParameterValues("responsibility");   
+                String selectedUser = request.getParameter(SELECTED_USER);
+                if (selectedUser == null) {
+                    selectedUser = AppServlet.getCurrentUser(request).getName();
                 }
-                
+                User user = MongoDB.get(User.class, selectedUser);
                 user.getResponsibleCourses().clear();
 
                 if (ids != null) {
@@ -149,11 +143,7 @@ public class ModuleServlet extends HttpServlet {
                     }
                 }
                 MongoDB.store(user);
-            } else {
-                throw new IllegalStateException();
-            }
-
-            response.sendRedirect("/modules/responsibilities");
+                response.sendRedirect(path + "?user=" + selectedUser);
         }
     }
 
