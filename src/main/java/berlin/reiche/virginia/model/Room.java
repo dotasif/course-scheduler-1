@@ -12,7 +12,7 @@ import com.google.code.morphia.annotations.Id;
  * 
  */
 @Entity("room")
-public class Room {
+public class Room implements Comparable<Room> {
 
     @Id
     ObjectId id;
@@ -74,6 +74,17 @@ public class Room {
     public String toString() {
         String representation = number + " (" + name + ")";
         return representation.replace(".", "");
+    }
+
+    /**
+     * Makes the rooms comparable in order to return the same ordering every
+     * time when accessed.
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Room o) {
+        return id.compareTo(o.id);
     }
 
 }

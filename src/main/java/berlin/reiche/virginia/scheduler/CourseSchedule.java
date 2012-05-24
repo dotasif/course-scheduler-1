@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
@@ -154,8 +156,8 @@ public class CourseSchedule {
     /**
      * @return the list of rooms which have course schedules.
      */
-    public List<Room> getRooms() {
-        return new ArrayList<>(schedules.keySet());
+    public SortedSet<Room> getRooms() {
+        return new TreeSet<>(schedules.keySet());
     }
 
 }

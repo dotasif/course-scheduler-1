@@ -9,23 +9,19 @@ import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.TimeSlot;
 import berlin.reiche.virginia.model.Timeframe;
 
-import com.google.code.morphia.annotations.Embedded;
-
 /**
  * The course schedule for a certain room for a whole week.
  * 
  * @author Konrad Reiche
  * 
  */
-@Embedded
 class RoomSchedule {
 
     /**
      * Maps each day of the week (number) to a list of time slots, where each
      * time slot (number) can represent the beginning of a scheduled course.
      */
-    @Embedded
-    Map<Integer, Map<Integer, Course>> schedule;
+    Map<Integer, Map<Integer, ScheduleInformation>> schedule;
 
     /**
      * This constructor is used by Morphia via Java reflections.
@@ -44,7 +40,7 @@ class RoomSchedule {
         super();
         schedule = new HashMap<>();
         for (int day = 0; day < timeframe.getDays(); day++) {
-            Map<Integer, Course> daySchedule = new HashMap<>();
+            Map<Integer, ScheduleInformation> daySchedule = new HashMap<>();
             for (int timeSlot = 0; timeSlot < timeframe.getTimeSlots(); timeSlot++) {
                 daySchedule.put(timeSlot, null);
             }
@@ -64,7 +60,8 @@ class RoomSchedule {
      *            the time slit specifying the position in the course schedule.
      */
     void setCourse(Course course, int day, int timeSlot) {
-        schedule.get(day).put(timeSlot, course);
+        ScheduleInformation information = new ScheduleInformation(course, null);
+        schedule.get(day).put(timeSlot, information);
     }
 
     /**
@@ -77,7 +74,12 @@ class RoomSchedule {
      *            the time slit specifying the position in the course schedule.
      */
     Course getCourse(int day, int timeSlot) {
-        return schedule.get(day).get(timeSlot);
+        ScheduleInformation information = schedule.get(day).get(timeSlot);
+        if (information == null) {
+            return null;
+        } else {
+            return information.course;
+        }
     }
 
     /**
@@ -94,7 +96,7 @@ class RoomSchedule {
      */
     public int getTimeSlotCount(int day) {
 
-        Map<Integer, Course> daySchedule = schedule.get(day);
+        Map<Integer, ScheduleInformation> daySchedule = schedule.get(day);
         if (daySchedule == null) {
             return 0;
         } else {
@@ -108,10 +110,10 @@ class RoomSchedule {
     public List<Course> getCourses() {
         List<Course> courses = new ArrayList<>();
 
-        for (Map<Integer, Course> daySchedule : schedule.values()) {
-            for (Course course : daySchedule.values()) {
-                if (course != null) {
-                    courses.add(course);
+        for (Map<Integer, ScheduleInformation> daySchedule : schedule.values()) {
+            for (ScheduleInformation information : daySchedule.values()) {
+                if (information.course != null) {
+                    courses.add(information.course);
                 }
             }
         }
