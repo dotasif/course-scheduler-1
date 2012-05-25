@@ -17,6 +17,9 @@ public class ScheduleEntry {
 
     @Reference
     Room room;
+    
+    @Reference
+    User lecturer;
 
     int day;
 
@@ -27,8 +30,9 @@ public class ScheduleEntry {
 
     }
 
-    public ScheduleEntry(Course course, Room room, int day, int timeSlot) {
+    public ScheduleEntry(Course course, User lecturer, Room room, int day, int timeSlot) {
         this.course = course;
+        this.lecturer = lecturer;
         this.room = room;
         this.day = day;
         this.timeSlot = timeSlot;
@@ -49,5 +53,10 @@ public class ScheduleEntry {
     public int getTimeSlot() {
         return timeSlot;
     }
+
+    public User getLecturer() {
+        return lecturer;
+    }
+    
 
 }

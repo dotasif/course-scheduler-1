@@ -30,7 +30,7 @@
                                                 <td>${hour?string("00")}:00</td>
                                                 <#assign hour=hour+1/>
                                                 <#list row as cell>
-                                                <td><#if cell??>${cell}</#if></td>
+                                                <td><#if cell??>${cell.course} with ${cell.lecturer.name}</#if></td>
                                                 </#list>
                                         </tr>
                                         </#list>

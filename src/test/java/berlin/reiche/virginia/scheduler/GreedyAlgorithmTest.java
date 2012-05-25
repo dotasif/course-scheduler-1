@@ -14,6 +14,7 @@ import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.Timeframe;
+import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 import berlin.reiche.virginia.scheduler.GreedyAlgorithm;
 import berlin.reiche.virginia.scheduler.RoomSchedule;
@@ -27,6 +28,7 @@ public class GreedyAlgorithmTest {
     private static final String SEMINAR_ROOM = "Seminar Room";
 
     List<CourseModule> modules = new ArrayList<>();
+    List<User> lecturers = new ArrayList<>();
     List<Room> rooms = new ArrayList<>();
 
     static List<String> weekdays = new ArrayList<>();
@@ -49,9 +51,14 @@ public class GreedyAlgorithmTest {
         module.getCourses().add(new Course(LECTURE, 2, 2));
         module.getCourses().add(new Course(TUTORIAL, 2, 1));
         modules.add(module);
-
         Room room = new Room("SR001", SEMINAR_ROOM);
         rooms.add(room);
+        
+        User lecturer = new User("charles", "puwafu59", "charles@babbage.uk",
+                false, true);
+        lecturer.addCourse(module.getCourses().get(0));
+        lecturer.addCourse(module.getCourses().get(1));
+        lecturers.add(lecturer);
     }
 
     @Test
@@ -61,6 +68,7 @@ public class GreedyAlgorithmTest {
         data.timeframe = timeframe;
         data.modules = modules;
         data.rooms = rooms;
+        data.lecturers = lecturers;
 
         GreedyAlgorithm algorithm = new GreedyAlgorithm(data);
 
@@ -92,5 +100,4 @@ public class GreedyAlgorithmTest {
         assertEquals(0, coursesNotScheduled.size());
 
     }
-
 }

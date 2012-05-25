@@ -8,6 +8,7 @@ import java.util.Map;
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.TimeSlot;
 import berlin.reiche.virginia.model.Timeframe;
+import berlin.reiche.virginia.model.User;
 
 /**
  * The course schedule for a certain room for a whole week.
@@ -54,13 +55,15 @@ class RoomSchedule {
      * 
      * @param course
      *            the course to schedule.
+     * @param lecturer
+     *            the lecturer which helds the course.
      * @param day
      *            the day specifying the position in the course schedule.
      * @param timeSlot
      *            the time slit specifying the position in the course schedule.
      */
-    void setCourse(Course course, int day, int timeSlot) {
-        ScheduleInformation information = new ScheduleInformation(course, null);
+    void setCourse(Course course, User lecturer, int day, int timeSlot) {
+        ScheduleInformation information = new ScheduleInformation(course, lecturer);
         schedule.get(day).put(timeSlot, information);
     }
 
@@ -80,6 +83,19 @@ class RoomSchedule {
         } else {
             return information.course;
         }
+    }
+
+    /**
+     * Retrieves a certain course from the specific position in the room
+     * schedule.
+     * 
+     * @param day
+     *            the day specifying the position in the course schedule.
+     * @param timeSlot
+     *            the time slit specifying the position in the course schedule.
+     */
+    ScheduleInformation getScheduleInformation(int day, int timeSlot) {
+        return schedule.get(day).get(timeSlot);
     }
 
     /**
@@ -112,7 +128,7 @@ class RoomSchedule {
 
         for (Map<Integer, ScheduleInformation> daySchedule : schedule.values()) {
             for (ScheduleInformation information : daySchedule.values()) {
-                if (information.course != null) {
+                if (information != null) {
                     courses.add(information.course);
                 }
             }

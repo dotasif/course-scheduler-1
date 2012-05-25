@@ -11,6 +11,7 @@ import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.ScheduleEntry;
 import berlin.reiche.virginia.model.Timeframe;
+import berlin.reiche.virginia.model.User;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
@@ -86,6 +87,8 @@ public class CourseSchedule {
      * 
      * @param course
      *            the course to schedule.
+     * @param lecturer
+     *            the lecturer which helds the course.
      * @param room
      *            the room in which the course should take place.
      * @param day
@@ -93,12 +96,13 @@ public class CourseSchedule {
      * @param timeSlot
      *            the time slit specifying the position in the course schedule.
      */
-    public void setCourse(Course course, Room room, int day, int timeSlot) {
-        ScheduleEntry entry = new ScheduleEntry(course, room, day, timeSlot);
+    public void setCourse(Course course, User lecturer, Room room, int day,
+            int timeSlot) {
+        ScheduleEntry entry = new ScheduleEntry(course, lecturer, room, day, timeSlot);
         entries.add(entry);
         RoomSchedule schedule = schedules.get(room);
         for (int i = 0; i < course.getDuration(); i++) {
-            schedule.setCourse(course, day, timeSlot + i);
+            schedule.setCourse(course, lecturer, day, timeSlot + i);
         }
     }
 
@@ -125,11 +129,12 @@ public class CourseSchedule {
             for (ScheduleEntry entry : entries) {
                 Room room = entry.getRoom();
                 Course course = entry.getCourse();
+                User lecturer = entry.getLecturer();
                 int day = entry.getDay();
                 int timeSlot = entry.getTimeSlot();
                 RoomSchedule schedule = schedules.get(room);
                 for (int i = 0; i < course.getDuration(); i++) {
-                    schedule.setCourse(course, day, timeSlot + i);
+                    schedule.setCourse(course, lecturer, day, timeSlot + i);
                 }
             }
 
@@ -153,6 +158,22 @@ public class CourseSchedule {
         return schedules.get(room).getCourse(day, timeSlot);
     }
 
+    /**
+     * Retrieves a certain schedule information from the schedule.
+     * 
+     * @param room
+     *            the room in which the course is scheduled.
+     * @param day
+     *            the day on which the course is scheduled.
+     * @param timeSlot
+     *            the time slot on which the course is scheduled.
+     * @return the scheduled course or <code>null</code> if there is no course
+     *         scheduled.
+     */
+    public ScheduleInformation getScheduleInformation(Room room, int day, int timeSlot) {
+        return schedules.get(room).getScheduleInformation(day, timeSlot);
+    }
+    
     /**
      * @return the list of rooms which have course schedules.
      */

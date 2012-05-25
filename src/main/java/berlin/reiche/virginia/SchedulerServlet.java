@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.Timeframe;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
+import berlin.reiche.virginia.scheduler.ScheduleInformation;
 import berlin.reiche.virginia.scheduler.Scheduler;
 import berlin.reiche.virginia.scheduler.SchedulerException;
 
@@ -45,7 +45,7 @@ public class SchedulerServlet extends HttpServlet {
     private final Scheduler scheduler;
 
     public final static String root = "/scheduler";
-    
+
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -64,7 +64,8 @@ public class SchedulerServlet extends HttpServlet {
         String path = request.getPathInfo();
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
+        AppServlet.checkAccessRights(request, response, root
+                + ((path == null) ? "" : path));
 
         if (path == null) {
             showSchedule(request, response);
@@ -114,12 +115,12 @@ public class SchedulerServlet extends HttpServlet {
                 Map<String, Object> scheduleData = new HashMap<>();
                 scheduleData.put("room", room.toString());
                 
-                List<List<String>> timeRows = new ArrayList<>();
+                List<List<ScheduleInformation>> timeRows = new ArrayList<>();
                 for (int i = 0; i < timeframe.getTimeSlots(); i++) {
-                    List<String> cells = new ArrayList<>();
+                    List<ScheduleInformation> cells = new ArrayList<>();
                     for (int j = 0; j < timeframe.getDays(); j++) {
-                        Course course = schedule.getCourse(room, j, i);
-                        cells.add((course == null) ? null : course.toString());
+                        ScheduleInformation information = schedule.getScheduleInformation(room, j, i);
+                        cells.add(information);
                     }
                     timeRows.add(cells);
                 }

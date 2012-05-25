@@ -15,7 +15,7 @@ import com.google.code.morphia.annotations.Reference;
  * 
  */
 @Entity("course")
-public class Course {
+public class Course implements Comparable<Course> {
 
     @Id
     ObjectId id;
@@ -88,6 +88,31 @@ public class Course {
     @Override
     public String toString() {
         return module.getName() + " (" + type + ")";
+    }
+
+    /**
+     * Makes the course comparable in order to return the same ordering every
+     * time when accessed.
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Course o) {
+        return id.compareTo(o.id);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Course)) {
+            return false;
+        } else {
+            return id.equals(((Course)o).id);
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
 }

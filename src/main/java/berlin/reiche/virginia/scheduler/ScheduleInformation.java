@@ -20,4 +20,12 @@ public class ScheduleInformation {
         this.lecturer = lecturer;
     }
 
+    public Course getCourse() {
+        return course;
+    }
+
+    public User getLecturer() {
+        return lecturer;
+    }
+
 }
