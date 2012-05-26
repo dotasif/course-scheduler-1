@@ -18,7 +18,7 @@ import com.google.code.morphia.annotations.Reference;
 public class Course implements Comparable<Course> {
 
     @Id
-    ObjectId id;
+    ObjectId id = new ObjectId();
 
     String type;
     int duration;

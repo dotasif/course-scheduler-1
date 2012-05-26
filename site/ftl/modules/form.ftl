@@ -39,9 +39,23 @@
                                                         <label for="course-count">Count:</label>
                                                         <input type="text" name="course-count" id="course-count" value="${course.count}"/>
                                                         </li>
+                                                        <li>Features:
+                                                        <ol>
+                                                                <li>
+                                                                <label for="feature">Type:</label>
+                                                                <input type="text" name="feature-name"/>
+                                                                </li>
+                                                                <li>
+                                                                <label for="feature-count">Quantity:</label>
+                                                                <input type="text" name="feature-quantity"/>
+                                                                </li>
+                                                                </li>
+                                                        </ol>
+                                                        <li><input type="submit" name="submit-reason" value="New Feature"/></li>
+                                                        </li>
                                                         </#list>
                                                         </#if>
-                                                        <#if  blankCourse??>
+                                                        <#if blankCourse??>
                                                         <li>
                                                         <label for="course-type">Type:</label>
                                                         <input type="text" name="course-type" id="course-type" value=""/>
