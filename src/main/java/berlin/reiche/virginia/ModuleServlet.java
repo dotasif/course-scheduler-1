@@ -35,7 +35,7 @@ public class ModuleServlet extends HttpServlet {
     private static final String FORM_SITE = "ftl/modules/form.ftl";
     private static final String COURSES_SITE = "ftl/modules/course-list.ftl";
     private static final String RESPONSIBLITIES_SITE = "ftl/modules/responsibilities.ftl";
-    
+
     /**
      * Further constants.
      */
@@ -79,7 +79,7 @@ public class ModuleServlet extends HttpServlet {
             showCourses(response, moduleId);
         } else if (path.equals("/new")) {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Course Module");
-            data.put("blankCourse", true);
+            data.put("module", CourseModule.NULL_MODULE);
             AppServlet.processTemplate(FORM_SITE, data, writer);
         } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/delete/".length()));
@@ -89,12 +89,14 @@ public class ModuleServlet extends HttpServlet {
         } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/edit/".length()));
             CourseModule module = MongoDB.get(CourseModule.class, id);
-            handleModuleModification(request, response, module);
+            data.put("module", module);
+            data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Course Module");
+            AppServlet.processTemplate(FORM_SITE, data, response.getWriter());
         } else if (path.equals("/responsibilities")) {
             List<CourseModule> modules = MongoDB.getAll(CourseModule.class);
             List<User> lecturers = MongoDB.createQuery(User.class)
                     .filter("lecturer =", true).asList();
-            
+
             String selectedUser = request.getParameter(SELECTED_USER);
             if (selectedUser == null) {
                 selectedUser = AppServlet.getCurrentUser(request).getName();
@@ -126,24 +128,23 @@ public class ModuleServlet extends HttpServlet {
             CourseModule module = MongoDB.get(CourseModule.class, id);
             handleModuleForm(request, response, module);
         } else if (path.equals("/modules/responsibilities")) {
-            
-                String[] ids = request.getParameterValues("responsibility");   
-                String selectedUser = request.getParameter(SELECTED_USER);
-                if (selectedUser == null) {
-                    selectedUser = AppServlet.getCurrentUser(request).getName();
-                }
-                User user = MongoDB.get(User.class, selectedUser);
-                user.getResponsibleCourses().clear();
 
-                if (ids != null) {
-                    for (String id : ids) {
-                        Course course = MongoDB.get(Course.class, new ObjectId(
-                                id));
-                        user.addCourse(course);
-                    }
+            String[] ids = request.getParameterValues("responsibility");
+            String selectedUser = request.getParameter(SELECTED_USER);
+            if (selectedUser == null) {
+                selectedUser = AppServlet.getCurrentUser(request).getName();
+            }
+            User user = MongoDB.get(User.class, selectedUser);
+            user.getResponsibleCourses().clear();
+
+            if (ids != null) {
+                for (String id : ids) {
+                    Course course = MongoDB.get(Course.class, new ObjectId(id));
+                    user.addCourse(course);
                 }
-                MongoDB.store(user);
-                response.sendRedirect(path + "?user=" + selectedUser);
+            }
+            MongoDB.store(user);
+            response.sendRedirect(path + "?user=" + selectedUser);
         }
     }
 
@@ -210,7 +211,7 @@ public class ModuleServlet extends HttpServlet {
      *            provides request information for HTTP servlets.
      * @param response
      *            provides HTTP-specific functionality in sending a response.
-     * @param module
+     * @param oldModule
      *            The course module object if it is present, if it is present
      *            this is an entity modification request, else it is an entity
      *            creation request.
@@ -218,108 +219,70 @@ public class ModuleServlet extends HttpServlet {
      *             if an input or output exception occurs.
      */
     private void handleModuleForm(HttpServletRequest request,
-            HttpServletResponse response, CourseModule module)
+            HttpServletResponse response, CourseModule oldModule)
             throws IOException {
 
         Map<String, Object> data = AppServlet.getDefaultData();
-        List<Map<String, String>> courseDataList = new ArrayList<>();
 
         String name = request.getParameter("name");
         int credits = Integer.valueOf(request.getParameter("credits"));
         String assessment = request.getParameter("assessment");
+        CourseModule newModule = new CourseModule(name, credits, assessment);
+        data.put("module", newModule);
 
-        String[] courseTypes = request.getParameterValues("course-type");
-        String[] courseDurations = request
-                .getParameterValues("course-duration");
-        String[] courseCounts = request.getParameterValues("course-count");
+        String[] types = request.getParameterValues("type");
+        String[] durations = request.getParameterValues("duration");
+        String[] counts = request.getParameterValues("count");
+
+        List<Course> courses = new ArrayList<>();
+        for (int i = 0; i < types.length; i++) {
+
+            if ("".equals(types[i]) && "".equals(durations[i])
+                    && "".equals(counts[i])) {
+                continue;
+            }
+
+            int duration = Integer.valueOf(durations[i]);
+            int count = Integer.valueOf(counts[i]);
+            courses.add(new Course(types[i], duration, count));
+        }
 
         String submitReason = request.getParameter("submit-reason");
         if (submitReason.equals("New Course")) {
 
-            data.put("name", name);
-            data.put("credits", credits);
-            data.put("assessment", assessment);
-
-            for (int i = 0; i < courseTypes.length; ++i) {
-                Map<String, String> courseData = new TreeMap<>();
-                courseData.put("type", courseTypes[i]);
-                courseData.put("duration", courseDurations[i]);
-                courseData.put("count", courseCounts[i]);
-                courseDataList.add(courseData);
+            newModule.getCourses().addAll(courses);
+            newModule.getCourses().add(Course.NULL_COURSE);
+            String requestHeadline = "New Course Module";
+            if (oldModule != null) {
+                requestHeadline = "Edit Course Module";
             }
 
-            String requestHeadline = (module == null) ? "New Course Module"
-                    : "Edit Course Module";
-
-            data.put("courses", courseDataList);
             data.put(AppServlet.REQUEST_HEADLINE_VAR, requestHeadline);
-            data.put("blankCourse", true);
-
             AppServlet.processTemplate(FORM_SITE, data, response.getWriter());
+
         } else if (submitReason.equals("Create")) {
 
-            if (module == null) {
-                module = new CourseModule(name, credits, assessment);
+            if (oldModule == null) {
+                oldModule = newModule;
             } else {
-                module.setName(name);
-                module.setCredits(credits);
-                module.setAssessment(assessment);
-                module.getCourses().clear();
+                oldModule.setName(name);
+                oldModule.setCredits(credits);
+                oldModule.setAssessment(assessment);
+                oldModule.getCourses().clear();
             }
 
-            MongoDB.store(module);
-            for (int i = 0; i < courseTypes.length; ++i) {
-                Course course = new Course(courseTypes[i],
-                        Integer.valueOf(courseDurations[i]),
-                        Integer.valueOf(courseCounts[i]));
-                course.setModule(module);
+            MongoDB.store(oldModule);
+            oldModule.getCourses().addAll(courses);
+            for (Course course : courses) {
+                course.setModule(oldModule);
                 MongoDB.store(course);
-                module.getCourses().add(course);
             }
-            MongoDB.store(module);
-
+            MongoDB.store(oldModule);
             response.sendRedirect("/modules");
-
         } else {
             throw new IllegalStateException(
-                    "An unknown submit value was received.");
+                    "An unknown submit value was received: " + submitReason);
         }
-    }
-
-    /**
-     * Handles a course module modification request.
-     * 
-     * @param request
-     *            provides request information for HTTP servlets.
-     * @param response
-     *            provides HTTP-specific functionality in sending a response.
-     * @param module
-     *            the course module which is requested for modification.
-     * @throws IOException
-     *             if an input or output exception occurs.
-     */
-    private void handleModuleModification(HttpServletRequest request,
-            HttpServletResponse response, CourseModule module)
-            throws IOException {
-
-        Map<String, Object> data = AppServlet.getDefaultData();
-        List<Map<String, Object>> courseDataList = new ArrayList<>();
-
-        data.put("name", module.getName());
-        data.put("credits", module.getCredits());
-        data.put("assessment", module.getAssessment());
-
-        for (Course course : module.getCourses()) {
-            Map<String, Object> courseData = new TreeMap<>();
-            courseData.put("type", course.getType());
-            courseData.put("duration", course.getDuration());
-            courseData.put("count", course.getCount());
-            courseDataList.add(courseData);
-        }
-
-        data.put("courses", courseDataList);
-        data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Course Module");
-        AppServlet.processTemplate(FORM_SITE, data, response.getWriter());
     }
 
     /**

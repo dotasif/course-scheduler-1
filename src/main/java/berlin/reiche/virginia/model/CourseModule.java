@@ -41,6 +41,16 @@ public class CourseModule {
     }
 
     /**
+     * Null object for form processing purposes.
+     */
+    public static final CourseModule NULL_MODULE;
+
+    static {
+        NULL_MODULE = new CourseModule(null, -1, null);
+        NULL_MODULE.getCourses().add(Course.NULL_COURSE);
+    }
+
+    /**
      * Creates a new course module by assigning the parameters directly, except
      * the id which is generated before saving the object to the database.
      * 
@@ -51,11 +61,11 @@ public class CourseModule {
      * @param assessmentType
      *            the assessment type.
      */
-    public CourseModule(String name, int credits, String assessmentType) {
+    public CourseModule(String name, int credits, String assessment) {
         super();
         this.name = name;
         this.credits = credits;
-        this.assessment = assessmentType;
+        this.assessment = assessment;
         this.courses = new ArrayList<>();
     }
 

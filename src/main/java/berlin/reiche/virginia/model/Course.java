@@ -34,6 +34,11 @@ public class Course implements Comparable<Course> {
     CourseModule module;
 
     /**
+     * Null object for form processing purposes.
+     */
+    public final static Course NULL_COURSE = new Course(null, -1, -1);
+
+    /**
      * This constructor is used by Morphia via Java reflections.
      */
     @SuppressWarnings("unused")
@@ -70,7 +75,7 @@ public class Course implements Comparable<Course> {
     }
 
     public ObjectId getId() {
-    	return id;
+        return id;
     }
 
     public CourseModule getModule() {
@@ -80,7 +85,7 @@ public class Course implements Comparable<Course> {
     public String getType() {
         return type;
     }
-    
+
     public void setModule(CourseModule module) {
         this.module = module;
     }
@@ -100,16 +105,16 @@ public class Course implements Comparable<Course> {
     public int compareTo(Course o) {
         return id.compareTo(o.id);
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Course)) {
             return false;
         } else {
-            return id.equals(((Course)o).id);
+            return id.equals(((Course) o).id);
         }
     }
-    
+
     @Override
     public int hashCode() {
         return id.hashCode();

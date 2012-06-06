@@ -7,77 +7,47 @@
         <body>
                 <h1>${requestHeadline}</h1>
                 <div class="content">
-                        <form id="new-module-form" action="" method="post">
+                        <form action="" method="post">
                                 <ol>
                                         <li>
                                         <label for="name">Name:</label>
-                                        <input type="text" name="name" id="name" value="<#if name??>${name}</#if>"/>
+                                        <input type="text" name="name" value="<#if module.name??>${module.name}</#if>"/>
                                         </li>
                                         <li>
                                         <label for="credits">Credits:</label>
-                                        <input type="text" name="credits" id="credits" value="<#if credits??>${credits}</#if>"/>
+                                        <input type="text" name="credits" value="<#if module.credits != -1>${module.credits}</#if>"/>
                                         </li>
                                         <li>
                                         <label for="assessment">Assessment:</label>
-                                        <input type="text" name="assessment" id="assessment" value="<#if assessment??>${assessment}</#if>"/>
+                                        <input type="text" name="assessment" value="<#if module.assessment??>${module.assessment}</#if>"/>
                                         </li>
                                         <li>Courses:
-                                        <ol>
+                                        <ul>
+                                                <#list module.courses as course>
                                                 <li>
                                                 <ol>
-                                                        <#if courses??>
-                                                        <#list courses as course>
                                                         <li>
-                                                        <label for="course-type">Type:</label>
-                                                        <input type="text" name="course-type" id="course-type" value="${course.type}"/>
+                                                        <label for="type">Type:</label>
+                                                        <input type="text" name="type" value="<#if course.type??>${course.type}</#if>"/>
                                                         </li>
                                                         <li>
-                                                        <label for="course-duration">Duration:</label>
-                                                        <input type="text" name="course-duration" id="course-duration" value="${course.duration}"/>
+                                                        <label for="duration">Duration:</label>
+                                                        <input type="text" name="duration" value="<#if course.duration != -1>${course.duration}</#if>"/>
                                                         </li>
                                                         <li>
-                                                        <label for="course-count">Count:</label>
-                                                        <input type="text" name="course-count" id="course-count" value="${course.count}"/>
+                                                        <label for="count">Count:</label>
+                                                        <input type="text" name="count" value="<#if course.count != -1>${course.count}</#if>"/>
                                                         </li>
-                                                        <li>Features:
-                                                        <ol>
-                                                                <li>
-                                                                <label for="feature">Type:</label>
-                                                                <input type="text" name="feature-name"/>
-                                                                </li>
-                                                                <li>
-                                                                <label for="feature-count">Quantity:</label>
-                                                                <input type="text" name="feature-quantity"/>
-                                                                </li>
-                                                                </li>
-                                                        </ol>
-                                                        <li><input type="submit" name="submit-reason" value="New Feature"/></li>
-                                                        </li>
-                                                        </#list>
-                                                        </#if>
-                                                        <#if blankCourse??>
-                                                        <li>
-                                                        <label for="course-type">Type:</label>
-                                                        <input type="text" name="course-type" id="course-type" value=""/>
-                                                        </li>
-                                                        <li>
-                                                        <label for="course-duration">Duration:</label>
-                                                        <input type="text" name="course-duration" id="course-duration" value=""/>
-                                                        </li>
-                                                        <li>
-                                                        <label for="course-count">Count:</label>
-                                                        <input type="text" name="course-count" id="course-count" value=""/>
-                                                        </li>
-                                                        </#if>
+
                                                 </ol>
                                                 </li>
-                                                <li>
-                                                <input type="submit" name="submit-reason" value="New Course"/>
-                                                </li>
-                                                <li>
-                                                <input type="submit" name="submit-reason" value="Create"/>
-                                                </li>
-                                        </ol>
+                                                </#list>
+                                        </ul>
+                                        <li>
+                                        <input type="submit" name="submit-reason" value="New Course"/>
+                                        </li>
+                                        <li>
+                                        <input type="submit" name="submit-reason" value="Create"/>
                                         </li>
                                 </ol>
                         </form>
