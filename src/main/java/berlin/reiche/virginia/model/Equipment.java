@@ -1,7 +1,5 @@
 package berlin.reiche.virginia.model;
 
-import java.util.List;
-
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
@@ -22,7 +20,7 @@ public class Equipment {
     /**
      * The items of the equipment.
      */
-    List<String> items;
+    String[] items;
 
     /**
      * This constructor is used by Morphia via Java reflections.
@@ -38,16 +36,16 @@ public class Equipment {
      * @param items
      *            the items of the equipment.
      */
-    public Equipment(List<String> items) {
+    public Equipment(String[] items) {
         super();
         this.items = items;
     }
 
-    public List<String> getItems() {
+    public String[] getItems() {
         return items;
     }
 
-    public void setItems(List<String> items) {
+    public void setItems(String[] items) {
         this.items = items;
     }
 

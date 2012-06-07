@@ -145,7 +145,7 @@ public class Main {
 
             String[] items = properties.getProperty("equipment")
                     .replace(" ", "").split(",");
-            Equipment equipment = new Equipment(Arrays.asList(items));
+            Equipment equipment = new Equipment(items);
             MongoDB.store(equipment);
             System.out.println("Created default equipment");
         }

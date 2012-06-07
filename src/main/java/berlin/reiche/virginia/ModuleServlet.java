@@ -16,6 +16,7 @@ import org.bson.types.ObjectId;
 
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
+import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 
@@ -228,11 +229,14 @@ public class ModuleServlet extends HttpServlet {
         int credits = Integer.valueOf(request.getParameter("credits"));
         String assessment = request.getParameter("assessment");
         CourseModule newModule = new CourseModule(name, credits, assessment);
+        Equipment equipment = (Equipment) data.get("equipment");
         data.put("module", newModule);
 
         String[] types = request.getParameterValues("type");
         String[] durations = request.getParameterValues("duration");
         String[] counts = request.getParameterValues("count");
+        String[] items = request.getParameterValues("item");
+        int equipmentSize = equipment.getItems().length;
 
         List<Course> courses = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
@@ -244,7 +248,15 @@ public class ModuleServlet extends HttpServlet {
 
             int duration = Integer.valueOf(durations[i]);
             int count = Integer.valueOf(counts[i]);
-            courses.add(new Course(types[i], duration, count));
+            Course course = new Course(types[i], duration, count);
+            for (int j = 0; j < equipmentSize; j++) {
+                int quantity = Integer.valueOf(items[(i * equipmentSize) + j]);
+                String constraint = equipment.getItems()[j];
+                if (quantity > 0) {
+                    course.getEquipment().put(constraint, quantity);
+                }
+            }
+            courses.add(course);
         }
 
         String submitReason = request.getParameter("submit-reason");

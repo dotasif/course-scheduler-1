@@ -2,7 +2,6 @@ package berlin.reiche.virginia;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -13,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import berlin.reiche.virginia.model.Equipment;
 
 /**
- * The equipment servlet is dedicated to access the settings for configuring
- * the available equipment for rooms and courses to request upon.
+ * The equipment servlet is dedicated to access the settings for configuring the
+ * available equipment for rooms and courses to request upon.
  * 
  * @author Konrad Reiche
  * 
@@ -33,7 +32,7 @@ public class EquipmentServlet extends HttpServlet {
     private static final EquipmentServlet INSTANCE = new EquipmentServlet();
 
     public final static String root = "/equipment";
-    
+
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -67,8 +66,7 @@ public class EquipmentServlet extends HttpServlet {
 
         String[] items = request.getParameter("equipment").split("\n");
         Equipment equipment = MongoDB.get(Equipment.class);
-        equipment.getItems().clear();
-        equipment.getItems().addAll(Arrays.asList(items));
+        equipment.setItems(items);
         MongoDB.store(equipment);
         response.sendRedirect("/");
     }
