@@ -25,7 +25,7 @@ public class Course implements Comparable<Course> {
     int count;
 
     @Reference
-    Map<String, Integer> features;
+    Map<String, Integer> equipment;
 
     /**
      * The course module to which this course belongs.

@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.Timeframe;
 import berlin.reiche.virginia.model.User;
 
@@ -64,6 +65,8 @@ public class Main {
                     "/modules/*");
             context.addServlet(new ServletHolder(RoomServlet.getInstance()),
                     "/rooms/*");
+            context.addServlet(new ServletHolder(EquipmentServlet.getInstance()),
+                    "/equipment/*");
             context.addServlet(
                     new ServletHolder(TimeframeServlet.getInstance()),
                     "/timeframe/*");
@@ -100,7 +103,7 @@ public class Main {
             MongoDB.store(admin);
             System.out.println("Created default admin user.");
         }
-        
+
         if (!admin.checkPassword(adminPassword)) {
             MongoDB.delete(User.class, adminUsername);
             admin = new User(adminUsername, adminPassword, "", false, false);
@@ -117,12 +120,11 @@ public class Main {
      */
     private static void checkSchedulerProperties() throws IOException {
 
-        if (MongoDB.getAll(Timeframe.class).isEmpty()) {
+        Properties properties = new Properties();
+        FileInputStream input = new FileInputStream(SCHEDULER_PROPERTIES_PATH);
+        properties.load(input);
 
-            Properties properties = new Properties();
-            FileInputStream input = new FileInputStream(
-                    SCHEDULER_PROPERTIES_PATH);
-            properties.load(input);
+        if (MongoDB.getAll(Timeframe.class).isEmpty()) {
 
             int days = Integer
                     .valueOf(properties.getProperty("timeframe.days"));
@@ -137,6 +139,15 @@ public class Main {
                     Arrays.asList(weekdays));
             MongoDB.store(timeframe);
             System.out.println("Created default timeframe.");
+        }
+
+        if (MongoDB.getAll(Equipment.class).isEmpty()) {
+
+            String[] items = properties.getProperty("equipment")
+                    .replace(" ", "").split(",");
+            Equipment equipment = new Equipment(Arrays.asList(items));
+            MongoDB.store(equipment);
+            System.out.println("Created default equipment");
         }
 
     }
