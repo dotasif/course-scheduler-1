@@ -1,5 +1,6 @@
 package berlin.reiche.virginia.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
@@ -25,7 +26,7 @@ public class Course implements Comparable<Course> {
     int count;
 
     @Reference
-    Map<String, Integer> equipment;
+    Map<String, Integer> equipment = new HashMap<>();
 
     /**
      * The course module to which this course belongs.
@@ -72,6 +73,10 @@ public class Course implements Comparable<Course> {
 
     public int getDuration() {
         return duration;
+    }
+
+    public Map<String, Integer> getEquipment() {
+        return equipment;
     }
 
     public ObjectId getId() {

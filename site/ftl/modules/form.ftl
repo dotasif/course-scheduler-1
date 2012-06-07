@@ -38,6 +38,12 @@
                                                         <label for="count">Count:</label>
                                                         <input type="text" name="count" value="<#if course.count != -1>${course.count}</#if>"/>
                                                         </li>
+                                                        <#list equipment.items as item>
+                                                        <li>
+                                                        <label for="item">${item}:</label>
+                                                        <input type="text" name="item" value="<#if course.equipment[item]??>${course.equipment[item]}<#else>0</#if>">
+                                                        </li>
+                                                        </#list>
 
                                                 </ol>
                                                 </li>

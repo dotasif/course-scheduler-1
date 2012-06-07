@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.User;
 
 import freemarker.template.Configuration;
@@ -204,7 +205,8 @@ public class AppServlet extends HttpServlet {
     }
 
     /**
-     * Generates a data model out of the default value property file.
+     * Generates a data model out of the default value property file and other
+     * sources.
      * 
      * @return the data model.
      * @throws IOException
@@ -222,6 +224,8 @@ public class AppServlet extends HttpServlet {
             defaultData.put((String) entry.getKey(), (String) entry.getValue());
         }
 
+        Equipment equipment = MongoDB.get(Equipment.class);
+        defaultData.put("equipment", equipment);
         return defaultData;
     }
 
