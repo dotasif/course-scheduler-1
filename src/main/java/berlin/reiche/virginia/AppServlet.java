@@ -103,13 +103,18 @@ public class AppServlet extends HttpServlet {
             throw new IOException("The associated path information is null");
         }
 
+        if (path.startsWith("/resources")) {
+            processTemplate(path, data, writer);
+            return;
+        }
+        
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
         if (user == null && path != null && !path.equals("/login")) {
             response.sendRedirect("/login");
             return;
         }
-
+        
         if (path.equals("/")) {
             processTemplate(MAIN_SITE, data, writer);
         } else if (path.equals("/login")) {

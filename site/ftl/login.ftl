@@ -3,6 +3,7 @@
         <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
                 <title>${title}</title>
+                <link rel="stylesheet" type="text/css" href="${css}"/>
         </head>
         <body>
                 <form id="login-form" action="" method="post">
