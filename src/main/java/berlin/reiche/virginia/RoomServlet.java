@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.types.ObjectId;
 
+import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.Room;
 
 /**
@@ -25,164 +26,153 @@ import berlin.reiche.virginia.model.Room;
 @SuppressWarnings("serial")
 public class RoomServlet extends HttpServlet {
 
-	/**
-	 * File path to the web resources.
-	 */
-	private static final String ROOMS_SITE = "ftl/rooms/list.ftl";
-	private static final String ROOM_FORM_SITE = "ftl/rooms/form.ftl";
+    /**
+     * File path to the web resources.
+     */
+    private static final String ROOMS_SITE = "ftl/rooms/list.ftl";
+    private static final String ROOM_FORM_SITE = "ftl/rooms/form.ftl";
 
-	/**
-	 * Singleton instance.
-	 */
-	private static RoomServlet instance = new RoomServlet();
-	
-	public final static String root = "/rooms"; 
-	
-	/**
-	 * The constructor is private in order to enforce the singleton pattern.
-	 */
-	private RoomServlet() {
+    /**
+     * Singleton instance.
+     */
+    private static RoomServlet instance = new RoomServlet();
 
-	}
+    public final static String root = "/rooms";
 
-	/**
-	 * Parses the HTTP request and writes the response by using the template
-	 * engine.
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * The constructor is private in order to enforce the singleton pattern.
+     */
+    private RoomServlet() {
 
-		String path = request.getPathInfo();
-		Map<String, Object> data = AppServlet.getDefaultData();
-		Writer writer = response.getWriter();
-		AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
+    }
 
-		if (path == null) {
-			showRooms(request, response);
-		} else if (path.equals("/")) {
-			response.sendRedirect("/rooms");
-		} else if (path.equals("/new")) {
-			data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Room");
-			AppServlet.processTemplate(ROOM_FORM_SITE, data, writer);
-		} else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
-			ObjectId id = new ObjectId(path.substring("/edit/".length()));
-			Room room = MongoDB.get(Room.class, id);
-			handleRoomModification(request, response, room);
-		} else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
-			ObjectId id = new ObjectId(path.substring("/delete/".length()));
-			MongoDB.delete(Room.class, id);
-			response.sendRedirect("/rooms");
-		} else {
-			AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
-		}
-	}
+    /**
+     * Parses the HTTP request and writes the response by using the template
+     * engine.
+     */
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-	/**
-	 * Parses all user HTML form requests and handles them.
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getPathInfo();
+        Map<String, Object> data = AppServlet.getDefaultData();
+        Writer writer = response.getWriter();
+        AppServlet.checkAccessRights(request, response, root
+                + ((path == null) ? "" : path));
 
-		String path = request.getPathInfo();
-		if ("/new".equals(path)) {
-			handleRoomForm(request, response, null);
-		} else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
-			ObjectId id = new ObjectId(path.substring("/edit/".length()));
-			Room room = MongoDB.get(Room.class, id);
-			handleRoomForm(request, response, room);
-		}
-	}
+        if (path == null) {
+            showRooms(request, response);
+        } else if (path.equals("/")) {
+            response.sendRedirect("/rooms");
+        } else if (path.equals("/new")) {
+            data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Room");
+            data.put("room", Room.NULL_ROOM);
+            AppServlet.processTemplate(ROOM_FORM_SITE, data, writer);
+        } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
+            ObjectId id = new ObjectId(path.substring("/edit/".length()));
+            data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Room");
+            data.put("room", MongoDB.get(Room.class, id));
+            AppServlet.processTemplate(ROOM_FORM_SITE, data,
+                    response.getWriter());
+        } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
+            ObjectId id = new ObjectId(path.substring("/delete/".length()));
+            MongoDB.delete(Room.class, id);
+            response.sendRedirect("/rooms");
+        } else {
+            AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
+        }
+    }
 
-	/**
-	 * Retrieves all rooms and displays them.
-	 * 
-	 * @param request
-	 *            provides request information for HTTP servlets.
-	 * 
-	 * @param response
-	 *            provides HTTP-specific functionality in sending a response.
-	 * @throws IOException
-	 *             if an input or output exception occurs.
-	 */
-	private void showRooms(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+    /**
+     * Parses all user HTML form requests and handles them.
+     */
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
 
-		Map<String, Object> data = AppServlet.getDefaultData();
-		List<Map<String, String>> roomDataList = new ArrayList<>();
+        String path = request.getPathInfo();
+        if ("/new".equals(path)) {
+            handleRoomForm(request, response, null);
+        } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
+            ObjectId id = new ObjectId(path.substring("/edit/".length()));
+            Room room = MongoDB.get(Room.class, id);
+            handleRoomForm(request, response, room);
+        }
+    }
 
-		for (Room room : MongoDB.getAll(Room.class)) {
-			Map<String, String> roomData = new TreeMap<>();
-			roomData.put("id", room.getId().toString());
-			roomData.put("number", room.getNumber());
-			roomData.put("name", room.getName());
-			roomDataList.add(roomData);
-		}
+    /**
+     * Retrieves all rooms and displays them.
+     * 
+     * @param request
+     *            provides request information for HTTP servlets.
+     * 
+     * @param response
+     *            provides HTTP-specific functionality in sending a response.
+     * @throws IOException
+     *             if an input or output exception occurs.
+     */
+    private void showRooms(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
-		data.put("rooms", roomDataList);
-		AppServlet.processTemplate(ROOMS_SITE, data, response.getWriter());
-	}
+        Map<String, Object> data = AppServlet.getDefaultData();
+        List<Map<String, String>> roomDataList = new ArrayList<>();
 
-	/**
-	 * Handles a room creation and modification requests.
-	 * 
-	 * @param request
-	 *            provides request information for HTTP servlets.
-	 * @param response
-	 *            provides HTTP-specific functionality in sending a response.
-	 * @param room
-	 *            The room object if it is present, if it is present this is an
-	 *            entity modification request, else it is an entity creation
-	 *            request.
-	 * @throws IOException
-	 *             if an input or output exception occurs.
-	 */
-	private void handleRoomForm(HttpServletRequest request,
-			HttpServletResponse response, Room room) throws IOException {
+        for (Room room : MongoDB.getAll(Room.class)) {
+            Map<String, String> roomData = new TreeMap<>();
+            roomData.put("id", room.getId().toString());
+            roomData.put("number", room.getNumber());
+            roomData.put("name", room.getName());
+            roomDataList.add(roomData);
+        }
 
-		String number = request.getParameter("number");
-		String name = request.getParameter("name");
-		if (room == null) {
-			room = new Room(number, name);
-		} else {
-			room.setNumber(number);
-			room.setName(name);
-		}
-		MongoDB.store(room);
-		response.sendRedirect("/rooms");
+        data.put("rooms", roomDataList);
+        AppServlet.processTemplate(ROOMS_SITE, data, response.getWriter());
+    }
 
-	}
+    /**
+     * Handles a room creation and modification requests.
+     * 
+     * @param request
+     *            provides request information for HTTP servlets.
+     * @param response
+     *            provides HTTP-specific functionality in sending a response.
+     * @param room
+     *            The room object if it is present, if it is present this is an
+     *            entity modification request, else it is an entity creation
+     *            request.
+     * @throws IOException
+     *             if an input or output exception occurs.
+     */
+    private void handleRoomForm(HttpServletRequest request,
+            HttpServletResponse response, Room room) throws IOException {
 
-	/**
-	 * Handles a room modification request.
-	 * 
-	 * @param request
-	 *            provides request information for HTTP servlets.
-	 * @param response
-	 *            provides HTTP-specific functionality in sending a response.
-	 * @param room
-	 *            the room which is requested for modification.
-	 * @throws IOException
-	 *             if an input or output exception occurs.
-	 */
-	private void handleRoomModification(HttpServletRequest request,
-			HttpServletResponse response, Room room) throws IOException {
+        String number = request.getParameter("number");
+        String name = request.getParameter("name");
+        String[] items = request.getParameterValues("item");
 
-		Map<String, Object> data = AppServlet.getDefaultData();
+        if (room == null) {
+            room = new Room(number, name);
+        } else {
+            room.setNumber(number);
+            room.setName(name);
+        }
 
-		data.put(AppServlet.REQUEST_HEADLINE_VAR, "Edit Room");
-		data.put("number", room.getNumber());
-		data.put("name", room.getName());
+        Equipment equipment = MongoDB.get(Equipment.class);
+        for (int i = 0; i < equipment.getItems().length; i++) {
+            int quantity = Integer.valueOf(items[i]);
+            String constraint = equipment.getItems()[i];
+            room.getEquipment().put(constraint, quantity);
+        }
+        MongoDB.store(room);
+        response.sendRedirect("/rooms");
 
-		AppServlet.processTemplate(ROOM_FORM_SITE, data, response.getWriter());
-	}
+    }
 
-	/**
-	 * @return a singleton instance of {@link RoomServlet}.
-	 */
-	public static RoomServlet getInstance() {
-		return instance;
-	}
+    /**
+     * @return a singleton instance of {@link RoomServlet}.
+     */
+    public static RoomServlet getInstance() {
+        return instance;
+    }
 
 }

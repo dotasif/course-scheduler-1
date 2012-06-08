@@ -11,19 +11,26 @@
                                 <ol>
                                         <li>
                                         <label for="name">Number:</label>
-                                        <input type="text" name="number" id="number" value="<#if number??>${number}</#if>"/>
+                                        <input type="text" name="number" id="number" value="<#if room.number??>${room.number}</#if>"/>
                                         </li>
                                         <li>
                                         <label for="name">Name:</label>
-                                        <input type="text" name="name" id="name" value="<#if name??>${name}</#if>"/>
+                                        <input type="text" name="name" id="name" value="<#if room.name??>${room.name}</#if>"/>
                                         </li>
+                                        <#list equipment.items as item>
                                         <li>
-                                        <input type="submit" name="submit-reason" value="Create"/>
-                                        </li>
-                                </ol>
+                                        <label for="item">${item}</label>
+                                        <input type="text" name="item" id="item" value="<#if room.equipment[item]??>${room.equipment[item]}<#else>0</#if>"/>
+                                </label>
+                                </li>
+                                </#list>
+                                <li>
+                                <input type="submit" name="submit-reason" value="Create"/>
                                 </li>
                         </ol>
-                </form>
-        </div>
+                        </li>
+                </ol>
+        </form>
+</div>
 </body>
 </html>

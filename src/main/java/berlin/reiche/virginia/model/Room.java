@@ -1,9 +1,13 @@
 package berlin.reiche.virginia.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bson.types.ObjectId;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Reference;
 
 /**
  * Represents a room to which courses can be scheduled.
@@ -18,6 +22,17 @@ public class Room implements Comparable<Room> {
     ObjectId id;
     String number;
     String name;
+
+    /**
+     * The equipment and its quantity offered by the room.
+     */
+    @Reference
+    Map<String, Integer> equipment = new HashMap<>();
+
+    /**
+     * Null object for HTML form purposes.
+     */
+    public static final Room NULL_ROOM = new Room(null, null);
 
     /**
      * This constructor is used by Morphia via Java reflections.
@@ -43,6 +58,10 @@ public class Room implements Comparable<Room> {
         this.name = name;
     }
 
+    public Map<String, Integer> getEquipment() {
+        return equipment;
+    }
+
     public ObjectId getId() {
         return id;
     }
@@ -64,6 +83,17 @@ public class Room implements Comparable<Room> {
     }
 
     /**
+     * Makes the rooms comparable in order to return the same ordering every
+     * time when accessed.
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Room o) {
+        return id.compareTo(o.id);
+    }
+    
+    /**
      * String representation of the room object. If number of name contain a
      * <code>.</code> it is removed, since it is an illegal character to store
      * into the database.
@@ -74,17 +104,6 @@ public class Room implements Comparable<Room> {
     public String toString() {
         String representation = number + " (" + name + ")";
         return representation.replace(".", "");
-    }
-
-    /**
-     * Makes the rooms comparable in order to return the same ordering every
-     * time when accessed.
-     * 
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    @Override
-    public int compareTo(Room o) {
-        return id.compareTo(o.id);
     }
 
 }

@@ -240,7 +240,6 @@ public class ModuleServlet extends HttpServlet {
 
         List<Course> courses = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
-
             if ("".equals(types[i]) && "".equals(durations[i])
                     && "".equals(counts[i])) {
                 continue;
@@ -254,6 +253,8 @@ public class ModuleServlet extends HttpServlet {
                 String constraint = equipment.getItems()[j];
                 if (quantity > 0) {
                     course.getEquipment().put(constraint, quantity);
+                } else {
+                    course.getEquipment().remove(constraint);
                 }
             }
             courses.add(course);
