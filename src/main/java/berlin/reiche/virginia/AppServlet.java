@@ -110,7 +110,7 @@ public class AppServlet extends HttpServlet {
         
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-        if (user == null && path != null && !path.equals("/login")) {
+        if (user == null && path != null && !path.startsWith("/login")) {
             response.sendRedirect("/login");
             return;
         }
@@ -118,12 +118,16 @@ public class AppServlet extends HttpServlet {
         if (path.equals("/")) {
             processTemplate(MAIN_SITE, data, writer);
         } else if (path.equals("/login")) {
-
             if (user == null) {
                 processTemplate(LOGIN_SITE, data, writer);
             } else {
                 response.sendRedirect("/");
             }
+        } else if (path.startsWith("/login/error")) {
+            String name = request.getParameter("user");
+            data.put("name", name);
+            data.put("hasLoginFailed", true);
+            AppServlet.processTemplate(LOGIN_SITE, data, response.getWriter());
         } else if (path.equals("/logout")) {
             session.removeAttribute(LOGIN_ATTRIBUTE);
             response.sendRedirect("/login");
@@ -160,7 +164,6 @@ public class AppServlet extends HttpServlet {
     private void handleLoginRequest(HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        Map<String, Object> data = getDefaultData();
         String login = request.getParameter("name");
         String password = request.getParameter("password");
 
@@ -175,8 +178,7 @@ public class AppServlet extends HttpServlet {
             response.sendRedirect(destination);
             return;
         } else {
-            data.put("hasLoginFailed", "true");
-            AppServlet.processTemplate(LOGIN_SITE, data, response.getWriter());
+            response.sendRedirect("/login/error?user=" + login);
         }
     }
 
