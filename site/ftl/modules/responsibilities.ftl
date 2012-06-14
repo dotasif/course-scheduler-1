@@ -46,7 +46,7 @@
                                 </#list>
                         </tbody>
                 </table>
-                <input type="submit" value="Save"/>
+                <input type="submit" class="btn btn-info" value="Save"/>
         </form>
 </div>
 </@macro.layout>

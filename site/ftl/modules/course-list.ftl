@@ -1,4 +1,4 @@
-<#import "./layout.ftl" as macro>
+<#import "../layout.ftl" as macro>
 <@macro.layout>
 <h1>${name}</h1>
 <div class="navigation">

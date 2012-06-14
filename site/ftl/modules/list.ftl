@@ -2,14 +2,14 @@
 <@macro.layout>
 <h1>Course Modules</h1>
 <div class="navigation">
-        <ol>
-                <li><a href="/">Back</a></li>
-                <li><a href="modules/new">Add new course module</a></li>
-                <li><a href="modules/responsibilities">Assign Lecture Responsibilities</a></li>
+        <ol class="nav nav-pills">
+                <li><a href="modules">List</a></li>
+                <li><a href="modules/new">New Course Module</a></li>
+                <li><a href="modules/responsibilities">Lecture Responsibilities</a></li>
         </ol>
 </div>
 <div class="content">
-        <table>
+        <table class="table">
                 <thead>
                         <tr>
                                 <td><strong>Name</strong></td>
@@ -25,8 +25,8 @@
                                 <td><a href="modules/${module.id}">${module.name}</a></td>
                                 <td>${module.credits}</td>
                                 <td>${module.assessment}</td>
-                                <td><a href="modules/delete/${module.id}">X</a></td>
-                                <td><a href="modules/edit/${module.id}">O</a></td>
+                                <td><a href="modules/delete/${module.id}"><button class="btn btn-danger">Delete</button></a></td>
+                                <td><a href="modules/edit/${module.id}"><button class="btn btn-info">Edit</button></a></td>
                         </tr>
                         </#list>
                 </tbody>

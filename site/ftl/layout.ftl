@@ -13,12 +13,12 @@
                                         <a class="brand">Course Scheduler</a>
                                         <div class="nav-collapse">
                                                 <ul class="nav">
-                                                        <li><a href="modules">Course Modules</a></li>
-                                                        <li><a href="rooms">Rooms</a></li>
-                                                        <li><a href="equipment">Equipment</a></li>
-                                                        <li><a href="users">Users</a></li>
-                                                        <li><a href="timeframe">Timeframe</a></li>
-                                                        <li><a href="scheduler">Scheduler</a></li>
+                                                        <li><a href="/modules">Course Modules</a></li>
+                                                        <li><a href="/rooms">Rooms</a></li>
+                                                        <li><a href="/equipment">Equipment</a></li>
+                                                        <li><a href="/users">Users</a></li>
+                                                        <li><a href="/timeframe">Timeframe</a></li>
+                                                        <li><a href="/scheduler">Scheduler</a></li>
                                                 </ul>
                                                 <div class="pull-right">
                                                         <ul class="nav">
