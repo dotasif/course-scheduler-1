@@ -14,7 +14,7 @@
                 <caption>Room: ${schedule.room}</caption>
                 <thead>
                         <tr>
-                                <td/>
+                                <td></td>
                                         <#list weekdays as weekday>
                                         <td>${weekday}</td>
                                         </#list>
