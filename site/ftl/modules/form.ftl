@@ -1,56 +1,78 @@
 <#import "../layout.ftl" as macro>
 <@macro.layout>
-<h1>${requestHeadline}</h1>
+<div class="page-header">
+        <h1>${requestHeadline}</h1>
+</div>
 <div class="content">
-        <form action="" method="post">
-                <ol>
-                        <li>
-                        <label for="name">Name:</label>
-                        <input type="text" name="name" value="<#if module.name??>${module.name}</#if>"/>
-                        </li>
-                        <li>
-                        <label for="credits">Credits:</label>
-                        <input type="text" name="credits" value="<#if module.credits != -1>${module.credits}</#if>"/>
-                        </li>
-                        <li>
-                        <label for="assessment">Assessment:</label>
-                        <input type="text" name="assessment" value="<#if module.assessment??>${module.assessment}</#if>"/>
-                        </li>
-                        <li>Courses:
-                        <ul>
-                                <#list module.courses as course>
-                                <li>
-                                <ol>
-                                        <li>
-                                        <label for="type">Type:</label>
-                                        <input type="text" name="type" value="<#if course.type??>${course.type}</#if>"/>
-                                        </li>
-                                        <li>
-                                        <label for="duration">Duration:</label>
-                                        <input type="text" name="duration" value="<#if course.duration != -1>${course.duration}</#if>"/>
-                                        </li>
-                                        <li>
-                                        <label for="count">Count:</label>
-                                        <input type="text" name="count" value="<#if course.count != -1>${course.count}</#if>"/>
-                                        </li>
-                                        <#list equipment.items as item>
-                                        <li>
-                                        <label for="item">${item}:</label>
-                                        <input type="text" name="item" value="<#if course.equipment[item]??>${course.equipment[item]}<#else>0</#if>">
-                                        </li>
-                                        </#list>
+        <p>
+        A <strong>Course module</strong> covers a set of <strong>courses</strong> which will eventually be scheduled. For instance a course module could consist of a <strong>lecture</strong> and a <strong>seminar</strong>. Please specify at least <strong>one</strong> course in this course module. If <strong>equipment</strong> will be required select the corresponding item and choose a quantity.
+        </p>
+        <form class="well form-horizontal" action="" method="post">
+                <fieldset>
+                        <h3>General</h3>
+                        <div class="control-group">
+                                <label class="control-label" for="name">Name:</label>
+                                <div class="controls">
+                                        <input type="text" name="name" value="<#if module.name??>${module.name}</#if>"/>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <label class="control-label" for="credits">Credits:</label>
+                                <div class="controls">
+                                        <input class="input-small "type="text" name="credits" value="<#if module.credits != -1>${module.credits}</#if>"/>
+                                </div>
+                        </div>
 
-                                </ol>
-                                </li>
-                                </#list>
-                        </ul>
-                        <li>
-                        <input type="submit" name="submit-reason" value="New Course"/>
-                        </li>
-                        <li>
-                        <input type="submit" name="submit-reason" value="Create"/>
-                        </li>
-                </ol>
+                        <div class="control-group">
+                                <label class="control-label" for="assessment">Assessment Type:</label>
+                                <div class="controls">
+                                        <input class="input-small" type="text" name="assessment" value="<#if module.assessment??>${module.assessment}</#if>"/>
+                                </div>
+                        </div>
+
+                        <#list module.courses as course>
+                        <h3>Course</h3>
+                        <div class="control-group">
+                                <label class="control-label" for="type">Type:</label>
+                                <div class="controls">
+                                        <input  type="text" name="type" value="<#if course.type??>${course.type}</#if>"/>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <label class="control-label" for="duration">Duration:</label>
+                                <div class="controls">
+                                        <input class="input-small" type="text" name="duration" value="<#if course.duration != -1>${course.duration}</#if>"/>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <label class="control-label" for="count">Count:</label>
+                                <div class="controls">
+                                        <input class="input-small" type="text" name="count" value="<#if course.count != -1>${course.count}</#if>">
+                                </div>
+                        </div>
+                        <h4>Requirements</h4>
+                        <div class="control-group">
+                                <label class="control-label" for="equipment">Equipment:</label>
+                                <div class="controls">
+                                        <select class="input-medium" name="equipment">
+                                                <#list equipment.items as item>
+                                                <option value="${item}">${item}</option>
+                                                </#list>
+                                        </select>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <div class="controls docs-input-sized">
+                                        <input class="input-mini" type="text" name="quantity" placeholder="Quantity">
+                                </div>
+                        </div>
+                        </#list>
+                        <button class="btn btn-info" type="submit" name="submit-reason">Add equipment</button>
+                </fieldset>
+                <div class="form-actions">
+                        <input class="btn btn-primary" type="submit" name="submit-reason" value="Create"/>
+                        <button class="btn btn-info" type="submit" name="submit-reason">+ Add another course</button>
+                </div>
         </form>
 </div>
 </@macro.layout>

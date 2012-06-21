@@ -1,6 +1,6 @@
 <#macro layout>
 <!DOCTYPE html>
-<html>
+<html lang="en">
         <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
                 <title>${title}</title>
@@ -22,7 +22,7 @@
                                                 </ul>
                                                 <div class="pull-right">
                                                         <ul class="nav">
-                                                                <li><a href="logout">Logout</a></li>
+                                                                <li><a href="/logout">Logout</a></li>
                                                         </ul>
                                                 </div>
                                         </div>
