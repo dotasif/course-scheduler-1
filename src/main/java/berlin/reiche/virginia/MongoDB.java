@@ -58,7 +58,7 @@ public class MongoDB {
 
         try {
             datastore.getDB().getCollectionNames();
-        } catch (Exception e) {
+        } catch (MongoException e) {
             return false;
         }
 

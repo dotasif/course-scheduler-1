@@ -47,6 +47,7 @@ public class Main {
      */
     public static void main(String... args) throws IOException {
 
+        checkDatabaseConnectivity();
         checkServerProperties();
         checkSchedulerProperties();
         server = new Server(port);
@@ -65,7 +66,8 @@ public class Main {
                     "/modules/*");
             context.addServlet(new ServletHolder(RoomServlet.getInstance()),
                     "/rooms/*");
-            context.addServlet(new ServletHolder(EquipmentServlet.getInstance()),
+            context.addServlet(
+                    new ServletHolder(EquipmentServlet.getInstance()),
                     "/equipment/*");
             context.addServlet(
                     new ServletHolder(TimeframeServlet.getInstance()),
@@ -148,6 +150,27 @@ public class Main {
             Equipment equipment = new Equipment(items);
             MongoDB.store(equipment);
             System.out.println("Created default equipment");
+        }
+    }
+
+    /**
+     * The web application requires a working database connection. Thus it is
+     * checked and if problem occurs the application has to be shut down.
+     * 
+     * @throws IOException
+     *             if an error occurred with the scheduler property file.
+     */
+    private static void checkDatabaseConnectivity() throws IOException {
+
+        Properties serverProperties = new Properties();
+        FileInputStream input = new FileInputStream(SERVER_PROPERTIES_PATH);
+        serverProperties.load(input);
+        int port = Integer.valueOf(serverProperties.getProperty("server.port"));
+
+        if (!MongoDB.isConnected()) {
+            System.err.println("No MongoDB running on localhost:" + port);
+            System.err.println("Application is shut down.");
+            System.exit(-1);
         }
 
     }
