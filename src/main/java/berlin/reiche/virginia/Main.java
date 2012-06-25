@@ -10,7 +10,11 @@ import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.FormAuthenticator;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
@@ -68,7 +72,6 @@ public class Main {
                     ServletContextHandler.SESSIONS);
             context.setContextPath("/");
             context.setSecurityHandler(setUpSecurityHandler());
-            server.setHandler(context);
 
             context.addServlet(new ServletHolder(AppServlet.getInstance()),
                     "/*");
@@ -87,6 +90,16 @@ public class Main {
             context.addServlet(
                     new ServletHolder(SchedulerServlet.getInstance()),
                     "/scheduler/*");
+
+            ContextHandler fileHandler = new ContextHandler();
+            fileHandler.setContextPath("/resources");
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setResourceBase("site/resources");
+            fileHandler.setHandler(resourceHandler);
+
+            ContextHandlerCollection contexts = new ContextHandlerCollection();
+            contexts.setHandlers(new Handler[] { context, fileHandler });
+            server.setHandler(contexts);
 
             server.start();
 
