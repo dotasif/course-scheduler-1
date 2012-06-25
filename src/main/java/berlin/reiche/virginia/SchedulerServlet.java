@@ -64,9 +64,9 @@ public class SchedulerServlet extends HttpServlet {
         String path = request.getPathInfo();
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root
-                + ((path == null) ? "" : path));
-
+        
+        
+                
         if (path == null) {
             showSchedule(request, response);
         } else if (path.equals("/")) {

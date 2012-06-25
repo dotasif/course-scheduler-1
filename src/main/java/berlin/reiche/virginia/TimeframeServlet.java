@@ -51,7 +51,6 @@ public class TimeframeServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root);
 
         Timeframe timeframe = MongoDB.get(Timeframe.class);
         data.put("days", timeframe.getDays());

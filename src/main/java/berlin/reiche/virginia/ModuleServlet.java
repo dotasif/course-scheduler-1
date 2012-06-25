@@ -68,8 +68,6 @@ public class ModuleServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root
-                + ((path == null) ? "" : path));
 
         if (path == null) {
             showCourseModules(response);

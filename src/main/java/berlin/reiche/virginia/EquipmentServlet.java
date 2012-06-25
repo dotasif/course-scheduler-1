@@ -50,7 +50,6 @@ public class EquipmentServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root);
 
         Equipment equipment = MongoDB.get(Equipment.class);
         data.put("equipment", equipment);

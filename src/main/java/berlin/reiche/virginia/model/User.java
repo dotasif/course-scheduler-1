@@ -38,6 +38,12 @@ public class User {
 	@Reference
 	List<Course> responsibleCourses;
 
+    /**
+     * The roles being used for the authentication.
+     */
+    public static final String[] ROLES = new String[] { "user" };
+
+	
 	/**
 	 * This constructor is used by Morphia via Java reflections.
 	 */

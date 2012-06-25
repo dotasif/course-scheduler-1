@@ -57,7 +57,6 @@ public class UserServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        AppServlet.checkAccessRights(request, response, root + ((path == null) ? "" : path));
 
         if (path == null) {
             data.put("users", MongoDB.getAll(User.class));

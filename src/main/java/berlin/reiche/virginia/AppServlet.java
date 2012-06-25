@@ -5,19 +5,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.User;
-
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -107,79 +105,26 @@ public class AppServlet extends HttpServlet {
             processTemplate(path, data, writer);
             return;
         }
-        
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-        if (user == null && path != null && !path.startsWith("/login")) {
-            response.sendRedirect("/login");
-            return;
-        }
-        
+
+
         if (path.equals("/")) {
             processTemplate(MAIN_SITE, data, writer);
         } else if (path.equals("/login")) {
-            if (user == null) {
-                processTemplate(LOGIN_SITE, data, writer);
-            } else {
+            if (request.getRemoteUser() != null) {
                 response.sendRedirect("/");
+            } else {
+                processTemplate(LOGIN_SITE, data, writer);
             }
         } else if (path.startsWith("/login/error")) {
-            String name = request.getParameter("user");
-            data.put("name", name);
             data.put("hasLoginFailed", true);
             AppServlet.processTemplate(LOGIN_SITE, data, response.getWriter());
         } else if (path.equals("/logout")) {
-            session.removeAttribute(LOGIN_ATTRIBUTE);
+            request.getSession().invalidate();
             response.sendRedirect("/login");
         } else {
             processTemplate(NOT_FOUND_SITE, data, writer);
         }
 
-    }
-
-    /**
-     * Parses all user HTML form requests and handles them.
-     */
-    @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-
-        String path = request.getServletPath() + request.getPathInfo();
-
-        if ("/login".equals(path)) {
-            handleLoginRequest(request, response);
-        }
-    }
-
-    /**
-     * Handles a user submitted login request.
-     * 
-     * @param request
-     *            provides request information for HTTP servlets.
-     * @param response
-     *            provides HTTP-specific functionality in sending a response.
-     * @throws IOException
-     *             if an input or output exception occurs.
-     */
-    private void handleLoginRequest(HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        String login = request.getParameter("name");
-        String password = request.getParameter("password");
-
-        User user = MongoDB.get(User.class, login);
-        if (user != null && user.checkPassword(password)) {
-            HttpSession session = request.getSession();
-            String destination = (String) session
-                    .getAttribute(DESTINATION_ATTRIBUTE);
-            session.setAttribute(LOGIN_ATTRIBUTE, user);
-            session.removeAttribute(DESTINATION_ATTRIBUTE);
-            destination = (destination == null) ? "/" : destination;
-            response.sendRedirect(destination);
-            return;
-        } else {
-            response.sendRedirect("/login/error?user=" + login);
-        }
     }
 
     /**
@@ -241,31 +186,6 @@ public class AppServlet extends HttpServlet {
      */
     public static AppServlet getInstance() {
         return instance;
-    }
-
-    /**
-     * @param request
-     *            provides request information for HTTP servlets.
-     * 
-     * @param response
-     *            provides HTTP-specific functionality in sending a response.
-     * @param destination
-     *            the destination to which the user ought to be redirected after
-     *            login.
-     * @throws IOException
-     *             if an input or output exception occurs.
-     */
-    static void checkAccessRights(HttpServletRequest request,
-            HttpServletResponse response, String destination)
-            throws IOException {
-
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(LOGIN_ATTRIBUTE);
-        if (user == null) {
-            session.setAttribute(DESTINATION_ATTRIBUTE, destination);
-            response.sendRedirect("/login");
-            return;
-        }
     }
 
     /**

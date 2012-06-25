@@ -5,9 +5,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
 
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.authentication.FormAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.security.Constraint;
 
 import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.Timeframe;
@@ -35,6 +41,11 @@ public class Main {
     private static final String SCHEDULER_PROPERTIES_PATH = "site/resources/scheduler.properties";
 
     /**
+     * Real name of the login service.
+     */
+    private static final String REALM_NAME = "User Realm";
+
+    /**
      * The Jetty HTTP Servlet Server.
      */
     static Server server;
@@ -56,6 +67,7 @@ public class Main {
             ServletContextHandler context = new ServletContextHandler(
                     ServletContextHandler.SESSIONS);
             context.setContextPath("/");
+            context.setSecurityHandler(setUpSecurityHandler());
             server.setHandler(context);
 
             context.addServlet(new ServletHolder(AppServlet.getInstance()),
@@ -82,6 +94,42 @@ public class Main {
             System.err.println("Server failed to start.");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * For implementing an authentication and authorization service a security
+     * handler is configured to protect the servlets from illegal access.
+     * 
+     * @param context
+     */
+    private static SecurityHandler setUpSecurityHandler() {
+
+        HashLoginService loginService = new HashLoginService();
+        loginService.setName(REALM_NAME);
+        for (User user : MongoDB.getAll(User.class)) {
+            BCryptPassword password = new BCryptPassword(user.getPassword());
+            loginService.putUser(user.getName(), password, User.ROLES);
+        }
+
+        Constraint constraint = new Constraint();
+        constraint.setName(Constraint.__FORM_AUTH);
+        constraint.setRoles(User.ROLES);
+        constraint.setAuthenticate(true);
+
+        ConstraintMapping cm = new ConstraintMapping();
+        cm.setConstraint(constraint);
+        cm.setPathSpec("/*");
+
+        ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
+        csh.setAuthenticator(new FormAuthenticator("/login", "/login/error",
+                false));
+
+        csh.setRealmName(REALM_NAME);
+        csh.addConstraintMapping(cm);
+        csh.setLoginService(loginService);
+
+        return csh;
+
     }
 
     /**
