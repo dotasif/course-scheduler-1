@@ -4,7 +4,8 @@
         <head>
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
                 <title>${title}</title>
-                <link rel="stylesheet" type="text/css" href="${css}">
+                <link rel="stylesheet" type="text/css" href="${bootstrap}">
+                <script type="text/javascript" src="${jquery}"></script>
         </head>
         <body>
                 <div class="navbar">

@@ -1,9 +1,14 @@
 <#import "../layout.ftl" as macro>
 <@macro.layout>
-<h1>Course Modules</h1>
+<div class="page-header">
+        <h1>Course Modules</h1>
+</div>
+<p>
+Here the <strong>Course Modules</strong> are managed. For a successfull course scheduling the lecture responsibilities have to be assigned.
+</p>
 <div class="navigation">
         <ol class="nav nav-pills">
-                <li><a href="modules">List</a></li>
+                <li class="active"><a href="modules">List</a></li>
                 <li><a href="modules/new">New Course Module</a></li>
                 <li><a href="modules/responsibilities">Lecture Responsibilities</a></li>
         </ol>
