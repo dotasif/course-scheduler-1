@@ -31,47 +31,52 @@
                         </div>
 
                         <#list module.courses as course>
-                        <h3>Course</h3>
-                        <div class="control-group">
-                                <label class="control-label" for="type">Type:</label>
-                                <div class="controls">
-                                        <input  type="text" name="type" value="<#if course.type??>${course.type}</#if>"/>
+                        <div class="course">
+                                <hr>
+                                <h3>Course</h3>
+                                <div class="control-group">
+                                        <label class="control-label" for="type">Type:</label>
+                                        <div class="controls">
+                                                <input  type="text" name="type" value="<#if course.type??>${course.type}</#if>"/>
+                                        </div>
                                 </div>
-                        </div>
-                        <div class="control-group">
-                                <label class="control-label" for="duration">Duration:</label>
-                                <div class="controls">
-                                        <input class="input-small" type="text" name="duration" value="<#if course.duration != -1>${course.duration}</#if>"/>
+                                <div class="control-group">
+                                        <label class="control-label" for="duration">Duration:</label>
+                                        <div class="controls">
+                                                <input class="input-small" type="text" name="duration" value="<#if course.duration != -1>${course.duration}</#if>"/>
+                                        </div>
                                 </div>
-                        </div>
-                        <div class="control-group">
-                                <label class="control-label" for="count">Count:</label>
-                                <div class="controls">
-                                        <input class="input-small" type="text" name="count" value="<#if course.count != -1>${course.count}</#if>">
+                                <div class="control-group">
+                                        <label class="control-label" for="count">Count:</label>
+                                        <div class="controls">
+                                                <input class="input-small" type="text" name="count" value="<#if course.count != -1>${course.count}</#if>">
+                                        </div>
                                 </div>
-                        </div>
-                        <h4>Requirements</h4>
-                        <div class="control-group">
-                                <label class="control-label" for="equipment">Equipment:</label>
-                                <div class="controls">
-                                        <select class="input-medium" name="equipment">
-                                                <#list equipment.items as item>
-                                                <option value="${item}">${item}</option>
-                                                </#list>
-                                        </select>
+                                <h4>Requirements</h4>
+                                <div class="requirement">
+                                        <div class="control-group">
+                                                <label class="control-label" for="equipment">Equipment:</label>
+                                                <div class="controls">
+                                                        <select class="input-medium" name="equipment">
+                                                                <#list equipment.items as item>
+                                                                <option value="${item}">${item}</option>
+                                                                </#list>
+                                                        </select>
+                                                </div>
+                                        </div>
+                                        <div class="control-group">
+                                                <div class="controls docs-input-sized">
+                                                        <input class="input-mini" type="text" name="quantity" placeholder="Quantity">
+                                                </div>
+                                        </div>
+                                        </#list>
                                 </div>
+                                <button class="btn btn-info add-equipment" type="button">Add equipment</button>
                         </div>
-                        <div class="control-group">
-                                <div class="controls docs-input-sized">
-                                        <input class="input-mini" type="text" name="quantity" placeholder="Quantity">
-                                </div>
-                        </div>
-                        </#list>
-                        <button class="btn btn-info" type="submit" name="submit-reason">Add equipment</button>
                 </fieldset>
                 <div class="form-actions">
                         <input class="btn btn-primary" type="submit" name="submit-reason" value="Create"/>
-                        <button class="btn btn-info" type="submit" name="submit-reason">+ Add another course</button>
+                        <button class="btn btn-info add-course" type="button">+ Add another course</button>
                 </div>
         </form>
 </div>
