@@ -53,6 +53,7 @@
                                         </div>
                                 </div>
                                 <h4>Requirements</h4>
+                                <input class="equipment-count" type="hidden" name="equipment-count" value="1">
                                 <div class="requirement">
                                         <div class="control-group">
                                                 <label class="control-label" for="equipment">Equipment:</label>

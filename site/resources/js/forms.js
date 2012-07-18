@@ -6,6 +6,8 @@ $(document).ready(function() {
   $(".add-equipment").click(function() {
     var $last = $(this).prev();
     $last.after($requirement.clone());
+    var $counter = $(this).parent().find(".equipment-count");
+    $counter.val(+$counter.val() + 1);
   });
 
   // Add another course sub-form

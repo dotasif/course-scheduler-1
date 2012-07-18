@@ -16,7 +16,6 @@ import org.bson.types.ObjectId;
 
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
-import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.User;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 
@@ -227,33 +226,53 @@ public class ModuleServlet extends HttpServlet {
         int credits = Integer.valueOf(request.getParameter("credits"));
         String assessment = request.getParameter("assessment");
         CourseModule newModule = new CourseModule(name, credits, assessment);
-        Equipment equipment = (Equipment) data.get("equipment");
         data.put("module", newModule);
 
+        // Course types
         String[] types = request.getParameterValues("type");
-        String[] durations = request.getParameterValues("duration");
-        String[] counts = request.getParameterValues("count");
-        String[] items = request.getParameterValues("item");
-        int equipmentSize = equipment.getItems().length;
 
+        // Course durations
+        String[] durations = request.getParameterValues("duration");
+
+        // Course counts
+        String[] counts = request.getParameterValues("count");
+
+        // Number of equipment requirements for each course
+        String[] equipmentCounts = request
+                .getParameterValues("equipment-count");
+        
+        // Equipment names
+        String[] equipments = request.getParameterValues("equipment");
+        
+        // Different quantities for the equipment requirements for all courses
+        String[] equipmentQuantities = request.getParameterValues("quantity");
+
+        int k = 0;
         List<Course> courses = new ArrayList<>();
+        
+        // For each defined course
         for (int i = 0; i < types.length; i++) {
-            if ("".equals(types[i]) && "".equals(durations[i])
-                    && "".equals(counts[i])) {
-                continue;
-            }
 
             int duration = Integer.valueOf(durations[i]);
-            int count = Integer.valueOf(counts[i]);
+            int count= Integer.valueOf(counts[i]);
             Course course = new Course(types[i], duration, count);
-            for (int j = 0; j < equipmentSize; j++) {
-                int quantity = Integer.valueOf(items[(i * equipmentSize) + j]);
-                String constraint = equipment.getItems()[j];
+            
+            int equipmentCount = Integer.valueOf(equipmentCounts[i]);
+            for (int j = 0; j < equipmentCount; j++) {
+
+                int quantity = 0;
+                if (!equipmentQuantities[k].equals("")) {
+                    quantity = Integer.valueOf(equipmentQuantities[k]);
+                }
+
+                String constraint = equipments[k].replaceAll("[\n\r]", "");
                 if (quantity > 0) {
                     course.getEquipment().put(constraint, quantity);
                 } else {
                     course.getEquipment().remove(constraint);
                 }
+                
+                k++;
             }
             courses.add(course);
         }
