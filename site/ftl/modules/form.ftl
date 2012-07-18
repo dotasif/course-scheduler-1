@@ -77,6 +77,7 @@
                 <div class="form-actions">
                         <input class="btn btn-primary" type="submit" name="submit-reason" value="Create"/>
                         <button class="btn btn-info add-course" type="button">+ Add another course</button>
+                        <a href="/modules"><button class="btn btn-danger" type="button">Cancel</button></a>
                 </div>
         </form>
 </div>

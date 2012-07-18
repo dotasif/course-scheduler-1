@@ -3,12 +3,8 @@
 <div class="page-header">
         <h1>Course Modules</h1>
 </div>
-<p>
-Here the <strong>Course Modules</strong> are managed. For a successfull course scheduling the lecture responsibilities have to be assigned.
-</p>
 <div class="navigation">
-        <ol class="nav nav-pills">
-                <li class="active"><a href="modules">List</a></li>
+        <ol class="nav nav-pills nav-stacked">
                 <li><a href="modules/new">New Course Module</a></li>
                 <li><a href="modules/responsibilities">Lecture Responsibilities</a></li>
         </ol>

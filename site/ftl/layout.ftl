@@ -10,7 +10,7 @@
 
                 <!-- Scripts -->  
                 <script type="text/javascript" src="${jquery}"></script>
-                <script type="text/javascript" src="/resources/js/core.js"></script>
+                <script type="text/javascript" src="/resources/js/forms.js"></script>
 
         </head>
         <body>
