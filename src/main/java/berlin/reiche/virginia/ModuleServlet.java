@@ -265,7 +265,7 @@ public class ModuleServlet extends HttpServlet {
                     quantity = Integer.valueOf(equipmentQuantities[k]);
                 }
 
-                String constraint = equipments[k].replaceAll("[\n\r]", "");
+                String constraint = equipments[k];
                 if (quantity > 0) {
                     course.getEquipment().put(constraint, quantity);
                 } else {
@@ -278,19 +278,7 @@ public class ModuleServlet extends HttpServlet {
         }
 
         String submitReason = request.getParameter("submit-reason");
-        if (submitReason.equals("New Course")) {
-
-            newModule.getCourses().addAll(courses);
-            newModule.getCourses().add(Course.NULL_COURSE);
-            String requestHeadline = "New Course Module";
-            if (oldModule != null) {
-                requestHeadline = "Edit Course Module";
-            }
-
-            data.put(AppServlet.REQUEST_HEADLINE_VAR, requestHeadline);
-            AppServlet.processTemplate(FORM_SITE, data, response.getWriter());
-
-        } else if (submitReason.equals("Create")) {
+        if (submitReason.equals("Save")) {
 
             if (oldModule == null) {
                 oldModule = newModule;

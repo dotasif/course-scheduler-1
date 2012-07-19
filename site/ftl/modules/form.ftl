@@ -54,29 +54,47 @@
                                 </div>
                                 <h4>Requirements</h4>
                                 <input class="equipment-count" type="hidden" name="equipment-count" value="1">
+                                <#macro requirement constraints = { "" : -1 }>
+                                <#list constraints?keys as constraint>
                                 <div class="requirement">
                                         <div class="control-group">
                                                 <label class="control-label" for="equipment">Equipment:</label>
                                                 <div class="controls">
                                                         <select class="input-medium" name="equipment">
+                                                                <option></option>
                                                                 <#list equipment.items as item>
-                                                                <option value="${item}">${item}</option>
+                                                                <#if item = constraint && constraints[constraint] != -1>
+                                                                        <option value="${item}" selected="selected">${item}</option>
+                                                                <#else>
+                                                                        <option value="${item}">${item}</option>
+                                                                </#if>
                                                                 </#list>
                                                         </select>
                                                 </div>
                                         </div>
                                         <div class="control-group">
                                                 <div class="controls docs-input-sized">
-                                                        <input class="input-mini" type="text" name="quantity" placeholder="Quantity">
+                                                        <#if constraints[constraint] != -1>
+                                                                <#assign value = "value=\"${constraints[constraint]}\"">
+                                                        <#else>
+                                                                <#assign value = "">
+                                                        </#if>
+                                                        <input class="input-mini" type="text" name="quantity" placeholder="Quantity" ${value}>
                                                 </div>
                                         </div>
-                                        </#list>
                                 </div>
+                                </#list>
+                                </#macro>
+                                <@requirement course.equipment/>
+                                <#if module.credits = -1 || !course.equipment?has_content>
+                                        <@requirement/>
+                                </#if>
                                 <button class="btn btn-info add-equipment" type="button">Add equipment</button>
                         </div>
+                        </#list>
                 </fieldset>
                 <div class="form-actions">
-                        <input class="btn btn-primary" type="submit" name="submit-reason" value="Create"/>
+                        <input class="btn btn-primary" type="submit" name="submit-reason" value="Save"/>
                         <button class="btn btn-info add-course" type="button">+ Add another course</button>
                         <a href="/modules"><button class="btn btn-danger" type="button">Cancel</button></a>
                 </div>

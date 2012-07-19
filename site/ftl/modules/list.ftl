@@ -16,8 +16,8 @@
                                 <td><strong>Name</strong></td>
                                 <td><strong>Credits</strong></td>
                                 <td><strong>Assessment</strong></td>
-                                <td><strong>Delete</strong></td>
-                                <td><strong>Edit</strong></td>
+                                <td><strong>Delete?</strong></td>
+                                <td><strong>Edit?</strong></td>
                         </tr>
                 </thead>
                 <tbody>
