@@ -74,7 +74,9 @@ public class ModuleServlet extends HttpServlet {
             response.sendRedirect("/modules");
         } else if (path.matches("/" + AppServlet.ID_REGEX)) {
             ObjectId moduleId = new ObjectId(path.substring("/".length()));
-            showCourses(response, moduleId);
+            CourseModule module = MongoDB.get(CourseModule.class, moduleId);
+            data.put("module", module);
+            AppServlet.processTemplate(COURSES_SITE, data, response.getWriter());
         } else if (path.equals("/new")) {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Course Module");
             data.put("module", CourseModule.NULL_MODULE);
@@ -170,36 +172,6 @@ public class ModuleServlet extends HttpServlet {
         }
         data.put("modules", courseModuleDataList);
         AppServlet.processTemplate(LIST_SITE, data, response.getWriter());
-    }
-
-    /**
-     * Retrieves the courses of the given course module and displays them.
-     * 
-     * @param response
-     *            provides HTTP-specific functionality in sending a response.
-     * 
-     * @param moduleId
-     *            the id identifying the course module.
-     * @throws IOException
-     *             if an input or output exception occurs.
-     */
-    private void showCourses(HttpServletResponse response, ObjectId moduleId)
-            throws IOException {
-
-        Map<String, Object> data = AppServlet.getDefaultData();
-        CourseModule module = MongoDB.get(CourseModule.class, moduleId);
-
-        data.put("name", module.getName());
-        List<Map<String, String>> courseDataList = new ArrayList<>();
-        for (Course course : module.getCourses()) {
-            Map<String, String> courseData = new TreeMap<>();
-            courseData.put("type", course.getType());
-            courseData.put("duration", String.valueOf(course.getDuration()));
-            courseData.put("count", String.valueOf(course.getCount()));
-            courseDataList.add(courseData);
-        }
-        data.put("courses", courseDataList);
-        AppServlet.processTemplate(COURSES_SITE, data, response.getWriter());
     }
 
     /**
