@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import berlin.reiche.virginia.model.Equipment;
-import berlin.reiche.virginia.model.User;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -66,7 +65,6 @@ public class AppServlet extends HttpServlet {
      * default settings.
      */
     static {
-
         try {
             configuration = new Configuration();
             configuration.setDirectoryForTemplateLoading(new File(WEB_PATH));
@@ -105,7 +103,6 @@ public class AppServlet extends HttpServlet {
             processTemplate(path, data, writer);
             return;
         }
-
 
         if (path.equals("/")) {
             processTemplate(MAIN_SITE, data, writer);
@@ -187,14 +184,5 @@ public class AppServlet extends HttpServlet {
     public static AppServlet getInstance() {
         return instance;
     }
-
-    /**
-     * @param request
-     *            provides request information for HTTP servlets.
-     * 
-     * @return the current user logged in, null if no user is logged in.
-     */
-    static User getCurrentUser(HttpServletRequest request) {
-        return (User) request.getSession().getAttribute(LOGIN_ATTRIBUTE);
-    }
+    
 }

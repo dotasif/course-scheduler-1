@@ -76,7 +76,8 @@ public class ModuleServlet extends HttpServlet {
             ObjectId moduleId = new ObjectId(path.substring("/".length()));
             CourseModule module = MongoDB.get(CourseModule.class, moduleId);
             data.put("module", module);
-            AppServlet.processTemplate(COURSES_SITE, data, response.getWriter());
+            AppServlet
+                    .processTemplate(COURSES_SITE, data, response.getWriter());
         } else if (path.equals("/new")) {
             data.put(AppServlet.REQUEST_HEADLINE_VAR, "New Course Module");
             data.put("module", CourseModule.NULL_MODULE);
@@ -99,7 +100,7 @@ public class ModuleServlet extends HttpServlet {
 
             String selectedUser = request.getParameter(SELECTED_USER);
             if (selectedUser == null) {
-                selectedUser = AppServlet.getCurrentUser(request).getName();
+                selectedUser = request.getRemoteUser();
             }
             User user = MongoDB.get(User.class, selectedUser);
             data.put("user", user);
@@ -132,7 +133,7 @@ public class ModuleServlet extends HttpServlet {
             String[] ids = request.getParameterValues("responsibility");
             String selectedUser = request.getParameter(SELECTED_USER);
             if (selectedUser == null) {
-                selectedUser = AppServlet.getCurrentUser(request).getName();
+                selectedUser = request.getRemoteUser();
             }
             User user = MongoDB.get(User.class, selectedUser);
             user.getResponsibleCourses().clear();
@@ -212,23 +213,23 @@ public class ModuleServlet extends HttpServlet {
         // Number of equipment requirements for each course
         String[] equipmentCounts = request
                 .getParameterValues("equipment-count");
-        
+
         // Equipment names
         String[] equipments = request.getParameterValues("equipment");
-        
+
         // Different quantities for the equipment requirements for all courses
         String[] equipmentQuantities = request.getParameterValues("quantity");
 
         int k = 0;
         List<Course> courses = new ArrayList<>();
-        
+
         // For each defined course
         for (int i = 0; i < types.length; i++) {
 
             int duration = Integer.valueOf(durations[i]);
-            int count= Integer.valueOf(counts[i]);
+            int count = Integer.valueOf(counts[i]);
             Course course = new Course(types[i], duration, count);
-            
+
             int equipmentCount = Integer.valueOf(equipmentCounts[i]);
             for (int j = 0; j < equipmentCount; j++) {
 
@@ -243,36 +244,29 @@ public class ModuleServlet extends HttpServlet {
                 } else {
                     course.getEquipment().remove(constraint);
                 }
-                
+
                 k++;
             }
             courses.add(course);
         }
 
-        String submitReason = request.getParameter("submit-reason");
-        if (submitReason.equals("Save")) {
-
-            if (oldModule == null) {
-                oldModule = newModule;
-            } else {
-                oldModule.setName(name);
-                oldModule.setCredits(credits);
-                oldModule.setAssessment(assessment);
-                oldModule.getCourses().clear();
-            }
-
-            MongoDB.store(oldModule);
-            oldModule.getCourses().addAll(courses);
-            for (Course course : courses) {
-                course.setModule(oldModule);
-                MongoDB.store(course);
-            }
-            MongoDB.store(oldModule);
-            response.sendRedirect("/modules");
+        if (oldModule == null) {
+            oldModule = newModule;
         } else {
-            throw new IllegalStateException(
-                    "An unknown submit value was received: " + submitReason);
+            oldModule.setName(name);
+            oldModule.setCredits(credits);
+            oldModule.setAssessment(assessment);
+            oldModule.getCourses().clear();
         }
+
+        MongoDB.store(oldModule);
+        oldModule.getCourses().addAll(courses);
+        for (Course course : courses) {
+            course.setModule(oldModule);
+            MongoDB.store(course);
+        }
+        MongoDB.store(oldModule);
+        response.sendRedirect("/modules");
     }
 
     /**

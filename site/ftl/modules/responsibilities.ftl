@@ -1,28 +1,24 @@
 <#import "../layout.ftl" as macro>
 <@macro.layout>
 <h1>Course Responsibilities</h1>
-<div class="navigation">
-        <ol>
-                <li><a href="/modules">Back</a></li>
-        </ol>
-</div>
 <div class="content">
-        <form action="" method="GET">
+        <p>Assign course responsibilities to a certain user.</p>
+        <form class="well form-inline" action="" method="GET">
                 <select name="user">
                         <#list lecturers as lecturer>
                         <option value="${lecturer.name}" <#if lecturer.name == user.name>selected</#if>>${lecturer.name}</option>
                         </#list>
                 </select>
-                <input type="submit" value="Change User"/>
+                <input class="btn" type="submit" value="Change User"/>
         </form>
         <form action="" method="post"> 
-                <table>
+                <table class="table">
                         <thead>
                                 <tr>
-                                        <td>Responsibility</td>
-                                        <td>Name</td>
-                                        <td>Credits</td>
-                                        <td>Assessment</td>
+                                        <th>Responsibility</th>
+                                        <th>Name</th>
+                                        <th>Credits</th>
+                                        <th>Assessment</th>
                                 </tr>
                         </thead>
                         <tbody>
@@ -41,11 +37,14 @@
                                         </#if>
                                         <td><input name="responsibility" value="${course.id}" type="checkbox" ${isResponsible}/></td>
                                         <td>${course.type}</td>
+                                        <td></td>
+                                        <td></td>
                                 </tr>
                                 </#list>
                                 </#list>
                         </tbody>
                 </table>
+                <a href="/modules"><button class="btn">Back</button></a>
                 <input type="submit" class="btn btn-info" value="Save"/>
         </form>
 </div>
