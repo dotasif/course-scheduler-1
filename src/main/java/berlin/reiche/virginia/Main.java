@@ -147,7 +147,6 @@ public class Main {
         csh.setLoginService(loginService);
 
         return csh;
-
     }
 
     /**

@@ -64,6 +64,9 @@ public class EquipmentServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
 
         String[] items = request.getParameter("equipment").split("\n");
+        for (int i = 0; i < items.length; i++) {
+            items[i] = items[i].replaceAll("\r", "");            
+        }
         Equipment equipment = MongoDB.get(Equipment.class);
         equipment.setItems(items);
         MongoDB.store(equipment);
