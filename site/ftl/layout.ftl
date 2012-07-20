@@ -17,7 +17,7 @@
                 <div class="navbar">
                         <div class="navbar-inner">
                                 <div class="container">
-                                        <a class="brand">Course Scheduler</a>
+                                        <a class="brand" href="/">Course Scheduler</a>
                                         <div class="nav-collapse">
                                                 <ul class="nav">
                                                         <li><a href="/modules">Course Modules</a></li>
