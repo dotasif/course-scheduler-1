@@ -70,11 +70,11 @@ public class Main {
         try {
             ServletContextHandler context = new ServletContextHandler(
                     ServletContextHandler.SESSIONS);
-            
+
             context.setInitParameter(
                     "org.eclipse.jetty.servlet.SessionIdPathParameterName",
-                    "None");
-            
+                    "none");
+
             context.setContextPath("/");
             context.setSecurityHandler(setUpSecurityHandler());
 
