@@ -99,9 +99,6 @@ public class ModuleServlet extends HttpServlet {
                     .filter("lecturer =", true).asList();
 
             String selectedUser = request.getParameter(SELECTED_USER);
-            if (selectedUser == null) {
-                selectedUser = request.getRemoteUser();
-            }
             User user = MongoDB.get(User.class, selectedUser);
             data.put("user", user);
             data.put("modules", modules);
@@ -132,9 +129,6 @@ public class ModuleServlet extends HttpServlet {
 
             String[] ids = request.getParameterValues("responsibility");
             String selectedUser = request.getParameter(SELECTED_USER);
-            if (selectedUser == null) {
-                selectedUser = request.getRemoteUser();
-            }
             User user = MongoDB.get(User.class, selectedUser);
             user.getResponsibleCourses().clear();
 
