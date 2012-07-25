@@ -54,7 +54,7 @@
                                 </div>
                         </div>
                 </fieldset>
-                <div class="control-actions">
+                <div class="form-actions">
                         <input class="btn btn-primary" type="submit" value="Submit"/>
                 </div>
         </form>
