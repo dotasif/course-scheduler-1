@@ -56,7 +56,7 @@
                                 <input class="equipment-count" type="hidden" name="equipment-count" value="1">
                                 <#macro requirement constraints = { "" : -1 }>
                                 <#list constraints?keys as constraint>
-                                <div class="requirement">
+                                <div class="equipment">
                                         <div class="control-group">
                                                 <label class="control-label" for="equipment">Equipment:</label>
                                                 <div class="controls">
@@ -89,13 +89,13 @@
                                 <#if module.credits = -1 || !course.equipment?has_content>
                                         <@requirement/>
                                 </#if>
-                                <button class="btn btn-info add-equipment" type="button">Add equipment</button>
+                                <button class="btn btn-info add-equipment" type="button">Add Equipment</button>
                         </div>
                         </#list>
                 </fieldset>
                 <div class="form-actions">
                         <input class="btn btn-primary" type="submit" value="Submit"/>
-                        <button class="btn btn-info add-course" type="button">+ Add another course</button>
+                        <button class="btn btn-info add-course" type="button">+ Add Course</button>
                         <a href="/modules"><button class="btn btn-danger" type="button">Cancel</button></a>
                 </div>
         </form>

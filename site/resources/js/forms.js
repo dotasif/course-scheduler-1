@@ -23,9 +23,9 @@ $(document).ready(function() {
   // Add another equipment requirement input
   $(".add-equipment").click(function() {
     var $last = $(this).prev();
-    var $newRequirement = $requirement.clone();
-    $last.after($newRequirement);
-    resetInputFields($newRequirement);
+    var $newEquipment = $equipment.clone();
+    $last.after($newEquipment);
+    resetInputFields($newEquipment);
     var $counter = $(this).parent().find(".equipment-count");
     $counter.val(+$counter.val() + 1);
   });
@@ -39,7 +39,8 @@ $(document).ready(function() {
   });
 
   // Make copies of the initialized forms
-  $requirement = $(".requirement").eq(0).clone();
+  $equipment = $(".equipment").eq(0).clone();
   $course = $(".course").eq(0).clone(true);
 
 });
+

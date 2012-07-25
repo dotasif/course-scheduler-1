@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.types.ObjectId;
 
-import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.Room;
 
 /**
@@ -147,6 +146,7 @@ public class RoomServlet extends HttpServlet {
         String number = request.getParameter("number");
         String name = request.getParameter("name");
         String[] items = request.getParameterValues("item");
+        String[] quantities = request.getParameterValues("quantity");
 
         if (room == null) {
             room = new Room(number, name);
@@ -155,10 +155,9 @@ public class RoomServlet extends HttpServlet {
             room.setName(name);
         }
 
-        Equipment equipment = MongoDB.get(Equipment.class);
-        for (int i = 0; i < equipment.getItems().length; i++) {
-            int quantity = Integer.valueOf(items[i]);
-            String constraint = equipment.getItems()[i];
+        for (int i = 0; i < items.length; i++) {
+            String constraint = items[i];
+            int quantity = Integer.valueOf(quantities[i]);
             room.getEquipment().put(constraint, quantity);
         }
         MongoDB.store(room);
