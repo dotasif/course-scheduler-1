@@ -47,7 +47,7 @@ public class Scheduler {
 
         if (!isScheduleable(data.modules, data.lecturers, data.rooms,
                 data.timeframe)) {
-            throw new SchedulerException("Schedule Data is not scheduleable.");
+            throw new SchedulerException("Courses are not scheduleable.");
         }
 
         ScheduleTask task = new ScheduleTask(data);

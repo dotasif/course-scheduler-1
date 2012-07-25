@@ -1,22 +1,23 @@
 <#import "../layout.ftl" as macro>
 <@macro.layout>
-<h1>Scheduler</h1>
-<div class="menu">
-        <ol>
-                <li><a href="/">Back</a></li>
-                <li><a href="scheduler/start">Schedule Course Data</a></li>
+<div class="page-header">
+        <h1>Scheduler</h1>
+</div>
+<div class="navigation">
+        <ol class="nav nav-pills nav-stacked">
+                <li><a href="/scheduler/start">Schedule Courses</a></li>
         </ol>
 </div>
 <div class="content">
         <#if hasSchedule>
         <#list schedules as schedule>
-        <table class="table">
+        <table class="table table-striped table-bordered">
                 <caption>Room: ${schedule.room}</caption>
                 <thead>
                         <tr>
-                                <td></td>
+                                <th></th>
                                 <#list weekdays as weekday>
-                                <td>${weekday}</td>
+                                <th>${weekday}</th>
                                 </#list>
                         </tr>
                         <#assign hour="${startHour}"?number/>
@@ -25,17 +26,19 @@
                                 <td>${hour?string("00")}:00</td>
                                 <#assign hour=hour+1/>
                                 <#list row as cell>
-                                <td><#if cell??>${cell.course} with ${cell.lecturer.name}</#if></td>
+                                <td><#if cell??>${cell.course}</#if></td>
                                 </#list>
                         </tr>
                         </#list>
                 </thead>
         </table>
         </#list>
-        <#else>
-        <p>
-        There is no course schedule yet.
-        </p>
+        </#if>
+        <#if reason??>
+                <div class="alert alert-error">
+                        <h4>Error</h4>
+                        ${reason}
+                </div>
         </#if>
 </div>
 </@macro.layout>

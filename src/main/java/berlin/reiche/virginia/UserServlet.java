@@ -34,7 +34,7 @@ public class UserServlet extends HttpServlet {
 	/**
 	 * Regular expression for matching a user name.
 	 */
-	static final String ID_REGEX = "[a-z0-9]*";
+	static final String ID_REGEX = "[a-zA-Z0-9]*";
     
     public final static String root = "/users";
     

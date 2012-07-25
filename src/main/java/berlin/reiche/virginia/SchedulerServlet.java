@@ -32,7 +32,6 @@ public class SchedulerServlet extends HttpServlet {
      * File path to the web resources.
      */
     private static final String SCHEDULER_SITE = "ftl/scheduler/control.ftl";
-    private static final String RESULT_SITE = "ftl/scheduler/result.ftl";
 
     /**
      * Singleton instance.
@@ -68,19 +67,18 @@ public class SchedulerServlet extends HttpServlet {
         
                 
         if (path == null) {
-            showSchedule(request, response);
+            showSchedule(request, response, data);
         } else if (path.equals("/")) {
             response.sendRedirect("/scheduler");
         } else if (path.equals("/start")) {
 
             try {
                 scheduler.schedule();
-                AppServlet.processTemplate(RESULT_SITE, data, writer);
             } catch (SchedulerException e) {
                 data.put("reason", e.getMessage());
-                AppServlet.processTemplate(AppServlet.ERROR_SITE, data, writer);
             }
-
+            showSchedule(request, response, data);
+            
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }
@@ -97,9 +95,8 @@ public class SchedulerServlet extends HttpServlet {
      *             if an input or output exception occurs.
      */
     private void showSchedule(HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response, Map<String, Object> data) throws IOException {
 
-        Map<String, Object> data = AppServlet.getDefaultData();
         data.put("hasSchedule", false);
 
         CourseSchedule schedule = MongoDB.get(CourseSchedule.class);
@@ -132,15 +129,6 @@ public class SchedulerServlet extends HttpServlet {
         }
 
         AppServlet.processTemplate(SCHEDULER_SITE, data, response.getWriter());
-    }
-
-    /**
-     * Parses all user HTML form requests and handles them.
-     */
-    @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-
     }
 
     /**
