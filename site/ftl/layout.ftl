@@ -1,7 +1,8 @@
 <#macro layout>
 <!DOCTYPE html>
 <html lang="en">
-        <head>
+        <head profile="http://www.w3.org/2005/10/profile">
+                <link rel="icon" type="image/ico" href="/resources/img/favicon.ico">
                 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
                 <title>${title}</title>
 

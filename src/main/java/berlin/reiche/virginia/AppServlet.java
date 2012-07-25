@@ -106,7 +106,7 @@ public class AppServlet extends HttpServlet {
 
         if (path.equals("/")) {
             processTemplate(MAIN_SITE, data, writer);
-        } else if (path.equals("/login") || path.equals("/favicon.ico")) {
+        } else if (path.equals("/login")) {
             if (request.getRemoteUser() != null) {
                 response.sendRedirect("/");
             } else {
