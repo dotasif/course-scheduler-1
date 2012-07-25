@@ -118,8 +118,8 @@ public class UserServlet extends HttpServlet {
 
         String name = request.getParameter("name");
         String email = request.getParameter("email");
-        boolean isStudent = request.getParameter("isStudent") != null;
-        boolean isLecturer = request.getParameter("isLecturer") != null;
+        boolean isStudent = request.getParameter("student") != null;
+        boolean isLecturer = request.getParameter("lecturer") != null;
         if (user == null) {
             String password = request.getParameter("password");
             user = new User(name, password, email, isStudent, isLecturer);

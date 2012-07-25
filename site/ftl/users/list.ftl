@@ -1,22 +1,23 @@
 <#import "../layout.ftl" as macro>
 <@macro.layout>
-<h1>Users</h1>
+<div class="page-header">
+        <h1>Users</h1>
+</div>
 <div class="navigation">
-        <ol>
-                <li><a href="/">Back</a></li>
-                <li><a href="users/new">Add New User</a></li>
+        <ol class="nav nav-pills nav-stacked">
+                <li><a href="users/new">New User</a></li>
         </ol>
 </div>
 <div class="content">
-        <table>
+        <table class="table">
                 <thead>
                         <tr>
-                                <td>Name</td>
-                                <td>Email</td>
-                                <td>Student?</td>
-                                <td>Lecturer?</td>
-                                <td>Delete?</td>
-                                <td>Edit?</td>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Student?</th>
+                                <th>Lecturer?</th>
+                                <th>Delete?</th>
+                                <th>Edit?</th>
                         </tr>
                 </thead>
                 <tbody>
@@ -26,8 +27,8 @@
                                 <td>${user.email}</td>
                                 <td>${user.student?string("Yes","No")}</td>
                                 <td>${user.lecturer?string("Yes","No")}</td>
-                                <td><a href="users/delete/${user.name}">X</a></td>
-                                <td><a href="users/edit/${user.name}">O</a></td>
+                                <td><a href="users/delete/${user.name}"><button class="btn btn-danger">Delete</button></a></td>
+                                <td><a href="users/edit/${user.name}"><button class="btn btn-info">Edit</button></a></td>
                         </a>
                 </tr>
                 </#list>

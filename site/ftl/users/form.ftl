@@ -1,44 +1,62 @@
 <#import "../layout.ftl" as macro>
 <@macro.layout>
-<h1>${requestHeadline}</h1>
+<div class="page-header">
+        <h1>${requestHeadline}</h1>
+</div>
 <div class="content">
-        <form id="user-form" action="" method="post">
-                <ol>
-                        <li>
-                        <label for="name">Name:</label>
-                        <input type="text" name="name" id="name" value="<#if user??>${user.name}</#if>"/>
-                        </li>
+        <form class="well form-horizontal" action="" method="post">
+                <fieldset>
+                        <div class="control-group">
+                                <label class="control-label" for="name">Name:</label>
+                                <div class="controls">
+                                        <input type="text" name="name" id="name" value="<#if user??>${user.name}</#if>"/>
+                                </div>
+                        </div>
                         <#if isNewEntity>
-                        <li>
-                        <label for="password">Password:</label>
-                        <input type="password" name="password" id="password" value=""/>
-                        </li>
+                        <div class="control-group">
+                                <label class="control-label" for="password">Password:</label>
+                                <div class="controls">
+                                        <input type="password" name="password" id="password" value=""/>
+                                </div>
+                        </div>
                         <#else> 
-                        <li>
-                        <label for="oldPassword">Old Password:</label>
-                        <input type="password" name="oldPassword" id="password" value=""/>
-                        </li>
-                        <li>
-                        <label for="newPassword">New Password:</label>
-                        <input type="password" name="newPassword" id="newPassword" value=""/>
-                        </li>
+                        <div class="control-group">
+                                <label class="control-label" for="oldPassword">Old Password:</label>
+                                <div class="controls">
+                                        <input type="password" name="oldPassword" id="password" value=""/>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <label class="control-label" for="newPassword">New Password:</label>
+                                <div class="controls">
+                                        <input type="password" name="newPassword" id="newPassword" value=""/>
+                                </div>
+                        </div>
                         </#if>
-                        <li>
-                        <label for="email">Email:</label>
-                        <input type="text" name="email" id="email" value="<#if user??>${user.email}</#if>"/>
-                        </li>
-                        <li>
-                        <#if user??><#assign isChecked = user.student/><#else><#assign isChecked = false/></#if>
-                        <input type="checkbox" name="isStudent" id="isStudent" value="isStudent" ${isChecked?string("checked","")}>Is Student?</input>
-                        </li>
-                        <li>
-                        <#if user??><#assign isChecked = user.lecturer/><#else><#assign isChecked = false/></#if>
-                        <input type="checkbox" name="isLecturer" id="isLecturer" value="isLecturer" ${isChecked?string("checked","")}>Is Lecturer?</input>
-                        </li>
-                        <li>
-                        <input type="submit" name="submit-reason" value="Create"/>
-                        </li>
-                </ol>
+                        <div class="control-group">
+                        <label class="control-label" for="email">Email:</label>
+                        <div class="controls">
+                                        <input type="text" name="email" value="<#if user??>${user.email}</#if>"/>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <label class="control-label" for="student">Student:</label>
+                                <div class="controls">
+                                        <#if user?? && user.student><#assign checked = "checked"/><#else><#assign checked = ""/></#if> 
+                                        <input type="checkbox" name="student" value="isStudent" ${checked}>
+                                </div>
+                        </div>
+                        <div class="control-group">
+                                <label class="control-label" for="lecturer">Lecturer:</label>
+                                <div class="controls">
+                                        <#if user?? && user.lecturer><#assign checked = "checked"/><#else><#assign checked = ""/></#if> 
+                                        <input type="checkbox" name="lecturer" value="isLecturer" ${checked}>
+                                </div>
+                        </div>
+                </fieldset>
+                <div class="control-actions">
+                        <input class="btn btn-primary" type="submit" value="Submit"/>
+                </div>
         </form>
 </div>
 </@macro.layout>
