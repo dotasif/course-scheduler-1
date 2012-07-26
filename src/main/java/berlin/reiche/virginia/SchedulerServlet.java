@@ -70,15 +70,19 @@ public class SchedulerServlet extends HttpServlet {
             showSchedule(request, response, data);
         } else if (path.equals("/")) {
             response.sendRedirect("/scheduler");
+        } else if (path.equals("/success")) {
+            data.put("successful", true);
+            showSchedule(request, response, data);
+        } else if (path.equals("/error")) {
+            data.put("failed", true);
+            showSchedule(request, response, data);
         } else if (path.equals("/start")) {
-
             try {
                 scheduler.schedule();
+                response.sendRedirect("/scheduler/success");
             } catch (SchedulerException e) {
-                data.put("reason", e.getMessage());
+                response.sendRedirect("/scheduler/error");
             }
-            showSchedule(request, response, data);
-            
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }

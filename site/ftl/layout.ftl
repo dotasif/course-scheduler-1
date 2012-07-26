@@ -8,10 +8,13 @@
 
                 <!-- Stylesheets -->
                 <link rel="stylesheet" type="text/css" href="${bootstrap}">
+                <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap-extension.css">
 
                 <!-- Scripts -->  
                 <script type="text/javascript" src="${jquery}"></script>
+                <script type="text/javascript" src="/resources/js/vendor/bootstrap.js"></script>
                 <script type="text/javascript" src="/resources/js/forms.js"></script>
+                <script type="text/javascript" src="/resources/js/scheduler.js"></script>
 
         </head>
         <body>

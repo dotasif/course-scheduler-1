@@ -9,6 +9,20 @@
         </ol>
 </div>
 <div class="content">
+        <#if failed??>
+                <div class="alert alert-error">
+                        <button class="close" data-dismiss="alert">&times;</button>
+                        <h4>Error</h4>
+                        Courses are not scheduleable.
+                </div>
+        </#if>
+        <#if successful??>
+                <div class="alert alert-success">
+                        <button class="close" data-dismiss="alert">&times;</button>
+                        <h4>Success!</h4>
+                        A new cours schedule was created.
+                </div>
+        </#if>
         <#if hasSchedule>
         <#list schedules as schedule>
         <table class="table table-striped table-bordered">
@@ -26,19 +40,13 @@
                                 <td>${hour?string("00")}:00</td>
                                 <#assign hour=hour+1/>
                                 <#list row as cell>
-                                <td><#if cell??>${cell.course}</#if></td>
+                                <td><#if cell??><a rel="tooltip" data-content="Type: ${cell.course.type}<br>Lecturer: ${cell.lecturer.name}" title="${cell.course.module.name}">${cell.course.module.name}</a></#if></td>
                                 </#list>
                         </tr>
                         </#list>
                 </thead>
         </table>
         </#list>
-        </#if>
-        <#if reason??>
-                <div class="alert alert-error">
-                        <h4>Error</h4>
-                        ${reason}
-                </div>
         </#if>
 </div>
 </@macro.layout>
