@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import berlin.reiche.virginia.model.Room;
+import berlin.reiche.virginia.model.ScheduleEntry;
 import berlin.reiche.virginia.model.Timeframe;
 import berlin.reiche.virginia.scheduler.CourseSchedule;
 import berlin.reiche.virginia.scheduler.ScheduleInformation;
@@ -83,6 +84,10 @@ public class SchedulerServlet extends HttpServlet {
             } catch (SchedulerException e) {
                 response.sendRedirect("/scheduler/error");
             }
+        } else if (path.equals("/delete")) {
+            MongoDB.deleteAll(CourseSchedule.class);
+            MongoDB.deleteAll(ScheduleEntry.class);
+            response.sendRedirect("/scheduler");
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }

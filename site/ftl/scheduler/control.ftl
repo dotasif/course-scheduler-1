@@ -6,6 +6,7 @@
 <div class="navigation">
         <ol class="nav nav-pills nav-stacked">
                 <li><a href="/scheduler/start">Schedule Courses</a></li>
+                <li><a href="/scheduler/delete">Delete Course Schedule</a></li>
         </ol>
 </div>
 <div class="content">
@@ -20,7 +21,7 @@
                 <div class="alert alert-success">
                         <button class="close" data-dismiss="alert">&times;</button>
                         <h4>Success!</h4>
-                        A new cours schedule was created.
+                        A new course schedule was created.
                 </div>
         </#if>
         <#if hasSchedule>
