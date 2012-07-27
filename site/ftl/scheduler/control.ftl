@@ -25,7 +25,7 @@
         </#if>
         <#if hasSchedule>
         <#list schedules as schedule>
-        <table class="table table-striped table-bordered">
+        <table class="schedule table table-striped table-bordered">
                 <caption>Room: ${schedule.room}</caption>
                 <thead>
                         <tr>
@@ -35,12 +35,22 @@
                                 </#list>
                         </tr>
                         <#assign hour="${startHour}"?number/>
+                        <#assign i = 0>
                         <#list schedule.timeRows as row>
                         <tr>
                                 <td>${hour?string("00")}:00</td>
                                 <#assign hour=hour+1/>
                                 <#list row as cell>
-                                <td><#if cell??><a rel="tooltip" data-content="Type: ${cell.course.type}<br>Lecturer: ${cell.lecturer.name}" title="${cell.course.module.name}">${cell.course.module.name}</a></#if></td>
+                                <#if cell??>
+                                        <#if i == 0>
+                                        <#assign i = cell.course.duration - 1>
+                                        <td class="course" rowspan="${cell.course.duration}"><a rel="tooltip" data-content="Type: ${cell.course.type}<br>Lecturer: ${cell.lecturer.name}" title="${cell.course.module.name}">${cell.course.module.name}</a></td>
+                                        <#else>
+                                        <#assign i = i - 1>
+                                        </#if>
+                                <#else>
+                                        <td></td>
+                                </#if>
                                 </#list>
                         </tr>
                         </#list>

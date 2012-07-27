@@ -6,3 +6,14 @@ caption {
 table {
         table-layout: fixed;
 }
+
+.schedule thead th {
+        text-align: center;
+        vertical-align: middle;
+}
+
+table tr .course {
+        text-align: center;
+        vertical-align: middle;
+        background-color: #EAF7FB;
+}
