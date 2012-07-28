@@ -31,11 +31,11 @@
                 <thead>
                         <tr>
                                 <th></th>
-                                <#list weekdays as weekday>
+                                <#list timeframe.weekdays as weekday>
                                 <th>${weekday}</th>
                                 </#list>
                         </tr>
-                        <#assign hour="${startHour}"?number/>
+                        <#assign hour="${timeframe.startHour}"?number/>
                         <#assign i = 0>
                         <#list schedule.timeRows as row>
                         <tr>

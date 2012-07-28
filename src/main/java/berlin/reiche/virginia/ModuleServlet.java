@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -69,7 +68,8 @@ public class ModuleServlet extends HttpServlet {
         Writer writer = response.getWriter();
 
         if (path == null) {
-            showCourseModules(response);
+            data.put("modules", MongoDB.getAll(CourseModule.class));
+            AppServlet.processTemplate(LIST_SITE, data, response.getWriter());
         } else if (path.equals("/")) {
             response.sendRedirect("/modules");
         } else if (path.matches("/" + AppServlet.ID_REGEX)) {
@@ -141,32 +141,6 @@ public class ModuleServlet extends HttpServlet {
             MongoDB.store(user);
             response.sendRedirect(path + "?user=" + selectedUser);
         }
-    }
-
-    /**
-     * Retrieves all course modules and displays them.
-     * 
-     * @param response
-     *            provides HTTP-specific functionality in sending a response.
-     * @throws IOException
-     *             if an input or output exception occurs.
-     */
-    private void showCourseModules(HttpServletResponse response)
-            throws IOException {
-
-        Map<String, Object> data = AppServlet.getDefaultData();
-        List<Map<String, String>> courseModuleDataList = new ArrayList<>();
-        for (CourseModule module : MongoDB.getAll(CourseModule.class)) {
-            Map<String, String> courseModuleData = new TreeMap<>();
-            courseModuleData.put("id", String.valueOf(module.getId()));
-            courseModuleData.put("name", module.getName());
-            courseModuleData.put("assessment", module.getAssessment());
-            courseModuleData
-                    .put("credits", String.valueOf(module.getCredits()));
-            courseModuleDataList.add(courseModuleData);
-        }
-        data.put("modules", courseModuleDataList);
-        AppServlet.processTemplate(LIST_SITE, data, response.getWriter());
     }
 
     /**

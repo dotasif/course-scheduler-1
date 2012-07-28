@@ -51,12 +51,7 @@ public class TimeframeServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-
-        Timeframe timeframe = MongoDB.get(Timeframe.class);
-        data.put("days", timeframe.getDays());
-        data.put("timeSlots", timeframe.getTimeSlots());
-        data.put("startHour", timeframe.getStartHour());
-        data.put("weekdays", timeframe.getWeekdays());
+        data.put("timeframe", MongoDB.get(Timeframe.class));
         AppServlet.processTemplate(TIMEFRAME_SITE, data, writer);
     }
 

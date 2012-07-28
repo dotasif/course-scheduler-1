@@ -2,10 +2,7 @@ package berlin.reiche.virginia;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -58,7 +55,8 @@ public class RoomServlet extends HttpServlet {
         Writer writer = response.getWriter();
 
         if (path == null) {
-            showRooms(request, response);
+            data.put("rooms", MongoDB.getAll(Room.class));
+            AppServlet.processTemplate(ROOMS_SITE, data, response.getWriter());
         } else if (path.equals("/")) {
             response.sendRedirect("/rooms");
         } else if (path.equals("/new")) {
@@ -95,35 +93,6 @@ public class RoomServlet extends HttpServlet {
             Room room = MongoDB.get(Room.class, id);
             handleRoomForm(request, response, room);
         }
-    }
-
-    /**
-     * Retrieves all rooms and displays them.
-     * 
-     * @param request
-     *            provides request information for HTTP servlets.
-     * 
-     * @param response
-     *            provides HTTP-specific functionality in sending a response.
-     * @throws IOException
-     *             if an input or output exception occurs.
-     */
-    private void showRooms(HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        Map<String, Object> data = AppServlet.getDefaultData();
-        List<Map<String, String>> roomDataList = new ArrayList<>();
-
-        for (Room room : MongoDB.getAll(Room.class)) {
-            Map<String, String> roomData = new TreeMap<>();
-            roomData.put("id", room.getId().toString());
-            roomData.put("number", room.getNumber());
-            roomData.put("name", room.getName());
-            roomDataList.add(roomData);
-        }
-
-        data.put("rooms", roomDataList);
-        AppServlet.processTemplate(ROOMS_SITE, data, response.getWriter());
     }
 
     /**

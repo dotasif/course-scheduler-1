@@ -114,9 +114,7 @@ public class SchedulerServlet extends HttpServlet {
             List<Map<String, Object>> schedules = new ArrayList<>();
             
             Timeframe timeframe = schedule.getTimeframe();
-            List<String> weekdays = timeframe.getWeekdays();
-            data.put("startHour", timeframe.getStartHour());
-            data.put("weekdays", weekdays);
+            data.put("timeframe", timeframe);
             for (Room room : schedule.getRooms()) {
                 Map<String, Object> scheduleData = new HashMap<>();
                 scheduleData.put("room", room.toString());
