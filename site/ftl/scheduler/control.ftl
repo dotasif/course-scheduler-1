@@ -10,21 +10,38 @@
         </ol>
 </div>
 <div class="content">
-        <#if failed??>
-                <div class="alert alert-error">
-                        <button class="close" data-dismiss="alert">&times;</button>
-                        <h4>Error</h4>
-                        Courses are not scheduleable.
-                </div>
+        <#if feedback??>
+                <#if feedback.successful>
+                        <div class="alert alert-success">
+                                <button class="close" data-dismiss="alert">&times;</button>
+                                <h4>Success!</h4>
+                                A new course schedule was created.
+                        </div>
+                <#else>
+                        <div class="alert alert-error">
+                                <button class="close" data-dismiss="alert">&times;</button>
+                                <h4>Error</h4>
+                                <p>Courses are not scheduleable, because of the following reason(s):</p>
+                                <ol>
+                                        <#if feedback.lackingRooms>
+                                        <li>There are <strong>no rooms</strong> available for the courses</li>
+                                        </#if>
+                                        <#if feedback.timeframeIneligible>
+                                        <li>The courses require more time than available through the <strong>timeframe</strong>.</li>
+                                        </#if>
+                                        <#if feedback.coursesLackingLecturer?size gt 0>
+                                        <li>There are courses with <strong>no responsible lecturer</strong>:</li>
+                                        <ul>
+                                                <#list feedback.coursesLackingLecturer as course>
+                                                <li>${course.module.name} (${course.type})</li>
+                                                </#list>
+                                        </ul>
+                                        </#if>
+                                </ol>
+                        </div>
+                </#if>
         </#if>
-        <#if successful??>
-                <div class="alert alert-success">
-                        <button class="close" data-dismiss="alert">&times;</button>
-                        <h4>Success!</h4>
-                        A new course schedule was created.
-                </div>
-        </#if>
-        <#if hasSchedule>
+        <#if schedules??>
         <#list schedules as schedule>
         <table class="schedule table table-striped table-bordered">
                 <caption>Room: ${schedule.room}</caption>

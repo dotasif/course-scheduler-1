@@ -23,6 +23,9 @@ import berlin.reiche.virginia.model.User;
  */
 public class Scheduler {
 
+    /**
+     * The executor service responsible for managing the scheduling tasks.
+     */
     final ExecutorService exec;
 
     public Scheduler() {
@@ -32,12 +35,12 @@ public class Scheduler {
     /**
      * Schedules all available course modules on all available rooms.
      * 
-     * @throws SchedulerException
-     *             if the data is not scheduleable
+     * @return feedback about the scheduling attempt. Whether a course schedule
+     *         could be computed and if not the reasons for the failure.
      */
+    public Feedback schedule() {
 
-    public void schedule() throws SchedulerException {
-
+        Feedback feedback = new Feedback();
         InputData data = new InputData();
         data.modules = MongoDB.getAll(CourseModule.class);
         data.rooms = MongoDB.getAll(Room.class);
@@ -45,62 +48,67 @@ public class Scheduler {
         data.lecturers = MongoDB.createQuery(User.class)
                 .filter("lecturer =", true).asList();
 
-        if (!isScheduleable(data.modules, data.lecturers, data.rooms,
-                data.timeframe)) {
-            throw new SchedulerException("Courses are not scheduleable.");
+        if (!isSchedulable(data, feedback)) {
+            return feedback;
         }
 
         ScheduleTask task = new ScheduleTask(data);
         exec.submit(task);
 
         try {
-            CourseSchedule result = task.get();
+            CourseSchedule schedule = task.get();
             MongoDB.deleteAll(CourseSchedule.class);
             MongoDB.deleteAll(ScheduleEntry.class);
-            MongoDB.store(result);
+            MongoDB.store(schedule);
+            feedback.setSuccessful(true);
+            return feedback;
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
+        assert(false);
+        return null;
     }
 
     /**
-     * @param modules
-     *            the course modules to schedule
-     * @param lecturers
-     *            the lecturers which can hold the courses
-     * @param rooms
-     *            the available rooms for courses to take place
-     * @param timeframe
-     *            the available timeframe to span for each room schedule.
-     * @return whether there are enough resources to satisfy all the
-     *         requirements for a desired course schedule.
+     * Checks based on the given input data, whether the constraints can be met
+     * by the given resources. Additional information about the lack of
+     * resources is written into the {@link Feedback} object.
+     * 
+     * @param data
+     *            the input data for the scheduling algorithm.
+     * @param feedback
+     *            the feedback for returning additional information about the
+     *            schedulability.
+     * @return whether the course data is schedulable.
      */
-    public boolean isScheduleable(List<CourseModule> modules,
-            List<User> lecturers, List<Room> rooms, Timeframe timeframe) {
+    public boolean isSchedulable(InputData data, Feedback feedback) {
 
-        List<Course> coursesWithNoLecturer = new ArrayList<>();
+        List<Course> coursesLackingLecturer = new ArrayList<>();
         int totalCourseTime = 0;
-        for (CourseModule module : modules) {
+        for (CourseModule module : data.modules) {
             for (Course course : module.getCourses()) {
-                coursesWithNoLecturer.add(course);
+                coursesLackingLecturer.add(course);
                 totalCourseTime += course.getDuration() * course.getCount();
             }
         }
-        
-        for (User lecturer : lecturers) {
-            coursesWithNoLecturer.removeAll(lecturer.getResponsibleCourses());
-        }
-        
-        if (coursesWithNoLecturer.size() > 0) {
-            return false;
+
+        for (User lecturer : data.lecturers) {
+            coursesLackingLecturer.removeAll(lecturer.getResponsibleCourses());
         }
 
-        boolean hasAvailableRooms = rooms.size() > 0;
+        boolean hasLecturerCoverage = coursesLackingLecturer.size() == 0;
+        feedback.getCoursesLackingLecturer().addAll(coursesLackingLecturer);
 
+        boolean hasAvailableRooms = data.rooms.size() > 0;
+        feedback.setLackingRooms(!hasAvailableRooms);
+
+        Timeframe timeframe = data.timeframe;
         boolean fitsTimeframe = totalCourseTime <= timeframe.getDays()
-                * timeframe.getTimeSlots() * rooms.size();
+                * timeframe.getTimeSlots() * data.rooms.size();
+        feedback.setTimeframeIneligible(!fitsTimeframe);
 
-        return hasAvailableRooms && fitsTimeframe;
+        return hasLecturerCoverage && hasAvailableRooms && fitsTimeframe;
     }
 
 }

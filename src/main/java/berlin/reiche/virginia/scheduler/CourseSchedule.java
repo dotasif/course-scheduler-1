@@ -62,6 +62,7 @@ public class CourseSchedule {
      */
     @Transient
     boolean isInitialized;
+    
 
     /**
      * This constructor is used by Morphia via Java reflections.
