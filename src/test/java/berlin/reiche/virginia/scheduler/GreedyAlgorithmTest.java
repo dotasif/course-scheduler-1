@@ -47,7 +47,7 @@ public class GreedyAlgorithmTest {
     @Before
     public void setUp() {
 
-        CourseModule module = new CourseModule("Advanced Algorithms", 8, EXAM);
+        CourseModule module = new CourseModule("Advanced Algorithms", 8, EXAM, null);
         module.getCourses().add(new Course(LECTURE, 2, 2));
         module.getCourses().add(new Course(TUTORIAL, 2, 1));
         modules.add(module);

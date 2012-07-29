@@ -30,6 +30,13 @@
                                 </div>
                         </div>
 
+                        <div class="control-group">
+                                <label class="control-label" for="description">Description:</label>
+                                <div class="controls">
+                                        <textarea rows="5" name="description"><#if module.description??>${module.description}</#if></textarea>
+                                </div>
+                        </div>
+
                         <#list module.courses as course>
                         <div class="course">
                                 <hr>

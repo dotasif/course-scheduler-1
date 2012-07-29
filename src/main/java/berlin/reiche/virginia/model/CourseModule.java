@@ -20,11 +20,33 @@ import com.google.code.morphia.annotations.Reference;
 @Entity("course_module")
 public class CourseModule {
 
+    /**
+     * A globally unique identifier to identify the course module in the
+     * database.
+     */
     @Id
     ObjectId id;
+
+    /**
+     * The name of the course module.
+     */
     String name;
+
+    /**
+     * The number of credits points a students receive when completing the
+     * course module.
+     */
     int credits;
+
+    /**
+     * The assessment type of the course module to receive the credits.
+     */
     String assessment;
+
+    /**
+     * A detailed description of the course.
+     */
+    String description;
 
     /**
      * List of courses assigned to the module
@@ -33,21 +55,21 @@ public class CourseModule {
     List<Course> courses;
 
     /**
-     * This constructor is used by Morphia via Java reflections.
-     */
-    @SuppressWarnings("unused")
-    private CourseModule() {
-
-    }
-
-    /**
      * Null object for form processing purposes.
      */
     public static final CourseModule NULL_MODULE;
 
     static {
-        NULL_MODULE = new CourseModule(null, -1, null);
+        NULL_MODULE = new CourseModule(null, -1, null, null);
         NULL_MODULE.getCourses().add(Course.NULL_COURSE);
+    }
+
+    /**
+     * This constructor is used by Morphia via Java reflections.
+     */
+    @SuppressWarnings("unused")
+    private CourseModule() {
+
     }
 
     /**
@@ -60,12 +82,16 @@ public class CourseModule {
      *            the credit points.
      * @param assessmentType
      *            the assessment type.
+     * @param description
+     *            a detailed description of the course.
      */
-    public CourseModule(String name, int credits, String assessment) {
+    public CourseModule(String name, int credits, String assessment,
+            String description) {
         super();
         this.name = name;
         this.credits = credits;
         this.assessment = assessment;
+        this.description = description;
         this.courses = new ArrayList<>();
     }
 
@@ -79,6 +105,10 @@ public class CourseModule {
 
     public int getCredits() {
         return credits;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getId() {
@@ -97,6 +127,10 @@ public class CourseModule {
         this.credits = credits;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setId(ObjectId id) {
         this.id = id;
     }
@@ -104,5 +138,6 @@ public class CourseModule {
     public void setName(String name) {
         this.name = name;
     }
+    
 
 }

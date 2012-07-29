@@ -142,7 +142,7 @@ public class ModuleServlet extends HttpServlet {
             schedule.unsetCourse(course);
         }
         MongoDB.store(schedule);
-        
+
         MongoDB.delete(module);
         response.sendRedirect("/modules");
     }
@@ -204,7 +204,9 @@ public class ModuleServlet extends HttpServlet {
         String name = request.getParameter("name");
         int credits = Integer.valueOf(request.getParameter("credits"));
         String assessment = request.getParameter("assessment");
-        CourseModule newModule = new CourseModule(name, credits, assessment);
+        String description = request.getParameter("description");
+        CourseModule newModule = new CourseModule(name, credits, assessment,
+                description);
         data.put("module", newModule);
 
         // Course types
@@ -262,6 +264,7 @@ public class ModuleServlet extends HttpServlet {
             oldModule.setName(name);
             oldModule.setCredits(credits);
             oldModule.setAssessment(assessment);
+            oldModule.setDescription(description);
             oldModule.getCourses().clear();
         }
 

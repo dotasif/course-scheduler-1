@@ -43,7 +43,7 @@ public class SchedulerTest {
     public void setUp() {
         timeframe = new Timeframe(5, 12, 8, weekdays);
         room = new Room("SR 005", "Seminar Room");
-        module = new CourseModule("Advanced Algorithms", 8, "Exam");
+        module = new CourseModule("Advanced Algorithms", 8, "Exam", null);
         module.getCourses().add(new Course("Lecture", 2, 2));
         module.getCourses().add(new Course("Tutorial", 1, 2));
         lecturers.add(new User("charles", "puwafu59", "Charles Babbage",
