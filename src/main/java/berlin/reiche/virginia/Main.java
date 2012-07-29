@@ -22,6 +22,13 @@ import org.eclipse.jetty.util.security.Constraint;
 import berlin.reiche.virginia.model.Equipment;
 import berlin.reiche.virginia.model.Timeframe;
 import berlin.reiche.virginia.model.User;
+import berlin.reiche.virginia.servlets.AppServlet;
+import berlin.reiche.virginia.servlets.EquipmentServlet;
+import berlin.reiche.virginia.servlets.ModuleServlet;
+import berlin.reiche.virginia.servlets.RoomServlet;
+import berlin.reiche.virginia.servlets.SchedulerServlet;
+import berlin.reiche.virginia.servlets.TimeframeServlet;
+import berlin.reiche.virginia.servlets.UserServlet;
 
 /**
  * @author Konrad Reiche

@@ -1,8 +1,7 @@
-package berlin.reiche.virginia;
+package berlin.reiche.virginia.servlets;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -10,34 +9,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import berlin.reiche.virginia.model.Timeframe;
+import berlin.reiche.virginia.MongoDB;
+import berlin.reiche.virginia.model.Equipment;
 
 /**
- * The timeframe servlet is dedicated to access the settings for configurating
- * the available time for scheduling courses.
+ * The equipment servlet is dedicated to access the settings for configuring the
+ * available equipment for rooms and courses to request upon.
  * 
  * @author Konrad Reiche
  * 
  */
 @SuppressWarnings("serial")
-public class TimeframeServlet extends HttpServlet {
+public class EquipmentServlet extends HttpServlet {
 
     /**
      * File path to the web resources.
      */
-    private static final String TIMEFRAME_SITE = "ftl/timeframe/form.ftl";
+    private static final String EQUIPMENT_SITE = "ftl/equipment/form.ftl";
 
     /**
      * Singleton instance.
      */
-    private static final TimeframeServlet INSTANCE = new TimeframeServlet();
+    private static final EquipmentServlet INSTANCE = new EquipmentServlet();
 
-    public final static String root = "/timeframe";
-    
+    public final static String root = "/equipment";
+
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
-    private TimeframeServlet() {
+    private EquipmentServlet() {
 
     }
 
@@ -51,8 +51,10 @@ public class TimeframeServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-        data.put("timeframe", MongoDB.get(Timeframe.class));
-        AppServlet.processTemplate(TIMEFRAME_SITE, data, writer);
+
+        Equipment equipment = MongoDB.get(Equipment.class);
+        data.put("equipment", equipment);
+        AppServlet.processTemplate(EQUIPMENT_SITE, data, writer);
     }
 
     /**
@@ -62,24 +64,20 @@ public class TimeframeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
 
-        int days = Integer.valueOf(request.getParameter("days"));
-        int timeSlots = Integer.valueOf(request.getParameter("timeSlots"));
-        int startHour = Integer.valueOf(request.getParameter("startHour"));
-        String[] weekdays = request.getParameter("weekdays").split("\n");
-        
-        Timeframe timeframe = MongoDB.get(Timeframe.class);
-        timeframe.setDays(days);
-        timeframe.setTimeSlots(timeSlots);
-        timeframe.setStartHour(startHour);
-        timeframe.setWeekdays(Arrays.asList(weekdays));
-        MongoDB.store(timeframe);
+        String[] items = request.getParameter("equipment").split("\n");
+        for (int i = 0; i < items.length; i++) {
+            items[i] = items[i].replaceAll("\r", "");            
+        }
+        Equipment equipment = MongoDB.get(Equipment.class);
+        equipment.setItems(items);
+        MongoDB.store(equipment);
         response.sendRedirect("/");
     }
 
     /**
      * @return a singleton instance of {@link RoomServlet}.
      */
-    public static TimeframeServlet getInstance() {
+    public static EquipmentServlet getInstance() {
         return INSTANCE;
     }
 

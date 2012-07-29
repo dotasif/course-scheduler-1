@@ -1,4 +1,4 @@
-package berlin.reiche.virginia;
+package berlin.reiche.virginia.servlets;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bson.types.ObjectId;
 
+import berlin.reiche.virginia.MongoDB;
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.CourseModule;
 import berlin.reiche.virginia.model.User;
@@ -84,9 +85,7 @@ public class ModuleServlet extends HttpServlet {
             AppServlet.processTemplate(FORM_SITE, data, writer);
         } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/delete/".length()));
-            MongoDB.delete(CourseModule.class, id);
-            MongoDB.delete(CourseSchedule.class);
-            response.sendRedirect("/modules");
+            deleteCourseModule(request, response, id);
         } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/edit/".length()));
             CourseModule module = MongoDB.get(CourseModule.class, id);
@@ -107,6 +106,15 @@ public class ModuleServlet extends HttpServlet {
         } else {
             AppServlet.processTemplate(AppServlet.NOT_FOUND_SITE, data, writer);
         }
+    }
+
+    private void deleteCourseModule(HttpServletRequest request,
+            HttpServletResponse response, ObjectId id) throws IOException {
+        
+        
+        MongoDB.delete(CourseModule.class, id);
+        MongoDB.delete(CourseSchedule.class);
+        response.sendRedirect("/modules");
     }
 
     /**

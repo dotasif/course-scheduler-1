@@ -1,4 +1,4 @@
-package berlin.reiche.virginia;
+package berlin.reiche.virginia.servlets;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import berlin.reiche.virginia.MongoDB;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.ScheduleEntry;
 import berlin.reiche.virginia.model.Timeframe;

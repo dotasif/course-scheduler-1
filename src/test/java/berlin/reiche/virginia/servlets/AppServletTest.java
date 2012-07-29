@@ -1,11 +1,11 @@
-package berlin.reiche.virginia;
+package berlin.reiche.virginia.servlets;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import berlin.reiche.virginia.AppServlet;
+import berlin.reiche.virginia.servlets.AppServlet;
 
 import freemarker.template.DefaultObjectWrapper;
 

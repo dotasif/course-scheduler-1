@@ -1,4 +1,4 @@
-package berlin.reiche.virginia;
+package berlin.reiche.virginia.servlets;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import berlin.reiche.virginia.MongoDB;
 import berlin.reiche.virginia.model.User;
 
 /**
