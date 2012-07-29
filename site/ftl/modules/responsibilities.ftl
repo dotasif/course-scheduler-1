@@ -9,10 +9,12 @@
                 <select name="user">
                         <option>Choose a lecturer...</option>
                         <#list lecturers as lecturer>
-                        <#if user?? && user.name == lecturer.name>
+                        <#if (user?? && user.login == lecturer.login)>
                                 <#assign selected = "selected"/>
+                        <#else>
+                                <#assign selected = ""/>
                         </#if>
-                        <option value="${lecturer.name}" ${selected!}>${lecturer.name}</option>
+                        <option value="${lecturer.login}" ${selected}>${lecturer.name}</option>
                         </#list>
                 </select>
                 <input class="btn" type="submit" value="Change User"/>

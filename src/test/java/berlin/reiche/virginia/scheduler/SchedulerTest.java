@@ -25,7 +25,7 @@ public class SchedulerTest {
     Timeframe timeframe;
     CourseModule module;
     Room room;
-    
+
     InputData data;
 
     static List<String> weekdays = new ArrayList<>();
@@ -46,9 +46,9 @@ public class SchedulerTest {
         module = new CourseModule("Advanced Algorithms", 8, "Exam");
         module.getCourses().add(new Course("Lecture", 2, 2));
         module.getCourses().add(new Course("Tutorial", 1, 2));
-        lecturers.add(new User("charles", "puwafu59", "charles@babbage.uk",
-                false, true));
-        
+        lecturers.add(new User("charles", "puwafu59", "Charles Babbage",
+                "charles@babbage.uk", false, true));
+
         data = new InputData();
         data.timeframe = timeframe;
         data.rooms = rooms;
@@ -61,7 +61,7 @@ public class SchedulerTest {
 
         Scheduler scheduler = new Scheduler();
         Feedback feedback = new Feedback();
-        
+
         assertFalse(scheduler.isSchedulable(data, feedback));
 
         rooms.add(room);

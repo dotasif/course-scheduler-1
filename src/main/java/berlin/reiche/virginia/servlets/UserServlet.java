@@ -32,13 +32,13 @@ public class UserServlet extends HttpServlet {
      */
     private static UserServlet instance = new UserServlet();
 
-	/**
-	 * Regular expression for matching a user name.
-	 */
-	static final String ID_REGEX = "[a-zA-Z0-9]*";
-    
+    /**
+     * Regular expression for matching a user name.
+     */
+    static final String ID_REGEX = "[a-zA-Z0-9]*";
+
     public final static String root = "/users";
-    
+
     /**
      * The constructor is private in order to enforce the singleton pattern.
      */
@@ -117,20 +117,21 @@ public class UserServlet extends HttpServlet {
     private void handleUserForm(HttpServletRequest request,
             HttpServletResponse response, User user) throws IOException {
 
+        String login = request.getParameter("login");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         boolean isStudent = request.getParameter("student") != null;
         boolean isLecturer = request.getParameter("lecturer") != null;
         if (user == null) {
             String password = request.getParameter("password");
-            user = new User(name, password, email, isStudent, isLecturer);
+            user = new User(login, password, name, email, isStudent, isLecturer);
         } else {
-            user.setName(name);
+            user.setLogin(login);
             user.setEmail(email);
             String oldPassword = request.getParameter("oldPassword");
             String newPassword = request.getParameter("newPassword");
             if (!newPassword.equals("")) {
-            	user.changePassword(oldPassword, newPassword);
+                user.changePassword(oldPassword, newPassword);
             }
             user.setStudent(isStudent);
             user.setLecturer(isLecturer);

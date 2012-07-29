@@ -12,7 +12,7 @@
                 <div class="control-group">
                         <label class="control-label" for="j_username">Name:</label>
                         <div class="controls">
-                                <input type="text" name="j_username" id="name" value=""/>
+                                <input type="text" name="j_username" value=""/>
                         </div>
                 </div>
                 <div class="control-group">

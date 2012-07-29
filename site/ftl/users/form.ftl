@@ -7,9 +7,9 @@
         <form class="well form-horizontal" action="" method="post">
                 <fieldset>
                         <div class="control-group">
-                                <label class="control-label" for="name">Name:</label>
+                                <label class="control-label" for="login">Login:</label>
                                 <div class="controls">
-                                        <input type="text" name="name" id="name" value="<#if user??>${user.name}</#if>"/>
+                                        <input type="text" name="login" value="<#if user??>${user.login}</#if>"/>
                                 </div>
                         </div>
                         <#if isNewEntity>
@@ -33,6 +33,12 @@
                                 </div>
                         </div>
                         </#if>
+                        <div class="control-group">
+                        <label class="control-label" for="name">Name:</label>
+                        <div class="controls">
+                                        <input type="text" name="name" value="<#if user??>${user.name}</#if>"/>
+                                </div>
+                        </div>
                         <div class="control-group">
                         <label class="control-label" for="email">Email:</label>
                         <div class="controls">

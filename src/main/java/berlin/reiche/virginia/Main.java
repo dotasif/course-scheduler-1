@@ -133,7 +133,7 @@ public class Main {
         loginService.setName(REALM_NAME);
         for (User user : MongoDB.getAll(User.class)) {
             BCryptPassword password = new BCryptPassword(user.getPassword());
-            loginService.putUser(user.getName(), password, User.ROLES);
+            loginService.putUser(user.getLogin(), password, User.ROLES);
         }
 
         Constraint constraint = new Constraint();
@@ -168,19 +168,21 @@ public class Main {
         FileInputStream input = new FileInputStream(SERVER_PROPERTIES_PATH);
         serverProperties.load(input);
         port = Integer.valueOf(serverProperties.getProperty("server.port"));
-        String adminUsername = serverProperties.getProperty("admin.username");
+        String adminLogin = serverProperties.getProperty("admin.login");
         String adminPassword = serverProperties.getProperty("admin.password");
 
-        User admin = MongoDB.get(User.class, adminUsername);
+        User admin = MongoDB.get(User.class, adminLogin);
         if (admin == null) {
-            admin = new User(adminUsername, adminPassword, "", false, false);
+            admin = new User(adminLogin, adminPassword, "Administrator",
+                    "admin@admin.com", false, false);
             MongoDB.store(admin);
             System.out.println("Created default admin user.");
         }
 
         if (!admin.checkPassword(adminPassword)) {
-            MongoDB.delete(User.class, adminUsername);
-            admin = new User(adminUsername, adminPassword, "", false, false);
+            MongoDB.delete(User.class, adminLogin);
+            admin = new User(adminLogin, adminPassword, "Administrator",
+                    "admin@admin.com", false, false);
             MongoDB.store(admin);
             System.out.println("Assigned a new admin password.");
         }

@@ -53,9 +53,9 @@ public class GreedyAlgorithmTest {
         modules.add(module);
         Room room = new Room("SR001", SEMINAR_ROOM);
         rooms.add(room);
-        
-        User lecturer = new User("charles", "puwafu59", "charles@babbage.uk",
-                false, true);
+
+        User lecturer = new User("charles", "puwafu59", "Charles Babbage",
+                "charles@babbage.uk", false, true);
         lecturer.addCourse(module.getCourses().get(0));
         lecturer.addCourse(module.getCourses().get(1));
         lecturers.add(lecturer);

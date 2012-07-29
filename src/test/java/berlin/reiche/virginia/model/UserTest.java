@@ -12,7 +12,8 @@ import berlin.reiche.virginia.model.User;
 
 public class UserTest {
 
-    private static final String USER_NAME = "Charles";
+    private static final String LOGIN = "Charles";
+    private static final String NAME = "Charles Babbage";
     private static final String USER_PASSWORD = "puwafu59";
     private static final String WRONG_PASSWORD = "puwafu50";
     private static final String USER_EMAIL = "charles@babbage.uk";
@@ -26,8 +27,8 @@ public class UserTest {
 
     @Test
     public void testPasswordHashing() {
-        User user = new User(USER_NAME, USER_PASSWORD, USER_EMAIL, IS_STUDENT,
-                IS_LECTURER);
+        User user = new User(LOGIN, USER_PASSWORD, NAME, USER_EMAIL,
+                IS_STUDENT, IS_LECTURER);
         assertNotSame(USER_PASSWORD, user.password);
         assertTrue(user.checkPassword(USER_PASSWORD));
         assertFalse(user.checkPassword(WRONG_PASSWORD));

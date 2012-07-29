@@ -27,8 +27,8 @@
                                 <td>${user.email}</td>
                                 <td>${user.student?string("Yes","No")}</td>
                                 <td>${user.lecturer?string("Yes","No")}</td>
-                                <td><a href="users/delete/${user.name}"><button class="btn btn-danger">Delete</button></a></td>
-                                <td><a href="users/edit/${user.name}"><button class="btn btn-info">Edit</button></a></td>
+                                <td><a href="users/delete/${user.login}"><button class="btn btn-danger">Delete</button></a></td>
+                                <td><a href="users/edit/${user.login}"><button class="btn btn-info">Edit</button></a></td>
                         </a>
                 </tr>
                 </#list>
