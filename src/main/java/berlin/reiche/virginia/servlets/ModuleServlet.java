@@ -85,7 +85,8 @@ public class ModuleServlet extends HttpServlet {
             AppServlet.processTemplate(FORM_SITE, data, writer);
         } else if (path.matches("/delete/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/delete/".length()));
-            deleteCourseModule(request, response, id);
+            CourseModule module = MongoDB.get(CourseModule.class, id);
+            deleteCourseModule(request, response, module);
         } else if (path.matches("/edit/" + AppServlet.ID_REGEX)) {
             ObjectId id = new ObjectId(path.substring("/edit/".length()));
             CourseModule module = MongoDB.get(CourseModule.class, id);
@@ -108,12 +109,41 @@ public class ModuleServlet extends HttpServlet {
         }
     }
 
+    /**
+     * When a course module is deleted all reference to the course module or
+     * courses of the course module have to be cleaned up.
+     * 
+     * This includes removing courses from the user's list for responsible
+     * courses and removing schedule entries with the courses.
+     * 
+     * @param request
+     *            provides request information for HTTP servlets.
+     * @param response
+     *            provides HTTP-specific functionality in sending a response.
+     * @param module
+     *            the module to be deleted.
+     * @throws IOException
+     *             if an input or output exception occurs.
+     */
     private void deleteCourseModule(HttpServletRequest request,
-            HttpServletResponse response, ObjectId id) throws IOException {
+            HttpServletResponse response, CourseModule module)
+            throws IOException {
+
+        List<Course> courses = module.getCourses();
+        List<User> users = MongoDB.getAll(User.class);
+        for (User user : users) {
+            if (user.getResponsibleCourses().removeAll(courses)) {
+                MongoDB.store(user);
+            }
+        }
+
+        CourseSchedule schedule = MongoDB.get(CourseSchedule.class);
+        for (Course course : courses) {
+            schedule.unsetCourse(course);
+        }
+        MongoDB.store(schedule);
         
-        
-        MongoDB.delete(CourseModule.class, id);
-        MongoDB.delete(CourseSchedule.class);
+        MongoDB.delete(module);
         response.sendRedirect("/modules");
     }
 

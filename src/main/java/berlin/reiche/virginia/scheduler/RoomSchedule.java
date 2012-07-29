@@ -63,8 +63,25 @@ class RoomSchedule {
      *            the time slit specifying the position in the course schedule.
      */
     void setCourse(Course course, User lecturer, int day, int timeSlot) {
-        ScheduleInformation information = new ScheduleInformation(course, lecturer);
+        ScheduleInformation information = new ScheduleInformation(course,
+                lecturer);
         schedule.get(day).put(timeSlot, information);
+    }
+
+    /**
+     * Unschedules a certain course from the specific position in the room
+     * schedule. This class this could only be called from the
+     * {@link CourseSchedule} class.
+     * 
+     * @param lecturer
+     *            the lecturer which helds the course.
+     * @param day
+     *            the day specifying the position in the course schedule.
+     * @param timeSlot
+     *            the time slit specifying the position in the course schedule.
+     */
+    void unsetCourse(User lecturer, int day, int timeSlot) {
+        schedule.get(day).remove(timeSlot);
     }
 
     /**
@@ -136,4 +153,5 @@ class RoomSchedule {
 
         return courses;
     }
+
 }

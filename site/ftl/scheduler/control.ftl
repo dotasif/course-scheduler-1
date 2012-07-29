@@ -30,7 +30,7 @@
                                         <li>The courses require more time than available through the <strong>timeframe</strong>.</li>
                                         </#if>
                                         <#if feedback.coursesLackingLecturer?size gt 0>
-                                        <li>There are courses with <strong>no responsible lecturer</strong>:</li>
+                                        <li>There are courses with <strong><a href="/modules/responsibilities">no responsible lecturer</a></strong>:</li>
                                         <ul>
                                                 <#list feedback.coursesLackingLecturer as course>
                                                 <li>${course.module.name} (${course.type})</li>

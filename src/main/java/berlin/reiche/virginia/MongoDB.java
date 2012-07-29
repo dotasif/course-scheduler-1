@@ -145,8 +145,25 @@ public class MongoDB {
             throw new IllegalStateException("There is more than one object in"
                     + " the database of type" + cls.getClass() + ".");
         }
-
         deleteAll(cls);
+    }
+    
+    /**
+     * Deletes a given entity by using its identifier.
+     * 
+     * @param entity the entity to be deleted.
+     */
+    public static <T> void delete(T entity) {
+        datastore.delete(entity);
+    }
+    
+    /**
+     * Deletes the entities based on the given query.
+     * 
+     * @param query the query to get the entities.
+     */
+    public static <T> void delete(Query<T> query) {
+        datastore.delete(query);
     }
 
     /**

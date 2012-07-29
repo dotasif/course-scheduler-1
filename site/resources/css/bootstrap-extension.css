@@ -17,3 +17,7 @@ table tr .course {
         vertical-align: middle;
         background-color: #EAF7FB;
 }
+
+.alert a {
+        color: #B94A48;
+}

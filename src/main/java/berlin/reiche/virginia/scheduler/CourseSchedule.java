@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bson.types.ObjectId;
+
 import berlin.reiche.virginia.model.Course;
 import berlin.reiche.virginia.model.Room;
 import berlin.reiche.virginia.model.ScheduleEntry;
@@ -15,6 +17,7 @@ import berlin.reiche.virginia.model.User;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.PostLoad;
 import com.google.code.morphia.annotations.Reference;
 import com.google.code.morphia.annotations.Transient;
@@ -27,6 +30,13 @@ import com.google.code.morphia.annotations.Transient;
  */
 @Entity("schedule")
 public class CourseSchedule {
+
+    /**
+     * A globally unique identifier to identify the course schedule in the
+     * database.
+     */
+    @Id
+    ObjectId id;
 
     /**
      * The timeframe on which this course schedule is based.
@@ -62,22 +72,20 @@ public class CourseSchedule {
      */
     @Transient
     boolean isInitialized;
-    
 
     /**
      * This constructor is used by Morphia via Java reflections.
      */
-    @SuppressWarnings("unused")
     private CourseSchedule() {
         this.schedules = new HashMap<>();
+        this.rooms = new ArrayList<>();
+        this.entries = new ArrayList<>();
     }
 
     public CourseSchedule(Timeframe timeframe, List<Room> rooms) {
-        super();
+        this();
         this.timeframe = timeframe;
-        this.schedules = new HashMap<>();
-        this.entries = new ArrayList<>();
-        this.rooms = new ArrayList<>(rooms);
+        this.rooms.addAll(rooms);
         initialize();
     }
 
@@ -89,7 +97,7 @@ public class CourseSchedule {
      * @param course
      *            the course to schedule.
      * @param lecturer
-     *            the lecturer which helds the course.
+     *            the lecturer which held the course.
      * @param room
      *            the room in which the course should take place.
      * @param day
@@ -99,12 +107,41 @@ public class CourseSchedule {
      */
     public void setCourse(Course course, User lecturer, Room room, int day,
             int timeSlot) {
-        ScheduleEntry entry = new ScheduleEntry(course, lecturer, room, day, timeSlot);
+        ScheduleEntry entry = new ScheduleEntry(course, lecturer, room, day,
+                timeSlot);
         entries.add(entry);
         RoomSchedule schedule = schedules.get(room);
         for (int i = 0; i < course.getDuration(); i++) {
             schedule.setCourse(course, lecturer, day, timeSlot + i);
         }
+    }
+
+    /**
+     * When a course module is removed its courses have to be removed from the
+     * schedule as well. This method finds all related schedule entries and
+     * updates the corresponding data structure.
+     * 
+     * @param course
+     *            the course to be removed.
+     */
+    public void unsetCourse(Course course) {
+
+        List<ScheduleEntry> removableEntries = new ArrayList<>();
+        for (ScheduleEntry entry : entries) {
+            if (entry.getCourse().equals(course)) {
+                removableEntries.add(entry);
+            }
+        }
+
+        for (ScheduleEntry entry : removableEntries) {
+            RoomSchedule schedule = schedules.get(entry.getRoom());
+            for (int i = 0; i < entry.getCourse().getDuration(); i++) {
+                schedule.unsetCourse(entry.getLecturer(), entry.getDay(),
+                        entry.getTimeSlot() + i);
+            }
+        }
+
+        entries.removeAll(removableEntries);
     }
 
     public Timeframe getTimeframe() {
@@ -171,10 +208,11 @@ public class CourseSchedule {
      * @return the scheduled course or <code>null</code> if there is no course
      *         scheduled.
      */
-    public ScheduleInformation getScheduleInformation(Room room, int day, int timeSlot) {
+    public ScheduleInformation getScheduleInformation(Room room, int day,
+            int timeSlot) {
         return schedules.get(room).getScheduleInformation(day, timeSlot);
     }
-    
+
     /**
      * @return the list of rooms which have course schedules.
      */
