@@ -12,7 +12,7 @@
                         <#if (user?? && user.login == lecturer.login)>
                                 <#assign selected = "selected"/>
                         <#else>
-                                <#assign selected = ""/>
+                                <#assign selected = "">
                         </#if>
                         <option value="${lecturer.login}" ${selected}>${lecturer.name}</option>
                         </#list>
@@ -40,9 +40,10 @@
                                         </tr>
                                         <#list module.courses as course>
                                         <tr>
-                                                <#assign isResponsible = ""/>
                                                 <#if user.responsibleCourses?seq_contains(course)>
-                                                <#assign isResponsible = "checked"/>
+                                                        <#assign isResponsible = "checked"/>
+                                                <#else>
+                                                        <#assign isResponsible = "">
                                                 </#if>
                                                 <td><input name="responsibility" value="${course.id}" type="checkbox" ${isResponsible}/></td>
                                                 <td>${course.type}</td>

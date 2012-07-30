@@ -97,7 +97,13 @@ public class Course implements Comparable<Course> {
 
     @Override
     public String toString() {
-        return module.getName() + " (" + type + ")";
+        StringBuilder sb = new StringBuilder();
+        sb.append(module.getName());
+        sb.append(" ");
+        sb.append(type);
+        sb.append(" ");
+        sb.append(id);
+        return sb.toString();
     }
 
     /**
