@@ -14,8 +14,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jetty.security.HashLoginService;
+
+import berlin.reiche.virginia.BCryptPassword;
 import berlin.reiche.virginia.MongoDB;
 import berlin.reiche.virginia.model.Equipment;
+import berlin.reiche.virginia.model.User;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -40,6 +44,7 @@ public class AppServlet extends HttpServlet {
 
     private static final String LOGIN_SITE = "ftl/login.ftl";
     private static final String MAIN_SITE = "ftl/main.ftl";
+    private static final String SIGNUP_SITE = "ftl/signup.ftl";
     private static final String DEFAULT_VALUES_PATH = "site/resources/default-values.properties";
 
     /**
@@ -60,6 +65,8 @@ public class AppServlet extends HttpServlet {
     static Configuration configuration;
 
     private final static AppServlet instance = new AppServlet();
+    
+    private HashLoginService loginService;
 
     /**
      * The configuration for the template engine Freemarker is set up with
@@ -67,6 +74,7 @@ public class AppServlet extends HttpServlet {
      */
     static {
         try {
+            assert(true);
             configuration = new Configuration();
             configuration.setDirectoryForTemplateLoading(new File(WEB_PATH));
             configuration.setObjectWrapper(new DefaultObjectWrapper());
@@ -100,29 +108,46 @@ public class AppServlet extends HttpServlet {
             throw new IOException("The associated path information is null");
         }
 
-        if (path.startsWith("/resources")) {
-            processTemplate(path, data, writer);
-            return;
-        }
-
         if (path.equals("/")) {
             processTemplate(MAIN_SITE, data, writer);
         } else if (path.equals("/login")) {
-            if (request.getRemoteUser() != null) {
-                response.sendRedirect("/");
-            } else {
-                processTemplate(LOGIN_SITE, data, writer);
-            }
+            processTemplate(LOGIN_SITE, data, writer);
         } else if (path.startsWith("/login/error")) {
             data.put("hasLoginFailed", true);
             AppServlet.processTemplate(LOGIN_SITE, data, response.getWriter());
         } else if (path.equals("/logout")) {
             request.getSession().invalidate();
             response.sendRedirect("/login");
+        } else if (path.equals("/signup")) {
+            processTemplate(SIGNUP_SITE, data, response.getWriter());
         } else {
             processTemplate(NOT_FOUND_SITE, data, writer);
         }
-
+    }
+    
+    /**
+     * Parses all user HTML form requests and handles them.
+     */
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        
+        String path = request.getPathInfo();
+        if (path.equals("/signup")) {
+        
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String login = request.getParameter("login");
+            String password= request.getParameter("password");
+            
+            User user = new User(login, password, name, email, false, false);
+            
+            BCryptPassword bcrypt = new BCryptPassword(user.getPassword());
+            loginService.putUser(user.getLogin(), bcrypt, User.ROLES);
+            
+            MongoDB.store(user);
+            response.sendRedirect("/login");
+        }
     }
 
     /**
@@ -185,5 +210,9 @@ public class AppServlet extends HttpServlet {
     public static AppServlet getInstance() {
         return instance;
     }
-    
+
+    public void setLoginService(HashLoginService loginService) {
+        this.loginService = loginService;
+    }
+
 }

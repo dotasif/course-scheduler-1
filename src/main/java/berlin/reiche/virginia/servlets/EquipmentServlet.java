@@ -51,7 +51,7 @@ public class EquipmentServlet extends HttpServlet {
 
         Map<String, Object> data = AppServlet.getDefaultData();
         Writer writer = response.getWriter();
-
+        
         Equipment equipment = MongoDB.get(Equipment.class);
         data.put("equipment", equipment);
         AppServlet.processTemplate(EQUIPMENT_SITE, data, writer);

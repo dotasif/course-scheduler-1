@@ -9,7 +9,7 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jettyVersion>8.1.1.v20120215</jettyVersion>
+		<jettyVersion>8.1.4.v20120524</jettyVersion>
 	</properties>
 	<repositories>
 		<repository>

@@ -4,7 +4,7 @@
         <h1>${requestHeadline}</h1>
 </div>
 <div class="content">
-        <form class="well form-horizontal" action="" method="post">
+        <form class="well form-horizontal" action="" method="post" autocomplete="off" autocomplete="off">
                 <fieldset>
                         <div class="control-group">
                                 <label class="control-label" for="login">Login:</label>

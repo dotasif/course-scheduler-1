@@ -76,7 +76,8 @@ public class Main {
 
         try {
             ServletContextHandler context = new ServletContextHandler(
-                    ServletContextHandler.SESSIONS);
+                    ServletContextHandler.SESSIONS
+                            | ServletContextHandler.SECURITY);
 
             context.setInitParameter(
                     "org.eclipse.jetty.servlet.SessionIdPathParameterName",
@@ -84,6 +85,9 @@ public class Main {
 
             context.setContextPath("/");
             context.setSecurityHandler(setUpSecurityHandler());
+            AppServlet.getInstance().setLoginService(
+                    (HashLoginService) context.getSecurityHandler()
+                            .getLoginService());
 
             context.addServlet(new ServletHolder(AppServlet.getInstance()),
                     "/*");
@@ -125,7 +129,12 @@ public class Main {
      * For implementing an authentication and authorization service a security
      * handler is configured to protect the servlets from illegal access.
      * 
-     * @param context
+     * All paths besides the login and error page are protected. In order to
+     * allow users to register themselves in a separate form a relaxation
+     * constraint is added to make the path to the sign up form available for
+     * non-authenticated user.
+     * 
+     * @return the configured security handler.
      */
     private static SecurityHandler setUpSecurityHandler() {
 
@@ -145,12 +154,21 @@ public class Main {
         cm.setConstraint(constraint);
         cm.setPathSpec("/*");
 
+        Constraint relaxation = new Constraint();
+        relaxation.setName(Constraint.ANY_ROLE);
+        relaxation.setAuthenticate(false);
+
+        ConstraintMapping rm = new ConstraintMapping();
+        rm.setConstraint(relaxation);
+        rm.setPathSpec("/signup");
+
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setAuthenticator(new FormAuthenticator("/login", "/login/error",
                 false));
 
         csh.setRealmName(REALM_NAME);
         csh.addConstraintMapping(cm);
+        csh.addConstraintMapping(rm);
         csh.setLoginService(loginService);
 
         return csh;

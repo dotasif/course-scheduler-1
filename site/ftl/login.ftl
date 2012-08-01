@@ -22,7 +22,8 @@
                         </div>
                 </div>
                 <div class="form-actions">
-                        <input class="btn btn-primary" type="submit" value="Sign In"/>
+                        <input class="btn btn-primary" type="submit" value="Login In"/>
+                        <a href="/signup"><button class="btn btn-info" type="button">Sign up</button></a>
                 </div>
         </fieldset>
 </form>
